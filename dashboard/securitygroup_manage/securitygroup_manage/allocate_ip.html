@@ -1,0 +1,44 @@
+{% load i18n %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "allocate_ip_action" tenant_id %}" class="pageForm required-validate"
+              onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{tenant_id}}">
+        {% include 'securitygroup_manage/_allocate_ip.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>
+                    {% trans 'Pool' %}：</label>
+                <select id="pool" name="pool" class="required select" >
+                    {% for key,value in form.fields.pool.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Descriptyion' %}：</label>
+                <p>{% trans 'Allocate a floating IP from a given floating ip pool.' %}</P>
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,120 @@
+{% load i18n %}
+<style type="text/css">
+    .btn_background_img{
+        width:80px;
+        height: 28px;
+        background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+        text-align: center;
+        line-height: 28px;
+        font-size: 15px;
+        left:10px;
+        margin-left: 5px;
+
+    }
+    .succ_message {
+        height: 30px;
+        margin: 30px auto 0;
+        width: 400px;
+    }
+
+    .succ_message span{
+        float: left;
+    }
+    .succ_message .desc{
+        font-size: 19px;
+        line-height: 30px;
+        float: left;
+        text-align: right;
+        margin-left: 30px;
+    }
+    .ins_header1{
+        width: 141px;
+        float: left;
+        line-height: 24px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .header_pic3 {
+        clear:both;
+        width: 100%;
+        height:70px;
+        background:#d7dcde url('{{ STATIC_URL }}ui/images/instance/4_2.png') no-repeat ;
+        background-position: left center;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="unit">
+    {#    <div class="panelBar">#}
+    {#        <ul class="toolBar">#}
+    {#            <li><a class="add" target="dialog" href="{% url 'create_routerprojectdetail' tenant_id routerproject.id %}" onclick="sec_nextUrl('/virtual_router_manage/routers/{{ tenant_id }}/{{  routerproject.id  }}/getRouterProjectInfo/')" ><span>{% trans "Add" %}</span></a></li>#}
+    {#        </ul>#}
+    {#    </div>#}
+
+    <div class="header_pic3">
+        <div class="ins_header1" style="margin-left: 40px;" >{% trans 'Create router' %}</div>
+        <div class="ins_header1" >{% trans 'Create Interface' %}</div>
+        <div class="ins_header1" >{% trans 'Set Gateway' %}</div>
+        <div class="ins_header1" >{% trans 'Finish' %}</div>
+    </div>
+    <table class="table" width="100%">
+        <thead>
+        <tr>
+            <th>{% trans 'name' %}</th>
+            <th>{% trans 'Fixed Ips' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'Admin State' %}</th>
+        </tr>
+        </thead>
+
+        {% for interface in interfaces %}
+
+            <tr>
+                <td>{{ interface.name }}</td>
+                <td>
+
+                    {% for ip in interface.fixed_ips %}
+                        <ul>
+                            <li>
+                                {{ ip.ip_address }}
+                            </li>
+                        </ul>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if interface.status == 'ACTIVE' %}
+                        {% trans 'ACTIVE' %}
+                    {% else %}
+                        {% trans 'PAUSED' %}
+                    {% endif %}
+                </td>
+                {% if interface.device_owner == "network:router_gateway" %}
+                    <td>{% trans "External Gateway" %}</td>
+                {% else %}
+                    <td>{% trans "Internal Interface" %}</td>
+                {% endif %}
+
+                <td>
+                    {% if interface.admin_state == 'UP' %}
+                        {% trans 'UP' %}
+                    {% else %}
+                        {% trans 'DOWN' %}
+                    {% endif %}
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="succ_message" style="margin-top: 80px;width:80%;">
+        <div class="desc">{% trans "You can add a gateway for your router" %}</div>
+        <span>
+            <a target="dialog" href="{% url "create_gateway_detail_index" router_id virtual_router_obj_id %}" tmask="true"
+               style="text-decoration: none; float: left;" width="700" height="500"  title="{% trans 'set GateWay' %}" id="prepare_router_a_id">
+                <div class="btn_background_img">GO</div>
+            </a>
+        </span>
+    </div>
+</div>

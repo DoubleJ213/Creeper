@@ -1,0 +1,179 @@
+{% load i18n %}
+<style type="text/css">
+    .pageFormContent label {
+        width: 150px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        checkbox = document.getElementById("check_gateway");
+        gatewayip = document.getElementById("gateway_ip");
+
+        checkbox.setAttribute("disabled","disabled");
+        gatewayip.setAttribute("disabled","disabled");
+    });
+    function onfocusViewHelp(a,divid)
+    {
+        document.getElementById(divid).style.display="block"
+        document.getElementById(divid).style.left = a.offsetLeft+ a.offsetWidth+'px'
+        document.getElementById(divid).style.top = a.offsetTop+'px'
+    }
+
+    function onblurViewHelp(divid)
+    {
+        document.getElementById(divid).style.display="none"
+    }
+
+    function changeGatewayIpEnble(qateway)
+    {
+        o = document.getElementById("gateway_ip");
+        if(qateway.checked == true)
+        {
+
+            if(o.getAttribute("disabled") != "disabled")
+            {
+                o.setAttribute("disabled","disabled");
+            }
+        }
+        else
+        {
+
+            if(o.getAttribute("disabled") == "disabled")
+            {
+                o.removeAttribute("disabled");
+            }
+        }
+    }
+</script>
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "edit_subnet_action" subnet.id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDone);">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{network.tenant_id}}">
+        <input type="hidden" name="network_id" id="network_id" value="{{network.id}}">
+        <div class="pageFormContent" layouth="58">
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "Subnet Info" %}</li>
+                </ul>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Subnet Name' %}：</label>
+                <input type="text" id="id_subnet_name" name="subnet_name" onfocus="onfocusViewHelp(this,'subnetnamehelp');"
+                       onblur="onblurViewHelp('subnetnamehelp');"  value="{{ subnet.name }}"
+                       size="30" minlength="2" maxlength="10"  class="required"/>
+                <div id="subnetnamehelp" style="color:#FFFFFF;overflow-y:auto;height:25px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.subnet_name.help_text }}</div>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Network Address' %}(CIDR)：</label>
+                <input type="text" id="id_cidr" name="cidr" onfocus="onfocusViewHelp(this,'subnetcidrhelp');"
+                       onblur="onblurViewHelp('subnetcidrhelp');" value="{{ subnet.cidr }}" readonly
+                       size="40" minlength="2" maxlength="40"  class="required" />
+                <div id="subnetcidrhelp" style="color:#FFFFFF;overflow-y:auto;height:30px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.cidr.help_text }}</div>
+            </div>
+
+            <div class="unit">
+                <label>
+                        {% trans 'IP Version' %}：</label>
+                <select id="ip_version" name="ip_version" >
+                    {% for key,value in form.fields.ip_version.choices %}
+                        {% if  key == subnet.ip_version %}
+                            <option selected="selected" value= {{ key }} >{{ value }}</option>
+                        {% else %}
+                            <option value= {{ key }} >{{ value }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            {% if subnet.gateway_ip %}
+                <div class="unit">
+                    <label>
+                        {% trans 'Gateway IP' %}(optional)：</label>
+                    <input type="text" id="gateway_ip" name="gateway_ip" onfocus="onfocusViewHelp(this,'subnetgatewayiphelp');"
+                           onblur="onblurViewHelp('subnetgatewayiphelp');"  value="{{ subnet.gateway_ip }}" size="40"/>
+                    <div id="subnetgatewayiphelp_is" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.gateway_ip.help_text }}</div>
+                </div>
+
+                <div class="unit">
+                    <label>
+                        {% trans 'Disable Gateway' %}：</label>
+                        <input type="checkbox" name="no_gateway" id="check_gateway">
+                </div>
+            {% else %}
+
+                <div class="unit">
+                    <label>
+                        {% trans 'Gateway IP' %}(optional)：</label>
+                    <input type="text" id="gateway_ip" name="gateway_ip" onfocus="onfocusViewHelp(this,'subnetgatewayiphelp');" onblur="onblurViewHelp('subnetgatewayiphelp');"  value="" size="40" minlength="6" maxlength="20" />
+                    <div id="subnetgatewayiphelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.gateway_ip.help_text }}</div>
+                </div>
+
+                <div class="unit">
+                    <label>
+                        {% trans 'Disable Gateway' %}：</label>
+                    <input type="checkbox" checked="checked" name="no_gateway" id="check_gateway">
+                </div>
+            {% endif %}
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "Subnet Detail" %}</li>
+                </ul>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Enable DHCP' %}：</label>
+                {% if subnet.enable_dhcp %}
+                    <input type="checkbox" checked="checked" name="enable_dhcp" id="enable_dhcp">
+                {% else %}
+                    <input type="checkbox"  name="enable_dhcp" id="enable_dhcp">
+                {% endif %}
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'DNS Name Servers' %}：</label>
+                <textarea id="id_dns_nameservers" onfocus="onfocusViewHelp(this,'subnetdnsnameservershelp');" onblur="onblurViewHelp('subnetdnsnameservershelp');"  rows="5" cols="30" name="dns_nameservers">{{ dns_nameservers }}</textarea>
+                <div id="subnetdnsnameservershelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.dns_nameservers.help_text }}</div>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Host Routes' %}：</label>
+                <textarea id="id_host_routes" onfocus="onfocusViewHelp(this,'subnethostroutesshelp');" onblur="onblurViewHelp('subnethostroutesshelp');" rows="5" cols="30" name="host_routes">{{ host_routes }}</textarea>
+                <div id="subnethostroutesshelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.host_routes.help_text }}</div>
+            </div>
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+{#                            <button type="button" class="close" onclick="gotonwUrl('/virtual_network_manage/network/{{ network.tenant_id }}/{{network.id }}/getnetworkinfo/','')">#}
+{#                                {% trans "Cancel" %}#}
+{#                            </button>#}
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

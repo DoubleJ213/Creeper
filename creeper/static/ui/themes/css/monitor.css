@@ -1,0 +1,733 @@
+/*Moniter Status icon begin*/
+
+/*控制节点 begin*/
+.tree .control_status_online {
+    background: url(../../images/icon/control_online.gif) no-repeat;
+}
+
+.tree .control_status_offline {
+    background: url(../../images/icon/control_offline.gif) no-repeat;
+}
+
+.tree .control_status_na {
+    background: url(../../images/icon/control_na.gif) no-repeat;
+}
+
+/*虚拟机 begin*/
+.tree .computer_status_online {
+    background: url(../../images/icon/computer_online.gif) no-repeat;
+}
+
+.tree .computer_status_offline {
+    background: url(../../images/icon/computer_offline.gif) no-repeat;
+}
+
+.tree .computer_status_na {
+    background: url(../../images/icon/computer_na.gif) no-repeat;
+}
+
+/*计算节点 begin*/
+.tree .compute_status_online {
+    background: url(../../images/icon/compute_online.gif) no-repeat;
+}
+
+.tree .compute_status_offline {
+    background: url(../../images/icon/compute_offline.gif) no-repeat;
+}
+
+.tree .compute_status_na {
+    background: url(../../images/icon/compute_na.gif) no-repeat;
+}
+
+/*存储节点 begin*/
+.tree .storage_status_online {
+    background: url(../../images/icon/storage_online.png) no-repeat;
+}
+
+.tree .storage_status_offline {
+    background: url(../../images/icon/storage_offline.png) no-repeat;
+}
+
+.tree .storage_status_na {
+    background: url(../../images/icon/storage_na.png) no-repeat;
+}
+
+.tree label {
+    width: 22px;
+    height: 22px;
+    float: right;
+    display: block;
+    z-index: 400
+}
+
+.tree .filter_active {
+    background: url(../../images/icon/active_button.png) no-repeat
+}
+
+.tree .filter_inactive {
+    background: url(../../images/icon/inactive_button.png) no-repeat
+}
+
+.tree .compute_status_loading, .tree .computer_status_loading, .tree .control_status_loading, .tree .storage_status_loading {
+    background: url(../default/images/progressBar/progressBar_s.gif) no-repeat;
+}
+
+/*Moniter Status icon end*/
+
+/*public Status icon begin*/
+.status_loading, .task_loading, .power_loading, .ip_loading {
+    background: url(../default/images/progressBar/progressBar_s.gif) no-repeat;
+    height: 21px;
+    width: 21px;
+    margin-top: 2px;
+    float: left;
+    position: relative;
+}
+
+/*public Status icon end*/
+
+/*Service Status icon begin*/
+
+/*域名系统服务*/
+.dns_service_true {
+    background: url(../../images/service_icon/icon_0_true.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+.dns_service_unvaliable, .dns_service_false {
+    background: url(../../images/service_icon/icon_0_false.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+/*网络服务*/
+.network_service_true {
+    background: url(../../images/service_icon/icon_1_true.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+.network_service_unvaliable, .network_service_false {
+    background: url(../../images/service_icon/icon_1_false.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+/*数据库服务*/
+.database_service_true {
+    background: url(../../images/service_icon/icon_2_true.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+.database_service_unvaliable, .database_service_false {
+    background: url(../../images/service_icon/icon_2_false.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+/*授权服务*/
+.authorize_service_true {
+    background: url(../../images/service_icon/icon_3_true.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+.authorize_service_unvaliable, .authorize_service_false {
+    background: url(../../images/service_icon/icon_3_false.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+/*计算服务*/
+.compute_service_true {
+    background: url(../../images/service_icon/icon_4_true.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+.compute_service_unvaliable, .compute_service_false {
+    background: url(../../images/service_icon/icon_4_false.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+/*卷服务*/
+.volume_service_true {
+    background: url(../../images/service_icon/icon_5_true.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+.volume_service_unvaliable, .volume_service_false {
+    background: url(../../images/service_icon/icon_5_false.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+/*消息服务*/
+.rabbitmq_service_true {
+    background: url(../../images/service_icon/icon_6_true.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+.rabbitmq_service_unvaliable, .rabbitmq_service_false {
+    background: url(../../images/service_icon/icon_6_false.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+/*调度服务*/
+.schedule_service_true {
+    background: url(../../images/service_icon/icon_7_true.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+.schedule_service_unvaliable, .schedule_service_false {
+    background: url(../../images/service_icon/icon_7_false.png) no-repeat;
+    background-position: 25px 0px;
+}
+
+.service_status_loading {
+    background: url(../default/images/progressBar/progressBar_m.gif) no-repeat;
+    background-position: 25px 0px;
+}
+
+.icon_0_position {
+
+}
+
+/*Service Status icon end*/
+
+/*Switch*/
+
+.switch {
+    /*background:url(../../images/switch.png) no-repeat;*/
+}
+
+.off {
+    background-position: 0 -77px;
+    height: 57px;
+    width: 119px;
+    margin: 0 auto;
+}
+
+.on {
+    background-position: 0 0;
+    height: 57px;
+    width: 119px;
+    margin: 0 auto;
+}
+
+.na {
+    background-position: 0 -154px;
+    height: 57px;
+    width: 119px;
+    margin: 0 auto;
+}
+
+#content_subject {
+
+    background: url(../../images/content_bg.jpg) repeat-x;
+
+}
+
+.service_list {
+    position: relative;
+    float: left;
+    width: 12%;
+    border: solid 0px red;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+}
+
+.service_list .t {
+    position: relative;
+    float: left;
+    height: 23px;
+    line-height: 20px;
+    text-align: center;
+}
+
+.service_list ul li {
+    text-align: center;
+}
+
+/*monitor area start*/
+
+.service_icon {
+    float: left;
+    position: relative;
+    width: 80px;
+    height: 30px;
+    border: none;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-bottom: 2px;
+    padding-top: 50px;
+    color: #7cfc00;
+    text-align: center;
+}
+
+.service_title {
+    float: left;
+    width: 70px;
+    height: 30px;
+    border: none;
+    padding: 2px;
+}
+
+#service_left {
+    border: solid 0px blue;
+    height: 20%;
+    position: relative;
+    left: 33%;
+}
+
+#service_right {
+    border: solid 0px blue;
+    height: 20%;
+    position: relative;
+    left: 33%;
+}
+
+/*
+#network_out_content{
+
+    border:solid 0px red;
+    float:left;
+    position:relative;
+    width:30%;
+    height:300px;
+    text-align:center;
+}
+
+#network_in_content{
+    border:solid 0px red;
+    float:left;
+    position:relative;
+    width:30%;
+    height:300px;
+    text-align:center;
+}
+
+
+
+#network_in{
+    border:solid 0px green;
+    margin:0 auto;
+    text-align:center;
+    width:250px;
+    height:250px;
+
+}
+
+#network_out{
+    border:solid 0px green;
+    margin:0 auto;
+    text-align:center;
+    width:250px;
+    height:250px;
+
+}
+
+#cpu_content{
+    border:solid 0px red;
+    float:left;
+    position:relative;
+    width:40%;
+    margin:0 auto;
+    z-index:1000;
+    height:400px;
+    text-align:center;
+    margin-top:-60px;
+}
+
+#cpu{
+    text-align:center;
+    width:330px;
+    height:330px;;
+    margin:0 auto;
+}
+
+#cpu_text{
+
+    color:#7cfc00;
+    text-align:center;
+    width:300px;
+    margin:0 auto;
+}
+
+#info_content{
+    position:relative;
+    float:left;
+    width:100%;
+    height:60px;
+    text-align:center;
+
+}
+
+#in_text{
+
+    margin-top:50px;
+    z-index: 1000;
+    border: solid 0px #cccccc;
+    text-align:center;
+    color: #7cfc00;
+}
+*/
+
+#monitor_tree {
+    margin: 5px 0 5px 5px;
+    display: block;
+    overflow: auto;
+    width: 240px;
+    border: solid 1px #CCC;
+    line-height: 21px;
+    background: #fff;
+}
+
+#threshold_div {
+    margin: 5px 0 5px 5px;
+    width: 234px;
+    border: solid 1px #CCC;
+    line-height: 21px;
+    background: #fff;
+}
+
+#threshold_options {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#monitor_info {
+    width: 280px;
+    height: 80px;
+    padding: 0px 10px 20px 10px;
+    margin: 0 auto;
+    background: url(../../images/monitor_info.png) no-repeat;
+    margin-top: 20px;
+    color: #7cfc00;
+
+}
+
+#monitor_info li {
+    height: 25px;
+    line-height: 25px;
+    width: 280px;
+}
+
+#monitor_info li a {
+    color: #7cfc00;
+    text-decoration: none;
+}
+
+.instance_bg {
+    position: relative;
+    margin: 0 auto;
+    width: 1000px;
+    height: 600px;
+    padding-top: 50px;
+    border: 0px;
+}
+
+.instance_cpu_info {
+    text-align: center;
+    float: left;
+    position: relative;
+    width: 380px;
+    height: 275px;
+    margin: 10px;
+}
+
+.instance_memory_info {
+    text-align: center;
+    float: left;
+    position: relative;
+    width: 380px;
+    height: 280px;
+    margin: 10px;
+}
+
+.disk_content, .network_content, .cpu_content, .memory_content {
+    width: 498px;
+    height: 298px;
+    float: left;
+    position: relative;
+}
+
+.disk_content .title {
+    width: 96px;
+    height: 23px;
+    margin-top: 5px;
+    margin-left: 5px;
+    background: url("../../images/disk_title.png") no-repeat;
+}
+
+.network_content .title {
+    width: 133px;
+    height: 24px;
+    margin-top: 5px;
+    margin-left: 5px;
+    background: url("../../images/network_title.png") no-repeat;
+}
+
+.cpu_content .title {
+    width: 113px;
+    height: 24px;
+    margin-top: 50px;
+    margin-left: 20px;
+    background: url("../../images/cpu_title.png") no-repeat;
+}
+
+.memory_content .title {
+    width: 86px;
+    height: 23px;
+    margin-top: 50px;
+    margin-left: 20px;
+    background: url("../../images/memory_title.png") no-repeat;
+}
+
+.content_info {
+    text-align: left;
+    margin: 20px;
+    font-size: 20px;
+    font-family: "宋体";
+}
+
+.cpu_info {
+    padding-left: 20px;
+    text-align: left;
+    margin-top: 5px;
+    font-size: 20px;
+    font-family: "宋体";
+}
+
+.cpu_info ul li {
+    line-height: 25px;
+    height: 25px;
+}
+
+.cpu_bg {
+    background: url("../../images/cpu_bg_1.png") no-repeat;
+    width: 223px;
+    height: 100%;
+}
+
+.memory_bg {
+    background: url("../../images/memory_bg_1.png") no-repeat;
+    width: 223px;
+    height: 100%;
+}
+
+.memory_info {
+    padding-left: 20px;
+    text-align: left;
+    margin-top: 5px;
+    font-size: 20px;
+    font-family: "宋体";
+}
+
+.memory_info ul li {
+    line-height: 25px;
+    height: 25px;
+}
+
+.instance_part_info {
+    text-align: center;
+    float: left;
+    position: relative;
+    width: 380px;
+    height: 280px;
+    margin: 10px;
+    background: url(../../images/instance_info2.png) repeat-y;
+}
+
+/*monitor area end*/
+
+/*table_Page style area begin*/
+
+.instance_action_button ul {
+    width: 100%;
+    list-style: none;
+    height: 100%;
+}
+
+.instance_action_button li {
+    text-align: center;
+    float: left;
+    position: relative;
+    width: 25%;
+    height: 25px;
+    line-height: 25px;
+}
+
+/*table_Page style area end*/
+
+/*index style area start*/
+.cuont-t-day {
+    float: left;
+    height: 30px;
+    width: 71px;
+    text-align: center;
+    line-height: 30px;
+    display: block;
+    background: url(../../images/count-bg.jpg) no-repeat;
+}
+
+.news_content a {
+    text-decoration: none;
+    color: #555;
+    line-height: 30px;
+}
+
+.news_content {
+    color: #555;
+}
+
+.cuont-t-bot a.top:hover {
+    background-position: right -32px;
+}
+
+.cuont-t-bot a.top {
+    background-position: right 0;
+    height: 16px;
+}
+
+.cuont-t-bot a {
+    display: block;
+    width: 20px;
+    background: url(../../images/count-bg.jpg) no-repeat;
+}
+
+.cuont-t-bot {
+    width: 20px;
+    float: right;
+    position: relative;
+    z-index: 11;
+    border: 0px solid red;
+}
+
+.more {
+    width: 30px;
+    float: right;
+    position: relative;
+    z-index: 11;
+    border: 0px solid red;
+}
+
+.cuont-t-bot a.bom {
+    background-position: right -16px;
+    height: 15px;
+}
+
+.cuont-t-day {
+    float: left;
+    height: 30px;
+    width: 71px;
+    text-align: center;
+    line-height: 30px;
+    display: block;
+    background: url(../../images/count-bg.jpg) no-repeat;
+}
+
+.zbj-nav .zbj-count .cuont-time {
+    width: auto;
+    height: 32px;
+    position: relative;
+    z-index: 5;
+    background: url(../../images/count-bg.jpg) no-repeat;
+}
+
+.cuont-t-bot a.top:hover {
+    background-position: right -32px;
+}
+
+.cuont-t-bot a.bom:hover {
+    background-position: right -48px;
+}
+
+.news_content {
+    width: 100%;
+    height: 30px;
+    padding-bottom: 10px;
+    position: relative;
+    float: left;
+    color: #555;
+    background-color: #fff;
+    border-bottom: solid 1px #f1f1f1;
+    margin-bottom: 10px;
+}
+
+.news_button {
+    float: right;
+    line-height: 30px;
+    margin-left: 5px;
+}
+
+.news_title {
+    float: left;
+    line-height: 30px;
+}
+
+.news_list {
+    float: left;
+    position: relative;
+    width: 100%;
+}
+
+/*index style area end*/
+
+/*chart style area begin*/
+.chart_view {
+    width: 49%;
+    height: 300px;
+    float: left;
+    position: relative;
+}
+
+/*chart style area end*/
+
+/* new monitor layout*/
+.gauge {
+    border: 0px;
+    width: 98%;
+    height: 334px;
+    display: block;
+    padding: 5px;
+    margin: 2px;
+}
+
+.gauge .title {
+    border: 0px;
+    font-size: 14px;
+    color: lawnGreen;
+}
+
+.gauge fieldset {
+    float: left;
+    display: block;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    height: 334px;
+    width: 357px;
+    margin-left: 3px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.service_info {
+    display: block;
+    height: 15%;
+    width: 98%;
+    margin: 5px;
+    padding: 5px;
+}
+
+.service_info fieldset {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    padding-top: 10px;
+}
+
+.service_info fieldset .title {
+    border: 0px;
+    font-size: 14px;
+    color: lawnGreen;
+}
+
+.service_top {
+    display: block;
+    height: 45%;
+    width: 100%;
+    margin: 2px;
+}

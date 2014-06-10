@@ -1,0 +1,341 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+<form id="pagerForm" action="{% url "get_snapshot_index" %}">
+    {% add_in_method 'get' %}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}"/>
+    <input type="hidden" name="numPerPage" value="{{ page_obj.paginator.per_page }}"/>
+</form>
+{#<div class="pageContent listContent">#}
+<script type="text/javascript">
+    var iRows_snapshot = new Array();
+    function initialize() {
+        for (var i = 0; i < iRows_snapshot.length; i++) {
+            var old_status=$("#snapshot_"+iRows_snapshot[i]+" > td:eq(5) > div").text().trim();
+            if(old_status=='{% trans 'creating' %}' || old_status == '{% trans 'deleting' %}'){
+                var _url = $("#snapshot_" + iRows_snapshot[i]).attr("url");
+                $.ajax({
+                    url:_url,
+                    global:false,
+                    success:function (response) {
+                        var _data = eval("(" + response + ")");
+                        var _status=_data.status;
+                        var _id=_data['snapshot_id'];
+                        var status_td=$("#snapshot_"+_id+" > td:eq(5) > div");
+                        if (_status == '{% trans 'available' %}' ) {
+                            shandle_available(_id);
+                        }
+                        else if(_status=='{% trans 'error' %}'){
+                            shandle_error(_id);
+                        }
+                        if(_status=='{% trans 'deleting' %}' || _status=='{% trans 'creating' %}'){
+                            shandle_cd(_status, status_td);
+                        }else if(_status == '{% trans 'None' %}'){
+                            shandle_other(_id);
+                            iRows_snapshot.splice(i,1);
+                        }else{
+                            $(status_td).text(_status);
+                        }
+
+                    },
+                    error:function(xhr, ajaxOptions, thrownError){
+                        DWZ.ajaxError(xhr, ajaxOptions, thrownError)
+                    }
+                });
+            }
+        }
+    }
+
+
+    function shandle_available(_id){
+        var tenant_id=$("#snapshot_"+_id).attr("snapshot_tenant");
+        var url = '{% url "create_volume_form" "#tenant_id#" "#snaoshpt_id#" %}';
+        url = url.replace("#tenant_id#",tenant_id).replace("#snaoshpt_id#",_id);
+
+        create_snapshot(_id);
+        delete_snapshot(_id);
+    }
+
+    function create_snapshot(_id){
+        var $create_snapshot=$("#create_snapshot_"+_id);
+        if($create_snapshot){
+            $create_snapshot.attr('href',url);
+            $create_snapshot.html('<img src="{{ STATIC_URL }}ui/images/create_volume.png" title="{% trans "Create Volume" %}" alt="{% trans "Create Volume" %}"/>');
+        }
+    }
+
+    function delete_snapshot(_id){
+        var $delete_snapshot=$("delete_snapshot_"+_id);
+        if($delete_snapshot){
+            $delete_snapshot.html('<img src="{{ STATIC_URL }}ui/images/delete.png" title="{% trans 'Delete Snapshot' %}" alt="{% trans 'Delete Snapshot' %}"/>');
+        }
+    }
+
+    $(document).ready(function () {
+        $("#snapshot_table").find("tbody > tr").each(function (i, row) {
+            iRows_snapshot.push($(row).attr("id").substring(9));
+        });
+        var navTabId = "{% trans 'Snapshot Manage' %}";
+        Timer.submit(navTabId, initialize, {period:5000});
+    });
+
+    function shandle_error(_id){
+        delete_snapshot(_id);
+    }
+
+    function shandle_cd(_status,status_td,tdobj){
+        $(status_td).html('<div class="status_loading"></div>'+_status);
+        $(tdobj).find(" a ").each(function(){
+            $(this).hide();
+        });
+    }
+
+    function shandle_other(_id){
+        var trlen=$("#snapshot_"+_id).children().length-1;
+        var childLen=$("#snapshot_"+_id).parent().children().length;
+        var length=childLen-1;
+        if($("#snapshot_"+_id).index()==0 && length>0){
+            $("#snapshot_"+_id).parent().find("tr:eq(0) > td").each(function(i){
+                var width=$(this).css('width');
+                if(i==trlen){
+                    return;
+                }
+                $($("#snapshot_"+_id).parent().find("tr:eq(1) >td")[i]).css('width',width);
+            });
+
+            if($("#snapshot_"+_id)){
+                $("#snapshot_"+_id).remove();
+            }
+
+        }else{
+            $("#snapshot_"+_id).remove();
+        }
+        try{
+            var str=$("#snapshot_div").find(".panelBar:eq(1) > .pages > span:eq(1)").text();
+            var records=parseInt(str.split(" ")[3])-1;
+
+            if(isNaN(records)){
+                $("#snapshot_div").find(".panelBar:eq(1) > .pages > span:eq(1)").text(str);
+            }else{
+                $("#snapshot_div").find(".panelBar:eq(1) > .pages > span:eq(1)").text(' {% trans "records" %}，{% trans "total" %}  '+(records)+' {% trans 'records' %}');
+            }
+        }catch(e){
+
+        }
+    }
+
+    function delete_snapshot1(id){
+        alertMsg.confirm("{% trans "Are you sure to delete this volume snapshot?" %}",{
+            okCall:function () {
+                var url = "{% url 'snapshot_delete' '#snapshot_id#' %}";
+                url = url.replace("#snapshot_id#",id);
+                $('#delete_snapshot_form').attr('action',url);
+{#                $('#delete_snapshot_form').submit();#}
+
+                validateCallback($("#delete_snapshot_form"),function(json){
+                    json.navTabId=''
+                    dialogAjaxDone(json)
+                    if(json.statusCode == DWZ.statusCode.ok){
+                        var trlen=$("#snapshot_"+id).children().length-1;
+                        var length=$("#snapshot_"+id).parent().children().length-1;
+                        if($("#snapshot_"+id).index()==0 && length>0){
+                            $("#snapshot_"+id).parent().find("tr:eq(0) > td").each(function(i){
+                                var width=$(this).css('width');
+                                if(i==trlen){
+                                    return;
+                                }
+                                $($("#snapshot_"+id).parent().find("tr:eq(1) >td")[i]).css('width',width);
+                            });
+                        }
+                        $("#snapshot_"+id+" > td:eq(5) > div").html('<div class="status_loading"></div>'+"{% trans 'deleting' %}");
+                        var $tdobj=$("#snapshot_"+id+" > td:eq(7) > div");
+                        $tdobj.find(" a ").each(function(){
+                            $(this).hide();
+                        });
+                    }
+                })
+
+            }
+        });
+    }
+
+    function ck_all(){
+{#        $('#ck_delete_snapshot').bind('click',function(){#}
+{#            $('input[name=delete_snapshot]').each(function(){#}
+{#                var is_ck=$('#ck_delete_snapshot').attr('checked');#}
+{#                 var flag= is_ck==undefined?false:true;#}
+{#                $(this).attr('checked',flag);#}
+{#            })#}
+{#        });#}
+        $('input[name=delete_snapshot]').each(function(){
+            var is_ck=$('#ck_delete_snapshot').attr('checked');
+            var flag= is_ck==undefined?false:true;
+            $(this).attr('checked',flag);
+        });
+    }
+
+    function is_ck_all() {
+        var checkedbox = $("input[name=delete_snapshot]:checked").length
+        var allcheckbox = $("input[name=delete_snapshot]").length
+        if (checkedbox != allcheckbox) {
+            $("#ck_delete_snapshot").attr("checked", false);
+        }else{
+            $("#ck_delete_snapshot").attr("checked",true);
+        }
+
+    }
+
+    function sub_form(){
+        var $checkedbox = $("input[name=delete_snapshot]:checked");
+        if ($checkedbox.length == 0) {
+            alertMsg.error('{% trans "Please select one!" %}')
+            return;
+        }
+        alertMsg.confirm("{% trans "Are you sure for deleting" %} " + $checkedbox.length + " {% trans "items" %}", {
+            okCall:function () {
+{#                $("#delete_snapshots_form").submit();#}
+{#                snapshot_refresh();#}
+
+
+                validateCallback($("#delete_snapshots_form"),function(json){
+                    json.navTabId = '';
+                    json.rel = '';
+                    dialogAjaxDone(json);
+
+
+                    if(json.statusCode == DWZ.statusCode.ok){
+                        var maxH = $("#volume_div").parent().parent().parent().height();
+
+                        var volume_H = $("#volume_div").height();
+
+                        $("#snapshot_div").children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody > tr").hide()
+
+                        $("#snapshot_div").children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody").html("<tr><td colspan='8' style='text-align: center;'><div class='status_loading' style='left: 50%; margin-left: -50px;'></div><div>{% trans "Loading..." %}</div></td></tr>").initUI();
+
+                        $("#snapshot_div").height(maxH - volume_H);
+                        setTimeout(function () {
+                            var old_H = $("#snapshot_div > form > div > .gridScroller").height();
+                            $.ajax_no_cover({
+                                cache:false,
+                                url:'{% url 'get_snapshot_index' %}',
+                                method:"get",
+                                success:function (html) {
+                                    $("#snapshot_div").empty();
+                                    $("#snapshot_div").html(html).initUI();
+                                    var volume_g_H = $("#volume_div > form > div > .gridScroller").height();
+
+
+                                    $("#snapshot_div > form > div > .gridScroller").css("height", old_H);
+                                }
+                            });
+                        }, 3000);
+
+                    }
+
+                })
+
+            }
+        });
+    }
+
+
+
+
+</script>
+    <div class="panelBar" id="volume_del_snap_id">
+        <ul>
+            <li style="line-height:21px">
+                {% trans "Snapshot Manage" %}
+            </li>
+        </ul>
+    </div>
+
+    <form id="delete_snapshots_form" action="{% url "snapshots_delete" %}" method="post"
+          class="pageForm required-validate">
+        {% add_in_method "delete" %}
+        {% csrf_token %}
+        <table class="table" width="100%" layoutH="75" id="snapshot_table">
+            <thead id="snapshot_thead_volume">
+            <tr>
+                {#                <th style="width:40px">#}
+                {#                    <div style="float: left; padding-top: 1px;"><input type="checkbox" id="ck_delete_snapshot" onclick="ck_all()"/></div><div style="float: left; padding-top: 5px;">{% trans 'Check All' %}</div>#}
+                {#                </th>#}
+                <th>{% trans "Sequence Number" %}</th>
+                <th>{% trans 'Pertain Tenant' %}</th>
+                <th>{% trans 'Snapshot Name' %}</th>
+                <th>{% trans 'Snapshot Description' %}</th>
+                <th>{% trans "Snapshot Size" %}（G）</th>
+                <th>{% trans 'Snapshot Status' %}</th>
+                <th>{% trans 'Volume Name' %}</th>
+                <th>{% trans 'Action' %}</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for snapshot in page_obj.object_list %}
+                <tr url='{% url 'get_snapshot_status' snapshot.id %}' id="snapshot_{{ snapshot.id }}" snapshot_tenant="{{ snapshot.tenant_id }}">
+                    {#                    <td align="center" upgrade="checkbox"><input type="checkbox" name="delete_snapshot" value="{{ snapshot.id }}"  onclick="is_ck_all()" /></td>#}
+                    <td align="center">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                    <td>{{ snapshot.project_name }}</td>
+                    <td><a href="{% url 'get_snapshot_detail' snapshot.id %}" height='446' width='482' tmask="true" target="dialog">{{ snapshot.display_name }}</a></td>
+                    <td>
+                        {% if snapshot.display_description == '' or snapshot.display_description == 'None' %}
+                            {% trans "None" %}
+                        {% else %}
+                            {{ snapshot.display_description }}
+                        {% endif %}
+                    </td>
+                    <td>{{ snapshot.size }}</td>
+                    <td>
+                        {% if snapshot.status == 'creating' or snapshot.status == 'deleting' %}<div class="status_loading"></div>{% endif %}
+                        {% trans snapshot.status %}
+                    </td>
+                    <td ><a href="{% url "get_volume_detail" snapshot.volume_id %}" tmask="true" target="dialog" height="480" width="480" >{{ snapshot.volume_name }}</a></td>
+                    <td>
+                        {% permission 'Create Volume' %}
+                            {% if snapshot.status == 'available' %}
+                                <a id="create_snapshot_{{ snapshot.id }}" target="dialog" width="600" height="330" href="{% url "create_volume_form" snapshot.tenant_id snapshot.id %}"
+                                   tmask="true"  title="{% trans "Create Volume" %}" ><span><img src="{{ STATIC_URL }}ui/images/create_volume.png" title="{% trans "Create Volume" %}" alt="{% trans "Create Volume" %}" /></span></a>
+                            {% else %}
+                                <a id="create_snapshot_{{ snapshot.id }}" target="dialog" width="600" height="330" href="" tmask="true"><span></span></a>
+                            {% endif %}
+                        {% endpermission %}
+
+                        {% permission 'Delete Snapshot' %}
+                            {% if snapshot.status == 'error' or snapshot.status == 'available' %}
+                                <a id="delete_snapshot_{{ snapshot.id }}" href="javascript:void(0)" onclick="delete_snapshot1('{{ snapshot.id }}')"  title="{% trans 'Delete Snapshot' %}"  ><img src="{{ STATIC_URL }}ui/images/delete.png" title="{% trans 'Delete Snapshot' %}"/></a>
+                            {% else %}
+                                <a id="delete_snapshot_{{ snapshot.id }}" href="javascript:void(0)" onclick="delete_snapshot1('{{ snapshot.id }}')"></a>
+                            {% endif %}
+                        {% endpermission %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </form>
+
+<div class="panelBar" id="snapshot_pandlBar_id">
+    <div class="pages">
+        <span>{% trans 'Display' %}  </span>
+        <select class="combox" name="numPerPage" onchange="divPageBreak({numPerPage:this.value},'snapshot_div')">
+            <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+            <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+            <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+            <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+            <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+        </select>
+        <span> {% trans 'records' %}，{% trans 'total' %}  {{ page_obj.paginator.count }}  {% trans 'records' %}</span>
+    </div>
+    <div class="pagination" targetType="div" totalCount="{{ page_obj.paginator.count }}"
+         numPerPage="  {{ page_obj.paginator.per_page }}" pageNumShown="{{ page_obj.paginator.num_pages }}"
+         currentPage="{{ page_obj.number }}" rel='snapshot_div'></div>
+</div>
+
+<form id="delete_snapshot_form" method="post" action="" >
+    {% add_in_method "delete" %}
+    {% csrf_token %}
+</form>
+{#</div>#}
+

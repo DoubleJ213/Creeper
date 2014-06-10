@@ -1,0 +1,76 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>北信源云智能管理系统</title>
+    <link href="{{ STATIC_URL }}/ui/themes/css/client_login.css" rel="stylesheet" type="text/css" id="cssfile" />
+    <script type="text/javascript" src="{{ STATIC_URL }}ui/js/jquery.1.7.2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}ui/js/jquery.cookie.min.js"></script>
+    <script lang="text/javascript">
+        function reset()
+        {
+            document.getElementById("id_username").value="";
+            document.getElementById("id_password").value="";
+        }
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            if($(".forLoginInput")){
+                $(".forLoginInput").focusin(function() {
+                    $(this).css("border-color","#81CDEA");
+                });
+                $(".forLoginInput").focusout(function() {
+                    $(this).css("border-color","#C7C7C7");
+                });
+            }
+        });
+        $(document).ready(function(){
+            var height = $(window).height();
+            var width = $(window).width();
+            if (width > 840 || height > 400) {
+                var _themeFullscreenHref = "{{ STATIC_URL }}ui/themes/css/client_login_fullscreen.css";
+                $("head").find("link[href$='client_login.css']").attr("href", _themeFullscreenHref);
+            }
+            $(window).resize(function() {
+                var height = 0 ;
+                var width = 0 ;
+                var height = $(window).height();
+                var width = $(window).width();
+                if (width > 840 || height > 400) {
+                    var _themeFullscreenHref = "{{ STATIC_URL }}ui/themes/css/client_login_fullscreen.css";
+                    $("head").find("link[href$='client_login.css']").attr("href", _themeFullscreenHref);
+                } else {
+                    var _themeHref = "{{ STATIC_URL }}ui/themes/css/client_login.css";
+                    $("head").find("link[href$='client_login_fullscreen.css']").attr("href", _themeHref);
+                }
+            });
+        });
+    </script>
+</head>
+
+<body oncontextmenu="return false" onselectstart="return false" style="background: none;">
+<form action="{% url "authorize_client_login" %}" method="POST">
+    <div id="login_wrap">
+        <div id="main_wrap">
+            <div id="main_left">
+                <div id="logo">
+                </div>
+            </div>
+            <div id="main_right">
+                <div id="login_box">
+                    {% include 'authorize/auth/_client_login.html' %}
+                    <input type="image" src="{{ STATIC_URL }}ui/images/client/login_btn_n.png" class="login_img" />
+                    {#                    <div id="login_button">#}
+                    {#                        <input type="hidden" name="next" value="{{ next }}"/>#}
+                    {#                        <input class="button_class" type="submit" value="登 录" style="margin-right: 44px" />#}
+                    {#                        <input class="button_class" type="button" onclick="reset();" value="重 置" />#}
+                    {#                    </div>#}
+                </div>
+            </div>
+        </div>
+    </div>
+    {#    <div id="footer" style="color: rgb(0,0,0);">#}
+    {#        Copyright © 2013 北京北信源软件股份有限公司 All Rights Reserved.#}
+    {#    </div>#}
+</form>
+</body>
+</html>

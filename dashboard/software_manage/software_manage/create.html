@@ -1,0 +1,147 @@
+{% load i18n %}
+<script>
+/**
+ * 带文件上传的ajax表单提交
+ * @param {Object} form
+ * @param {Object} callback
+ */
+function iframeCallbackSoftware(form, callback){
+    var $form = $(form), $iframe = $("#callbackframe");
+    if(!$form.valid()) {return false;}
+
+    if (form.name.value.indexOf(" ") >= 0) {
+        alertMsg.error("{% trans 'no blank space allowed during software name' %}");
+        return false;
+    }
+    if (form.file.value == "") {
+        alertMsg.error("{% trans 'Please choose upload file' %}");
+        return false;
+    }
+    if (form.file.value.indexOf(" ") >= 0) {
+        alertMsg.error("{% trans 'no blank space allowed during the upload file name' %}");
+        return false;
+    }
+
+	if ($iframe.size() == 0) {
+		$iframe = $("<iframe id='callbackframe' name='callbackframe' src='about:blank' style='display:none'></iframe>").appendTo("body");
+	}
+	if(!form.ajax) {
+		$form.append('<input type="hidden" name="ajax" value="1" />');
+	}
+	form.target = "callbackframe";
+
+	_iframeResponseSoftware($iframe[0], callback || DWZ.ajaxDone);
+
+    setTimeout(function() {
+        reloadSoftWare();
+
+        // 关闭当前窗口，因为uuid失效了
+        // 不能立即关闭，对于Firefox不可用
+        $.pdialog.closeCurrent();
+    }, 2000);
+}
+
+function _iframeResponseSoftware(iframe, callback){
+	var $iframe = $(iframe), $document = $(document);
+	
+	//$document.trigger("ajaxStart");
+    //alert('文件上传中...\n此操作在后台进行...');
+	
+	$iframe.bind("load", function(event){
+		$iframe.unbind("load");
+		$document.trigger("ajaxStop");
+		
+		if (iframe.src == "javascript:'%3Chtml%3E%3C/html%3E';" || // For Safari
+			iframe.src == "javascript:'<html></html>';") { // For FF, IE
+			return;
+		}
+		var doc = iframe.contentDocument || iframe.document;
+
+		// fixing Opera 9.26,10.00
+		if (doc.readyState && doc.readyState != 'complete') return; 
+		// fixing Opera 9.64
+		if (doc.body && doc.body.innerHTML == "false") return;
+
+		var response;
+		if (doc.XMLDocument) {
+			// response is a xml document Internet Explorer property
+			response = doc.XMLDocument;
+		} else if (doc.body){
+			try{
+				response = $iframe.contents().find("body").text();
+				response = jQuery.parseJSON(response);
+			} catch (e){ // response is html document or plain text
+				response = doc.body.innerHTML;
+			}
+		} else {
+			// response is a xml document
+			response = doc;
+		}
+		callback(response);
+	});
+}
+</script>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <div class="pageContent">
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            <form method="post" action="{% url "create_software_action" %}?software_uuid={{ uuid }}" enctype="multipart/form-data" class="pageForm required-validate"
+                  onsubmit="return iframeCallbackSoftware(this,dialogAjaxDone); ">
+                {% csrf_token %}  {% include 'software_manage/_create.html' %}
+
+                <div class="pageFormContent" layouth="58">
+                    <div class="unit">
+                        <label>
+                            {% trans "Software Name" %}：</label>
+                        <input type="text" name="name" size="30" minlength="2" maxlength="10" class="required" />
+                    </div>
+
+                    <div class="unit">
+                        <label>
+                            {% trans "Flat" %}：</label>
+                        <select name="flat">
+                            {% for key,value in form.fields.flat.choices %}
+                                <option value= {{ key }} >{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="unit">
+                        <label>
+                            {% trans "Classify" %}：</label>
+                        <select name="classify">
+                            {% for key,value in form.fields.classify.choices %}
+                                <option value= {{ key }} >{% trans  value %}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="unit">
+                        <label>
+                            {% trans "Software Upload" %}：</label><input class="valid" name="file" type="file" class="required">
+                    </div>
+
+                </div>
+                <div class="formBar">
+                    <ul>
+                        <li>
+                            <div class="buttonActive">
+                                <div class="buttonContent">
+                                    <button type="submit" value="submit">
+                                        {% trans "Submit" %}</button></div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="button">
+                                <div class="buttonContent">
+                                    <button type="button" class="close">
+                                        {% trans "Cancel" %}</button></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+
+

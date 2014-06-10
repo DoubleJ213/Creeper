@@ -1,0 +1,67 @@
+{% load i18n %}
+{% load dashboard %}
+<script type="text/javascript">
+    function prepare_log_export(){
+
+        $.ajax({
+                   url:'{% url "log_export_form_in_prepare" log_id %}',
+                   type:'GET',
+                   data:$("#log_act_init").serializeArray(),
+                   global:false,
+                   success:function (response) {
+                       var _data = eval("(" + response + ")");
+                       if (_data["statusCode"] == 200){
+                           var tenant_id = _data['tenant_id'];
+                           var router_id = _data['router_id'];
+                           var virtual_router_obj_id = $("#virtual_router_obj_id").val();
+                           if (_data["statusCode"] == 200){
+                               $.get("prepare_manage/prepare/"+tenant_id+"/"+router_id+"/router_project_info/2/"+virtual_router_obj_id+"/",function(data){
+                                   $("#create_interface_button").hide();
+                                   $("#create_interface_from_id").html(data).initUI();
+                                   $("#create_interface_from_id > div ").height($("#create_interface_from_id").height());
+                               });
+                           }
+                       }else{
+                           alertMsg.error(_data['message']);
+                           $("#create_project_span").html(_data['message']);
+                       {#                           $("#create_project_span").css("display","block");#}
+
+                       }
+                   }
+               });
+    }
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post"  class="pageForm required-validate">
+        <div class="pageFormContent" layouth="58" >
+            <table style="background-color: #ffffff; width:auto;height: 55%;margin-left: 10%;margin-top: 5px;">
+                <tr>
+                    <td><img src="{{ STATIC_URL }}ui/images/icon_1.png" width="20" height="20" />&nbsp;{% trans "Prompt" %}:</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>{{ log_news }}</td>
+                    <td><div class="button">
+                        <a target="dialog" width="700" title="{% trans 'Export' %}"  height="460"  href="{% url "log_export_form_in_prepare" log_id %}" tmask="true" style="text-decoration: none" >
+                            <div class="buttonContent">
+                                {% trans "backup" %}</div>
+                        </a>
+                    </div></td>
+                </tr>
+                <tr>
+                    <td>{% trans "According to the demand to delete" %}</td>
+                    <td><div class="button">
+                        <a target="dialog" title="{% trans 'Clean All Logs' %}"  width="700" height="460"  href="{% url "log_query_prepare_index" log_id %}" tmask="true" style="text-decoration: none" >
+                            <div class="buttonContent">
+                                {% trans "Delete" %}</div>
+                        </a>
+                    </div></td>
+                </tr>
+            </table>
+        </div>
+
+        {% csrf_token %}
+
+    </form>
+</div>

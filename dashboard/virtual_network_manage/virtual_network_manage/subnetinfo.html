@@ -1,0 +1,120 @@
+{% load i18n %}
+
+
+<style type="text/css">
+    .unit .iteminfo{
+        display:inline-block;width:480px;
+    }
+    .pageFormContent label{
+        width: 120px;
+    }
+</style>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% csrf_token %}
+
+    <div class="pageFormContent" layouth="58" >
+        <div class="panelBar">
+            <ul>
+                <li style="line-height: 23px;">{% trans "Subnet Overview" %}</li>
+{#                <li><a class="add" target="dialog"  href="{% url create_securitygrouprules_index security_group_id %}" tmask="true"><span>{% trans "add" %}</span></a></li>#}
+        	</ul>
+        </div>
+
+         <div class="unit">
+                <label>
+                    {% trans 'Name' %}:</label>
+                 <label class="iteminfo" >{{ subnet.name|default:"None" }} </label>
+
+         </div>
+         <div class="unit">
+              <label>
+                  {% trans 'Network Name' %}:</label>
+              <label class="iteminfo">
+{#                  <a  href="#" style="line-height: 21px;">#}
+{#                      onclick="gotonwUrl('/virtual_network_manage/network/{{subnet.network_id }}/tenants/{{ network.tenant_id }}/getnetworkinfo/','')">#}
+                      {{ network.name|default:"None" }}
+{#                  </a>#}
+              </label>
+         </div>
+         <div class="unit">
+            <label>
+                {% trans 'IP Version' %}:</label>
+            <label class="iteminfo"> IPv{{ subnet.ip_version }}</label>
+         </div>
+         <div class="unit">
+            <label>
+                {% trans 'CIDR' %}:</label>
+             <label class="iteminfo"> {{ subnet.cidr|default:"None" }}</label>
+         </div>
+         <div class="unit">
+            <label>
+                {% trans 'Allocation Pools' %}:</label>
+             <label class="iteminfo">{% for allocation_pool in subnet.allocation_pools %}
+
+             <b>{% trans "Start with" %}:</b>{{ allocation_pool.start }},
+             <b>{% trans " - End" %}:</b>{{ allocation_pool.end   }}<br/>
+             {% endfor %}
+             </label>
+         </div>
+
+         <div class="unit">
+            <label>
+                {% trans 'Enable DHCP' %}:</label>
+             <label class="iteminfo">
+{#                 {{ subnet.enable_dhcp|yesno|capfirst }}、#}
+                 {% if subnet.enable_dhcp == 0 %}
+                     {% trans 'False' %}
+                 {% else %}
+                     {% trans 'True' %}
+                 {% endif %}
+
+             </label>
+         </div>
+
+         <div class="unit">
+            <label>
+                {% trans 'Gateway IP' %}:</label>
+             <label class="iteminfo">{{ subnet.gateway_ip|default:"-" }}</label>
+         </div>
+
+         <div class="unit">
+            <label>
+                {% trans 'Additional routes' %}:</label>
+             <label class="iteminfo">{% for route in subnet.host_routes %}
+                 <b>{% trans "Destination" %}:</b>{{ route.destination }},
+                 <b>{% trans " : Next hop" %}:</b>{{ route.nexthop }}<br>
+             {% empty %}
+                 {% trans "None" %}
+             {% endfor %}
+             </label>
+         </div>
+
+         <div class="unit">
+            <label>
+                {% trans 'DNS Name Servers' %}:</label>
+             <label class="iteminfo">{% for dns in subnet.dns_nameservers %}
+                 {{ dns }}
+             {% empty %}
+                 {% trans "None" %}
+             {% endfor %}
+             </label>
+         </div>
+    </div>
+    <div class="formBar">
+        <ul>
+            <li>
+                <div class="button">
+                    <div class="buttonContent">
+{#                        <button type="button" class="close" onclick="gotonwUrl('/virtual_network_manage/network/{{ network.tenant_id }}/{{subnet.network_id }}/getnetworkinfo/','')">#}
+{#                            {% trans "Cancel" %}#}
+{#                        </button>#}
+                        <button type="button" class="close">
+                            {% trans "Cancel" %}
+                        </button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

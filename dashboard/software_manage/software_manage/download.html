@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load dashboard %}
+
+<Table align="center" width="100%" height="100%" valign="middle">
+    <tr><td align="center">
+        Are you sure for deleting this software ?</td></tr>
+    <tr><td align="center">
+        <form action="{% url "software_download" software_uuid %}" method="get" onsubmit="return validateCallback(this,dialogAjaxDone);">
+            {% add_in_method 'get'%}
+            {% csrf_token %}
+            <input type="hidden" name="software_uuid" value="{{ software_uuid }}"/>
+            <input type="submit" value="{% trans "dowload" %}"/>
+            <input type="button" onclick="$.pdialog.closeCurrent()" value="cancel"/>
+        </form>
+        </td>
+    </tr>
+</Table>

@@ -1,0 +1,235 @@
+{% load i18n %}
+
+
+<style type="text/css">
+    .divSelect_bg{
+        width: 237px;
+        height: 29px;
+        line-height: 29px;
+        border: 0px solid #add8e6;
+    }
+    .divSelect_bg .select_bg_img {
+        width: 237px;
+        line-height: 29px;
+        float: left;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: block;
+        background-image: url("{{ STATIC_URL }}/ui/images/box_4.png");
+    }
+    .divSelect_bg .select1right{
+        width: 237px;
+        height:29px;
+        line-height: 20px;
+        float: left;
+        text-align: right;
+        cursor: pointer;
+
+    }
+    .divSelect_select_bg{
+        width: 237px;
+        height: 100px;
+        line-height: 29px;
+        border: 1px solid #e2e2e2;
+        border-top: 0px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: none;
+        background: #ffffff;
+    {#        #background: white;#}
+        position: absolute;
+    {#        #position: relative;#}
+        z-index:1;
+    }
+    .divSelect_select_bg .selectExtNetworkOptionClass{
+        width: 237px;
+        height: 20px;
+        line-height: 20px;
+        text-align: left;
+        padding-left: 5px;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .divSelect_select_bg .selectExtNetworkOptionClass:hover {
+        background: #bc8f8f;
+
+    }
+
+    .ins_header1{
+        width: 141px;
+        float: left;
+        line-height: 24px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .header_pic1 {
+        clear:both;
+        width: 100%;
+        height:70px;
+        background:#d7dcde url('{{ STATIC_URL }}ui/images/instance/4_3.png') no-repeat ;
+        background-position: left center;
+        margin-bottom: 10px;
+    }
+</style>
+
+<script type="text/javascript">
+
+    function dialogAjaxDone_router_gateway(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                var tenant_id = json.tenant_id;
+                var router_id = json.router_id;
+                var virtual_router_obj_id = $("#virtual_router_obj_id").val();
+                $.get("prepare_manage/prepare/"+tenant_id+"/"+router_id+"/router_project_info/2/"+virtual_router_obj_id+"/",function(data){
+                    $("#create_interface_button").hide();
+                    $("#create_interface_from_id").html(data).initUI();
+                    $("#create_interface_from_id > div ").height($("#create_interface_from_id").height());
+                });
+            }
+        }
+    }
+    function prepare_create_gateway1(){
+
+        var extNetwork = $("#extNetwork").val();
+        if (extNetwork.length < 1){
+            alertMsg.error("Please select a External Network");
+            return false;
+        }
+
+    }
+
+    $(document).ready(function(){
+        $(".selectExtNetworkOptionClass").click(function(){
+            $("#selectExtNetworkFormatText").html($(this).attr("name"));
+            $("#selectExtNetworkFormatText").val($(this).attr("value"));
+            $("#extNetwork").val($(this).attr("value"));
+
+        });
+        $(document).click(function(){
+            if($("#selectExtNetworkFormat").css("display") == "block"){
+                $("#selectExtNetworkFormat").hide();
+            }
+        });
+
+    });
+    function selectExtNetwork(){
+        stopBubble();
+        if($("#selectExtNetworkFormat")){
+            if($("#selectExtNetworkFormat").css("display") == "none"){
+                $("#selectExtNetworkFormat").show();
+            }else{
+                $("#selectExtNetworkFormat").hide();
+            }
+        }
+    }
+
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_gateway_action_ajax" router_id %}" class="pageForm required-validate" id="project_gateway_from" onsubmit="return validateCallback(this,dialogAjaxDone_router_gateway)">
+        <input type="hidden" name="router_id" id="router_id" value="{{router_id}}">
+        <input type="hidden" name="virtual_router_obj_id" id="virtual_router_obj_id" value="{{ virtual_router_obj_id }}" />
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{tenant_id}}">
+        <input type="hidden" name="router_name" id="router_name" value="{{form.fields.router_name.initial}}">
+        <div class="pageFormContent" layouth="58" id="create_interface_from_id">
+
+            <div class="header_pic1" >
+                <div class="ins_header1" style="margin-left: 40px;" >{% trans 'Create router' %}</div>
+                <div class="ins_header1" >{% trans 'Create Interface' %}</div>
+                <div class="ins_header1" >{% trans 'Set Gateway' %}</div>
+                <div class="ins_header1" >{% trans 'Finish' %}</div>
+            </div>
+
+{#            <div class="panelBar">#}
+{#                <ul>#}
+{#                    <li style="line-height: 23px;">{% trans "Set Gateway" %}</li>#}
+{#                </ul>#}
+{#            </div>#}
+            <div class="unit">
+{#                <label>{% trans "External Network" %}：</label>#}
+{#                <select id="extNetwork" name="extNetwork" class="required select">#}
+{#                    {% for key,value in form.fields.extNetwork.choices %}#}
+{#                        <option value= {{ key }} >{{ value }}</option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+
+
+                <label style="float: left;">{% trans "External Network" %}:</label>
+                <div style="width: 238px; float:left;">
+                    <div class="divSelect_bg">
+                        <div id="selectExtNetworkFormatText" onclick="selectExtNetwork();" class="select_bg_img">&nbsp;{% trans "Please select a External Network" %}
+                            <input type="hidden" id="flavor_val" class="required"/>
+                        </div>
+                        {#                        <div class="select1right"></div>#}
+                    </div>
+
+                    <div id="selectExtNetworkFormat" class="divSelect_select_bg">
+                        {% for key,value in form.fields.extNetwork.choices %}
+                            <div class="selectExtNetworkOptionClass" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" >
+                                {% if value == 'Select network' %}
+                                    {% trans 'Select network' %}
+                                {% elif value == 'No network available' %}
+                                    {% trans 'No network available' %}
+                                {% else %}
+                                    {{ value|truncatechars:59 }}
+                                {% endif %}
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <input type="hidden" id="extNetwork"  name="extNetwork" >
+            </div>
+
+            <div id="routernameDiv" class="unit">
+                <label>{% trans 'Router Name' %}:</label>
+                <label style="display:inline-block;width:300px">{{form.fields.router_name.initial}}</label>
+
+            </div>
+
+            <div id="routerIdDiv" class="unit" style="display: none">
+                <label>{% trans 'Router ID' %}:</label>
+                <label style="display:inline-block;width:300px">{{router_id}}</label>
+
+            </div>
+
+            <div id="routerDesDiv" class="unit">
+                <label>{% trans 'Description' %}:</label>
+                <textarea name="description" id="description" cols=" 65" rows="3"  style="resize: none" readonly>{% trans "You can connect a specified external network to the router. The external network is regarded as a default route of the router and the router acts as a gateway for external connectivity." %}</textarea>
+
+            </div>
+        </div>
+        <span class="error" id="create_project_span" style="display: none"></span>
+        {% csrf_token %}
+        <div class="formBar" id="create_interface_button">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close" onclick="">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

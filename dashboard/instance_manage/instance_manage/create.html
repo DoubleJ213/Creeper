@@ -1,0 +1,435 @@
+{% load i18n %}
+<div class="pageContent">
+    <script type="text/javascript">
+        function changeTenant()
+        {
+            var tenant_id = document.getElementById('tenant_id').value;
+            $.ajax({
+                url: '{% url "instance_change_tenant_form" %}',
+                type:'GET',
+                dataType:'json',
+                data:{'tenantId':tenant_id},
+                global: false,
+                success: function(data) {
+                    document.getElementById('security_groups_div').innerHTML="<label id='sg_label'>{% trans 'Security Groups' %}：</label><ul id='security_groups_ul'></ul>";
+                    var ul = document.getElementById('security_groups_ul');
+                    $.each(data, function (i, item) {
+                        var li = document.createElement("li");
+                        var txt = ""
+                        if (item[0]=="default")
+                        {
+                            txt = " <label for='id_security_groups_+"+i+"'><input id='id_security_groups_"+i+"' type='checkbox' value='"+item[0]+"' name='security_groups' checked='checked'></input>"+item[1]+"</label>";
+                        }else
+                        {
+                            txt = " <label for='id_security_groups_+"+i+"'><input id='id_security_groups_"+i+"' type='checkbox' value='"+item[0]+"' name='security_groups' ></input>"+item[1]+"</label>";
+                        }
+
+                        li.innerHTML=txt;
+                        ul.appendChild(li);
+                        i++;
+                    });
+
+                },
+                error: function(response) {
+                    console.log("get security groups error");
+                }
+            });
+        }
+
+        function getNetworkList()
+        {
+            var tenant_id = document.getElementById('tenant_id').value;
+            $.ajax({
+                url: '{% url "instance_get_network_list" %}',
+                type:'GET',
+                dataType:'json',
+                data:{'tenantId':tenant_id},
+                global: false,
+                success: function(data) {
+                    document.getElementById('network_list').innerHTML="<label id='network_label'>{% trans 'Available networks' %}：</label><ul id='network_list_ul'></ul>";
+                    var ul = document.getElementById('network_list_ul');
+                    $.each(data, function (i, item) {
+                        var li = document.createElement("li");
+                        {#                        var txt = ""#}
+                        {#                        if (item[0]=="default")#}
+                        {#                        {#}
+                        {#                            txt = " <label for='id_security_groups_+"+i+"'><input id='id_security_groups_"+i+"' type='checkbox' value='"+item[0]+"' name='security_groups' checked='checked'></input>"+item[1]+"</label>";#}
+                        {#                        }else#}
+                        {#                        {#}
+                        var txt = " <label for='id_networks_list_+"+i+"'><input id='id_networks_list_"+i+"' type='checkbox' value='"+item[0]+"' name='networks' ></input>"+item[1]+"</label>";
+                        {#                        }#}
+
+                        li.innerHTML=txt;
+                        ul.appendChild(li);
+                        i++;
+                    });
+
+                },
+                error: function(response) {
+                    console.log("get security groups error");
+                }
+            });
+        }
+
+    </script>
+    <script>
+        function selectFun(){
+            stopBubble();
+            if($("#selectContent")){
+                if($("#selectContent").css("display") == "none"){
+                    $("#selectContent").show();
+                }else{
+                    $("#selectContent").hide();
+                }
+            }
+        }
+        $(document).ready(function(){
+            $("input[name=networks]").attr("class","required")
+            $(".select2optionClass").click(function(){
+                $("#selectT").val($(this).attr("value"));
+                $("#selectText").html($(this).attr("name"));
+                $("#flavor_val").val($(this).attr("value"));
+
+            });
+            $(document).click(function(){
+                if($("#selectContent").css("display") == "block"){
+                    $("#selectContent").hide();
+                }
+            });
+
+            var form = $("#launch_image_form_id");
+
+            {% if gotoflag == "2" %}
+                form.attr("action","{% url "launch_image_topology" %}");
+            {% else %}
+                form.attr("action","{% url "launch_image" %}");
+            {% endif %}
+
+{#            form.attr("action","{% url "launch_image" %}");#}
+            form.unbind("submit");
+            form.bind("submit", function(){
+                var networks=$("input[type=checkbox][name=networks]");
+                var _ajax_instance_flavor = ajax_instance_flavor();
+                var flavor_value = $("#selectT").val();
+{#                var ins_name = $("#launch_image_form_id").find("#instance_name").val();#}
+                var ins_name = $("#create_instance_name").val();
+                var ten_value = $("#tenant_id").val();
+
+{#                var val_ary=[ins_name,flavor_valueten_value];#}
+{#                $(val_ary).each(function(i){#}
+{#                    var some_val = $(this)[i];#}
+{#                    if(some_val == ""){#}
+{#                        alertMsg.error("{% trans 'Please enter your instance name' %}");#}
+{#                        return false;#}
+{#                    }#}
+{#                });#}
+                if(ins_name == ""){
+                    alertMsg.error("{% trans 'Please enter your instance name' %}");
+                    return false;
+                }
+                if(ten_value == ""){
+                    alertMsg.error("{% trans 'Please select a tenant' %}");
+                    return false;
+                }
+                if(flavor_value == ""){
+                    alertMsg.error("{% trans 'Please select a flavor' %}");
+                    return false;
+                }
+                if(_ajax_instance_flavor==1){
+                    alertMsg.error("{% trans 'Instance flavor value is zero!' %}");
+                    return  false;
+                }else if(_ajax_instance_flavor == 2){
+                    if(networks){
+                        var len = $("input[type=checkbox][name=networks]:checked").length;
+                    {#                    networks.each(function(){#}
+                    {#                        if($(this).attr("checked")){#}
+                    {#                            len ++ ;#}
+                    {#                        }#}
+                    {#                    });#}
+
+                        if(len == 0){
+                            alertMsg.error("{% trans 'Please select an available network!' %}");
+                            return false;
+                        }else{
+                            return validateCallback($(this),dialogAjaxDone);
+                        }
+                    }else{
+                        alertMsg.error("{% trans 'There is no network list!' %}");
+                        return false;
+                    }
+                }else{
+                    alertMsg.error("{% trans 'Instance flavor disk less-than Image min disk!' %}");
+                    return false;
+                }
+                return false;
+            });
+        });
+
+        function getEventObj(){
+            if(window.event){
+                return window.event;
+            }else{
+                var obj = getEventObj.caller;
+                while(obj != null){
+                    var arg = obj.arguments[0];
+                    if(arg){
+                        if((arg.constructor == Event || arg.constructor == MouseEvent || arg.constructor == KeyboardEvent)
+                                || (typeof(arg) == "object" && arg.preventDefault && arg.stopPropagation)){
+                            return arg;
+                        }
+                    }
+                    obj = obj.caller;
+                }
+            }
+        }
+        function stopBubble(){
+            var e = getEventObj();
+            if(window.event){
+                e.cancelBubble = true;
+            }else if(e.preventDefault){
+                e.stopPropagation();
+            }
+        }
+
+        function ajax_instance_flavor(){
+
+            var _id_image_min_disk = $("#id_image_min_disk").val();
+            var _flavor_id = $("#selectT").val();
+            var _f_value = $('#task0'+_flavor_id+"0").val();
+            if(_f_value == 0){
+                return 1;
+            }
+            if (_id_image_min_disk <= _f_value){
+                return 2;
+{#                validateCallback($("#launch_image_form_id"),dialogAjaxDone);#}
+            }else{
+                return 3;
+            }
+        }
+    </script>
+    <style>
+        .divSelect1{
+            width: 410px;
+            height: 20px;
+            line-height: 20px;
+            border: 1px solid #add8e6;
+        }
+        .divSelect1 .select1left{
+            width: 380px;
+            line-height: 20px;
+            float: left;
+            overflow: hidden;
+        }
+        .divSelect1 .select1right{
+            width: 30px;
+            line-height: 20px;
+            float: right;
+            text-align: right;
+            cursor: pointer;
+        }
+        .divSelect2{
+            width: 410px;
+            height: 100px;
+            line-height: 20px;
+            border: 1px solid #add8e6;
+            border-top: 0px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: none;
+            background: #ffffff;
+            #background: white;
+            position: absolute;
+            #position: relative;
+            z-index:1;
+        }
+        .divSelect2 .select2optionClass{
+            width: 380px;
+            height: 20px;
+            line-height: 20px;
+            text-align: left;
+            padding-left: 5px;
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+
+
+        }
+        .divSelect2 .select2optionClass:hover{
+            background: #bc8f8f;
+
+        }
+    </style>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" id="launch_image_form_id" action="
+
+    {% if gotoflag == "2" %}
+        {% url "launch_image_topology" %}
+    {% else %}
+        {% url "launch_image" %}
+    {% endif %}
+
+    " class="pageForm required-validate">
+        <div class="pageFormContent" layouth="58">
+
+            <div class="unit">
+                <label>
+                    {% trans 'Instance Name' %}：</label>
+                <input type="text" id="create_instance_name" name="name" size="30" minlength="4" maxlength="50" class="required" />
+
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Tenant' %}：</label>
+                <select id="tenant_id" name="tenant_id" class="required" onchange="changeTenant();getNetworkList();">
+                    {% for key,value in form.fields.tenant_id.choices %}
+                        {% if key == oldtenantid %}
+                            <option value= {{ key }} selected >{{ value }}</option>
+                        {% else %}
+                            <option value= {{ key }} >{{ value }}</option>
+                        {% endif %}
+                    {% endfor %}
+
+                </select>
+            </div>
+
+
+            <div class="unit" style="display: none">
+                <label>
+                </label>
+                {{ form.image_id }}
+            </div>
+
+
+            <div class="unit">
+                <label>
+                    {% trans 'User Data' %}：</label>
+                <textarea name="user_data" size="30" cols="29"  minlength="6"  ></textarea>
+            </div>
+{#        Flavor              #}
+            <div class="unit">
+                <label>{% trans "Flavor" %}:</label>
+                <br>
+                <br>
+                <div>
+                    <div class="divSelect1">
+                        <div id="selectText" class="select1left">{% trans "Please select a flavor" %}
+                        <input type="hidden" id="flavor_val" class="required"/>
+                        </div>
+                        <div class="select1right"><img src="{{ STATIC_URL }}ui/images/flavor_ins.png" onclick="selectFun()"></div>
+                    </div>
+
+                    <div id="selectContent" class="divSelect2">
+                        {% for key,value in form.fields.flavor.choices %}
+                            <div class="select2optionClass" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" > {{ value|truncatechars:59 }} </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <input type="hidden" id="selectT"  name="flavor" >
+            </div>
+{#        Flavor              #}
+
+{#            <div class="unit">#}
+{#                <label>#}
+{#                    {% trans 'Flavor' %}：</label>#}
+{#                <select name="flavor">#}
+{#                    {% for key,value in form.fields.flavor.choices %}#}
+{#                        <option value= {{ key }} >{{ value }}</option>#}
+{#                    {% endfor %}#}
+{##}
+{#                </select>#}
+{#            </div>#}
+            <div class="unit" style="display: none">
+                <label>
+                    {% trans 'Keypair' %}：</label>
+                <select name="keypair">
+                    {% for key,value in form.fields.keypair.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Instance Count' %}：</label>
+                <input id="instance_count" type="text" name="count" size="30" value ={{ form.fields.count.initial}} />
+            </div>
+
+            <div class="unit" id="security_groups_div">
+                <label>
+                    {% trans 'Security Groups' %}：</label>
+                {{ form.security_groups }}
+            </div>
+
+
+            <div class="unit" id="network_list">
+                <label>
+                    {% trans 'Available Networks' %}：</label>
+                {{ form.networks }}
+{#                {{ form.fields.networks.widget.attrs }}#}
+            </div>
+
+            <div class="unit" style="display: none">
+                <label>
+                    {% trans 'Volume or Volume Snapshot' %}：</label>
+                <select name="volume">
+                    {% for key,value in form.fields.volume.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+
+                </select>
+            </div>
+            <div class="unit" style="display: none" >
+                <label>
+                    {% trans 'Device Name' %}：</label>
+                {{ form.device_name }}
+            </div>
+            <div class="unit" style="display: none" >
+                <label>
+                    {% trans 'Delete on Terminate' %}：</label>
+                {{ form.delete_on_terminate }}
+            </div>
+            <div class="unit" style="display: none">
+                {% for key,value in form.fields.flavor_input.choices %}
+                    <input type="hidden" id="task0{{ key }}0" value="{{ value }}" name="task_instance_value" />
+                {% endfor %}
+            </div>
+            <div class="unit" style="display: none">
+                <label>
+                </label>
+                {% for key,value in form.fields.image_min_disk.choices %}
+                    <input type="hidden" id="id_image_min_disk" value="{{ value }}" name="task_instance_value" />
+                {% endfor %}
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li style="float: left;">
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit" style="line-height: 25px;">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li style="float: left;">
+                    <div class="button">
+                        <div class="buttonContent">
+                            <a target="dialog" href="{% url 'image_list' gotoflag %}" tmask="true" class="back" style="line-height: 28px; _line-height: 27px;">{% trans "Back" %}</a>
+                        </div>
+                    </div>
+                </li>
+                <li style="float: left;">
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close" style="line-height: 25px;">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+
+

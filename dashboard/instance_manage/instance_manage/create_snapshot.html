@@ -1,0 +1,42 @@
+{% load i18n%}
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_snapshot" instance_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>
+                    {% trans "Snapshot Name" %}：</label>
+                <input type="text" name="snapshot_name" size="30" minlength="2" maxlength="10" class="required" />
+            </div>
+
+            <div class="unit" style="display: none">
+                <label>
+                </label>
+                {{ form.tenant_id }}
+            </div>
+        </div>
+
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

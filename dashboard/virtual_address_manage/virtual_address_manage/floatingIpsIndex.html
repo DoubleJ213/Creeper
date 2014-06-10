@@ -1,0 +1,146 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+<script type="text/javascript">
+{#    $(function () {#}
+{#        if(!$('ul').val()){#}
+{#            $('ul').append("<li>{% trans 'floating ips' %}</li>")#}
+{#        }#}
+{#    })#}
+    function submitForm() {
+        var $checkedbox = $("input[name=release_fip]:checked");
+        if ($checkedbox.length == 0) {
+            alertMsg.error('{% trans "Please select one!" %}')
+            return;
+        }
+        alertMsg.confirm("{% trans "Are you sure for deleting" %} " + $checkedbox.length + " {% trans "items" %}", {
+            okCall:function () {
+                $("#release_fip_form").submit();
+            }
+        });
+    }
+    function dialogAjaxDonefip(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                $.pdialog.closeCurrent();
+            }
+            fip_nextUrl('/virtual_address_manage/virtualaddress/tenants/{{  tenant_id  }}/floatingips/');
+        }
+    }
+
+</script>
+<div class="pageContent listContent">
+    <div class="panelBar">
+    {% permission 'Allocate IP To Project' or 'Release Floating IP' %}
+        <ul class="toolBar">
+    {% otherwise %}
+        <ul>
+            <li style="line-height: 23px;">{% trans 'floating ips' %}</li>
+    {% endpermission %}
+            {% if exceed %}
+                <li><span>{% trans 'the most floating Ips number is ' %}{{ ip_num }}</span></li>
+            {% else %}
+                <li style="line-height: 23px;">
+                {% permission 'Allocate IP To Project' %}
+                    <a class="add" target="dialog" onclick="fip_nextUrl('/virtual_address_manage/virtualaddress/tenants/{{  tenant_id  }}/floatingips/')" href="{% url "allocate_ip_index" tenant_id %}" tmask="true">
+                        <span>{% trans 'Allocate IP To Project' %}</span>
+                    </a>
+{#                {% otherwise %}#}
+{#                    {% trans 'floating ips' %}#}
+                {% endpermission %}
+                </li>
+            {% endif %}
+            {% permission 'Release Floating IP' %}
+            <li>
+                <a class="delete" width="650" height="330" onclick="submitForm()" id="delete_net"
+                   href="javascript:void(0)" tmask="true">
+                    <span>{% trans 'Batch Release Floating IP' %}</span>
+                </a>
+            </li>
+            {% endpermission %}
+            </ul>
+    </div>
+    <form id="release_fip_form" action="{% url "release_fips" %}"
+          method="post" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDonefip);">
+        {% add_in_method "delete" %}
+        {% csrf_token %}
+        <table class="table" width="100%" layoutH="75">
+            <thead>
+            <tr>
+                {% permission 'Release Floating IP' %}
+                <th>
+                    <input type="checkbox" target_event="release_fip"/>
+                    {% trans 'Check All' %}
+                </th>
+                {% endpermission %}
+                <th>{% trans "Sequence Number" %}</th>
+                <th>{% trans 'IP' %}</th>
+                <th>{% trans 'Instances' %}</th>
+                <th>{% trans 'Pool' %}</th>
+                {% permission 'Release Floating IP' or 'Disassociate IP' or 'Associate IP' %}
+                <th>{% trans 'Action' %}</th>
+                {% endpermission %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for floatingIp in floatingiplist %}
+                <tr>
+                    {% permission 'Release Floating IP' %}
+                    <td style="width: 40px;" align="center" upgrade="checkbox">
+                        <input type="checkbox" name="release_fip" value="{{ floatingIp.id }}"/>
+                    </td>
+                    {% endpermission %}
+                    <td style="text-align: center; width: 50px;" >{{ forloop.counter }}</td>
+                    <td>{{ floatingIp.ip }}</td>
+                    <td>
+                        {% for id,name in instances %}
+                            {% if floatingIp.instance_id == id  %}
+                                {{ name }}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ floatingIp.pool }}</td>
+
+                {% permission 'Release Floating IP' or 'Disassociate IP' or 'Associate IP' %}
+                <td style="width: 100px;">
+                        {% permission 'Release Floating IP' %}
+                        <a target="dialog"  href="{% url "release_ip_index" floatingIp.id %}"
+                            onclick="fip_nextUrl('/virtual_address_manage/virtualaddress/tenants/{{  tenant_id  }}/floatingips/')"
+                            tmask="true"  width="250" height="150" title="{% trans 'Release Floating IP' %}">
+                             <img title="{% trans 'Release Floating IP' %}" src="/static/ui/images/releaseip.png">
+                        </a>
+                        {% endpermission %}
+                    {% if None != floatingIp.instance_id  %}
+                           {% permission 'Disassociate IP' %}
+                           <a style="margin-left: 5px;" target="dialog"  href="{% url "disassociate_ip_index" floatingIp.id floatingIp.instance_id %}"
+                               onclick="fip_nextUrl('/virtual_address_manage/virtualaddress/tenants/{{  tenant_id  }}/floatingips/')"
+                               tmask="true" width="250" height="150" title="{% trans 'Disassociate IP' %}">
+                               <img title="{% trans 'Disassociate IP' %}" src="/static/ui/images/unbindvm.png">
+                           </a>
+                           {% endpermission %}
+                    {% else %}
+                            {% permission 'Associate IP' %}
+                            <a style="margin-left: 5px;" target="dialog"  href="{% url "associate_ip_index" floatingIp.id %}"
+                                onclick="fip_nextUrl('/virtual_address_manage/virtualaddress/tenants/{{  tenant_id  }}/floatingips/')"
+                                tmask="true" title="{% trans 'Associate IP' %}">
+                                <img title="{% trans 'Associate IP' %}" src="/static/ui/images/bindvm.png">
+                            </a>
+                            {% endpermission %}
+                    {% endif %}
+                    </td>
+                    {% endpermission %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </form>
+</div>

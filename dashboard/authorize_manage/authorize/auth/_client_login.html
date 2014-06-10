@@ -1,0 +1,33 @@
+<div style="width: auto; overflow: auto; overflow-x:hidden; ">
+    <ul class="messages">
+        {% if messages %}
+            {% for message in messages %}
+                {% if forloop.last %}
+                <li {% if message.tags %} style="margin-bottom: 0px;" class="{{ message.tags }}" {% endif %}>{{ message }}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
+{% if request.errors %}
+    {% for error in request.errors %}
+        <span>{{ error }}</span>
+    {% endfor %}
+{% endif %}
+{% if next %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ next }}" />{% endif %}
+{% for hidden in form.hidden_fields %}
+    {{ hidden }}
+{% endfor %}
+{#{{ form.as_ul }}#}
+
+<div class="login_text" style="margin-bottom: 19px;">
+    <div class="login_icon"></div>
+    <input id="id_username" type="text" name="username" class="forLoginInput">
+</div>
+
+<div class="login_text" style="margin-bottom: 9px;">
+    <div class="login_icon2"></div>
+    <input id="id_password" type="password" name="password" class="forLoginInput">
+</div>
+
+{% csrf_token %}

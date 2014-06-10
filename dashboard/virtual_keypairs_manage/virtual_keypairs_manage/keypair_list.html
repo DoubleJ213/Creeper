@@ -1,0 +1,36 @@
+{% load i18n %}
+{% load dashboard %}
+
+<form id="pagerForm" action="{% url "get_project_keypairs_list" %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{page_obj.paginator.per_page}}" />
+</form>
+
+<div class="pageContent listContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="add" target="dialog"  href="{% url "create_keypair_index" %}" tmask="true"><span>{% trans 'Add' %}</span></a></li>
+            <li><a class="add" target="dialog"  height="450" href="{% url "import_keypair_index" %}" tmask="true"><span>{% trans 'Import Keypair' %}</span></a></li>
+        </ul>
+    </div>
+    <table class="table" width="100%" layoutH="75">
+        <thead>
+        <tr>
+            <th>{% trans 'Keypair Name' %}</th>
+            <th>{% trans 'Fingerprint' %}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for keypair in keypairlist %}
+            <tr>
+
+                <td>{{ keypair.name }}</td>
+                <td>{{ keypair.fingerprint }}</td>
+                <td><a target="dialog" href="{% url "delete_keypair_form" keypair.name %}" tmask="true" width="250" height="150">{% trans 'Del' %}</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

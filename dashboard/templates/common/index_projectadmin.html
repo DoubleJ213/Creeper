@@ -1,0 +1,244 @@
+﻿﻿{% load i18n %}
+{% load dashboard %}
+{#<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"#}
+{#        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">#}
+<html>
+<head>
+    {% include "common/base.html" %}
+</head>
+<body scroll="no">
+<input type="hidden" id="project_target_url" value="">
+<input type="hidden" id="tree_btn_flag" value="1">
+<input type="hidden" id="project_tree_htmlVal" value="">
+<input type="hidden" id="project_tree_li_id" value="">
+<input type="hidden" id="project_tree_li_id_old" value="">
+<input type="hidden" id="securitygroup_target_url" value="">
+<input type="hidden" id="tree_sgbtn_flag" value="1">
+<input type="hidden" id="floating_ips_url" value="">
+<input type="hidden" id="tree_routerbtn_flag" value="1">
+<input type="hidden" id="routerproject_target_url" value="">
+<input type="hidden" id="tree_nwbtn_flag" value="1">
+<input type="hidden" id="network_target_url" value="">
+<input type="hidden" id="tree_keybtn_flag" value="">
+<input type="hidden" id="keypair_target_url" value="">
+<input type="hidden" id="tree_nwtbtn_flag" value="">
+<input type="hidden" id="networktopology_target_url" value="">
+
+
+<div id="layout">
+<div id="header">
+    <div class="headerNav">
+        <a class="logo">标志</a>
+        <ul class="nav">
+            {% if DEBUG %}
+                <li>PRODUCT VERSION:&nbsp;&nbsp;{{ PRODUCT_VERSION }} </li>
+                <li>JOINTLAB VERSION:&nbsp;&nbsp;{{ INTERNAL_VERSION }}</li>
+            {% endif %}
+            <li>{% trans "UserName" %}：{{ username }}</li>
+            <li><a href="{% url "change_user_password_form" %}" target="dialog" width="600">{% trans "Password" %}</a></li>
+            <li><a href="{% url "authorize_logout" %}">{% trans "Logout" %}</a></li>
+        </ul>
+        <ul class="themeList" id="themeList">
+            <li theme="default">
+                <div class="selected">
+                    蓝色
+                </div>
+            </li>
+            <li theme="green">
+                <div>
+                    绿色
+                </div>
+            </li>
+            <li theme="purple">
+                <div>
+                    紫色
+                </div>
+            </li>
+            <li theme="silver">
+                <div>
+                    银色
+                </div>
+            </li>
+            <li theme="azure">
+                <div>
+                    天蓝
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="leftside">
+    <div id="sidebar_s">
+        <div class="collapse">
+            <div class="toggleCollapse">
+                <div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="sidebar">
+        <div class="toggleCollapse">
+            <h2>{% trans "Primary Menu" %}</h2>
+            <div>收缩</div>
+        </div>
+        <div id="result" class="accordion" fillspace="sidebar">
+        </div>
+    </div>
+</div>
+<div id="container">
+<div id="navTab" class="tabsPage">
+<div class="tabsPageHeader">
+    <div class="tabsPageHeaderContent">
+        <ul class="navTab-tab">
+            <li tabid="main" class="main">
+                <a href="javascript:;">
+                                <span>
+                                    <span class="home_icon">
+                                        {% trans "HomePage" %}
+                                    </span>
+                                </span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tabsLeft">
+        left
+    </div>
+    <div class="tabsRight">
+        right
+    </div>
+    <div class="tabsMore">
+        more
+    </div>
+</div>
+<ul class="tabsMoreList">
+    <li><a href="javascript:;">{% trans "HomePage" %}</a></li>
+</ul>
+<div id="index_page" class="navTab-panel tabsPageContent layoutBox" style="overflow:hidden;">
+    <div class="page unitBox">
+        <div class="pageFormContent" layouth="20">
+            <div class="index_content">
+                <div class="left_left">
+                    <div class="partDiv">
+                        <div class="event">
+                            <div class="title">
+                                <img src="{{ STATIC_URL }}ui/images/index/sy_07.png" style="width: 20px; height: 21px; margin-top: 4px;" class="titleImg">
+                                <div class="font">{% trans "Schedule" %}</div>
+                                <a target="navTab" href="{% url "prepare_list" %}" class="more" rel="{% trans "Schedule" %}" title="{% trans "Schedule" %}" >{% trans "More" %}>></a>
+                            </div>
+                            <div class="list">
+                                <div class="table" id="prepare_list_id" style="padding-top: 5px;"></div>
+                            </div>
+                        </div>
+                        <div class="event" style="float: right">
+                            <div class="title">
+                                <img src="{{ STATIC_URL }}ui/images/index/sy_03.png" style="width: 21px; height: 21px; margin-top: 4px;" class="titleImg">
+                                <div class="font">{% trans "Organization" %}</div>
+                                <a target="navTab" href="{% url "get_project_list" %}" rel="{% trans "Authorization Manage" %}" title="{% trans "Authorization Manage" %}" class="more">{% trans "More" %}>></a>
+                            </div>
+                            <div class="list">
+                                <div id="index_project" class="table">
+                                    <div class="tr" style="background-color: #DADADA; font-size: 15px; font-family: '宋体'; color: #000000;">
+                                        <div class="td" style="width:18.4%;">{% trans "Project Name" %}</div>
+                                        <div class="td" style="width:10.7%;">{% trans "User" %}</div>
+                                        <div class="td" style="width:10.3%;">{% trans "Network" %}</div>
+                                        <div class="td" style="width:29.7%;">{% trans "Instances" %}（{% trans "Running" %}）</div>
+                                        <div class="td" style="width:30.9%;">{% trans "Instances" %}（{% trans "Down" %}）</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div id="project_info"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hardware">
+                        <div class="title">
+                            <img src="{{ STATIC_URL }}ui/images/index/sy_09.png" style="width: 21px; height: 14px; margin-top: 7px;" class="titleImg">
+                            <div class="font">{% trans "Hardware Resource" %}</div>
+                        </div>
+                        <div class="ringContent">
+                            <div class="ring">
+                                <div id="vcpus_per" class="percentage-light" data-percent="0">
+                                    &nbsp;<span></span>&nbsp;
+                                </div>
+                                <div class="info">{% trans "VCPU" %}</div>
+                            </div>
+                            <div class="ring">
+                                <div id="memory_mb_per" class="percentage-light" data-percent="0">
+                                    &nbsp;<span></span>&nbsp;
+                                </div>
+                                <div class="info">{% trans "VMEMORY" %}</div>
+                            </div>
+                            <div class="ring">
+                                <div id="local_gb_per" class="percentage-light" data-percent="0">
+                                    &nbsp;<span></span>&nbsp;
+                                </div>
+                                <div class="info">{% trans "VDISK" %}</div>
+                            </div>
+                            <div class="ring">
+                                <div id="ip_per" class="percentage-light" data-percent="0">
+                                    &nbsp;<span></span>&nbsp;
+                                </div>
+                                <div class="info">{% trans "VIP" %}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="partDiv" style="height: 87px;">
+                        <div style=" height: 30px;">
+                            <div class="index_button">
+                                {% trans "Notice" %}
+                            </div>
+                            <div id="scrollDiv">
+                                <ul id="index_notices_id">
+
+                                </ul>
+                            </div>
+                            <div style="height: 30px; width:25%; float: left; margin-left: 15px;">
+                                <a target="navTab" href="{% url "get_notice_list_for_head" %}" rel="{% trans "Notice List" %}" title="{% trans "Notice List" %}" class="more_1" style="text-decoration: none;">{% trans "More" %}>></a>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <div style="clear: both; height: 30px; margin-top: 11px;">
+                            <div class="index_button">
+                                {% trans "Navigation" %}
+                            </div>
+                            <div class="fastlink">
+                                <ul>
+                                    <li><a target="navTab" href="{% url "goto_static_resource" "instance" %}" title="{% trans "Instance Resource" %}">{% trans "Instance Res" %}</a></li>
+                                    <li><a target="navTab" href="{% url "goto_static_resource" "project" %}" title="{% trans "Project Resource" %}">{% trans "Project Res" %}</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="date">
+                        <div id="datepicker" style="width: 100%; height: 100%;"></div>
+                    </div>
+                    <div class="log">
+                        <div class="title">
+                            <img src="{{ STATIC_URL }}ui/images/index/sy_26.png" style="width: 21px; height: 21px; margin-top: 4px;" class="titleImg">
+                            <div class="font">{% trans "Log" %}</div>
+                            <a target="navTab" href="{% url "log_query_index" %}" rel="{% trans "Log Query" %}" title="{% trans "Log Query" %}" class="more">{% trans "More" %}>></a>
+                        </div>
+                        <div class="list" style="height: 300px;">
+                            <div class="table" id="log_list_home"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+
+<div id="popup" class="bottom-right"></div>
+<div id="audioBox" style="display: none"></div>
+<div style="position: absolute; top: 98%; left: 40%;">
+    Copyright &copy; 2013 北京北信源软件股份有限公司 All Rights Reserved.
+</div>
+</body>
+</html>

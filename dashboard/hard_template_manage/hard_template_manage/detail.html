@@ -1,0 +1,38 @@
+{% load i18n %}
+{% load dashboard %}
+<h1><a href="{% url "authorize_logout" %}">登出</a></h1>
+<h1><a href="{% url "get_login_view" %}">返回功能列表</a></h1>
+{% trans 'image_template manage' %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+        {% endfor %}
+    </ul>
+{% endif %}
+<br/>
+<br/>
+<form action="{% url "delete_flavor" flavor.id %}" method="post">{% add_in_method 'delete'%}{% csrf_token %}
+    <input type="submit" value="{% trans "delete flavor" %}"/>
+</form>
+
+{#<a href="{% url "update_flavor_form" flavor.id %}">{% trans "edit image template" %}</a>#}
+
+<table>
+    <tr>
+        <th>{% trans "Name" %}</th>
+        <th>vcpus</th>
+        <th>{% trans "Memory MB" %}</th>
+        <th>{% trans "Root Disk GB" %}</th>
+        <th>{% trans "Ephemeral Disk GB" %}</th>
+    </tr>
+    <tr>
+        <td>{{ flavor.name }}</td>
+        <td>{{ flavor.vcpus }}</td>
+        <td>{{ flavor.ram }}</td>
+        <td>{{ flavor.disk }}</td>
+        <td>{{ flavor.ephemeral }}</td>
+    </tr>
+    </table>
+

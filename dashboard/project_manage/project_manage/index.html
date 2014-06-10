@@ -1,0 +1,348 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+<script src="{{ STATIC_URL }}ui/js/treeFun.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    var create_project_url = "{% url "create_project_form" %}";
+    var update_project_url = "{% url "update_project_form" "#project_id#" %}";
+    var update_project_quotas_url = "{% url "update_project_quotas_form" "#project_id#" %}";
+    var delete_project_url = "{% url "delete_project_form" "#project_id#" %}";
+    var enable_project_url = "{% url "enable_project_from" "#project_id#" %}";
+    var get_project_users_url = "{% url "get_project_users" "#project_id#" %}";
+    var get_project_user_url = "{% url "get_project_user" "#project_id#" "#user_id#" %}";
+    var add_project_user_url = "{% url "add_project_users_form" "#project_id#" %}";
+    var edit_project_user_url = "{% url "edit_project_users_form" "#project_id#" "#user_id#" %}";
+    var delete_project_user_url = "{% url "delete_project_users_form" "#project_id#" "#user_id#" %}";
+    $(document).ready(function () {
+        showBackground();
+        $("#project_tree_li_id").val('');
+{#        var treeHtml = $("#project_tree_htmlVal").val();#}
+        var treeHtml = "";
+        var userItem = [];
+{#        if(treeHtml != ""){#}
+{#            $("#project_ajax_tree").html(treeHtml);#}
+{#            var btn_flag = $("#tree_btn_flag").val();#}
+{#            if(btn_flag == "1"){#}
+{#                $(".protree_lable_class").each(#}
+{#                    function(){#}
+{#                        $(this).show();#}
+{#                    }#}
+{#                );#}
+{#                $(".tree_icon_img").each(#}
+{#                    function(){#}
+{#                        $(this).show();#}
+{#                    }#}
+{#                );#}
+{#                $("#treeBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_next_icon.png");#}
+{#                $("#treeBtn_id img").attr("title","{% trans 'Hide Button' %}");#}
+{#            }#}
+{#            var target_url = $("#project_target_url").val();#}
+{#            if(target_url){#}
+{#                gotoUrl('#project_rightDiv', target_url, '#project_target_url', target_url, '#project_tree_li_id', '');#}
+{#            }else{#}
+{#                hideBackground();#}
+{#            }#}
+{#        }else{#}
+        $.ajax({
+                type:"GET",
+                url:"{% url "get_project_menu" %}",
+                dataType:"json",
+                global:false,
+                async:false,
+                success:function (data) {
+                    var f_id; var c_id;
+                    var update_project_url_now;
+                    var update_project_quotas_url_now;
+                    var delete_project_url_now;
+                    var enable_project_url_now;
+                    var get_project_users_url_now;
+                    var get_project_user_url_now;
+                    var add_project_user_url_now;
+                    var edit_project_user_url_now;
+                    var delete_project_user_url_now;
+                    $.each(data, function (i, item) {
+                        get_project_users_url_now = get_project_users_url.replace("#project_id#",item.project_id);
+                        add_project_user_url_now = add_project_user_url.replace("#project_id#",item.project_id);
+                        update_project_url_now = update_project_url.replace("#project_id#",item.project_id);
+                        update_project_quotas_url_now = update_project_quotas_url.replace("#project_id#",item.project_id);
+                        delete_project_url_now = delete_project_url.replace("#project_id#",item.project_id);
+                        enable_project_url_now = enable_project_url.replace("#project_id#",item.project_id);
+                        f_id = "protree_f"+i;
+                        treeHtml = treeHtml + "<li id='"+f_id+"' class=\"protree_fatherNode\">\n";
+                        treeHtml = treeHtml + "<a class=\"level1\">\n";
+                        if(item.project_enabled == true){
+                            treeHtml = treeHtml + "<lable class=\"tree_lable_common\"><img src=\"{{ STATIC_URL }}ui/images/icon/preso_icon_1.png\" class=\"tree_icon_img2\"></lable>\n";
+                        }else{
+                            treeHtml = treeHtml + "<lable class=\"tree_lable_common\"><img src=\"{{ STATIC_URL }}ui/images/icon/preso_icon2.png\" class=\"tree_icon_img2\"></lable>\n";
+                        }
+                        treeHtml = treeHtml + "<lable>";
+                        {% permission 'View Project Users' %}
+                        treeHtml = treeHtml + "<span title=\""+item.project_name+"\" class=\"protree_span_calss\" onclick=\"gotoUrl('#project_rightDiv','"+get_project_users_url_now+"','#project_target_url','','#project_tree_li_id','"+f_id+"')\">";
+                        {% endpermission %}
+                        treeHtml = treeHtml + item.project_name;
+                        {% permission 'View Project Users' %}
+                        treeHtml = treeHtml + "</span>";
+                        {% endpermission %}
+                        treeHtml = treeHtml + "</lable>\n";
+                        treeHtml = treeHtml + "&nbsp;";
+{#                        {% if role != 'ProjectAdmin' %}#}
+                        {% permission 'Create Project User' %}
+                        treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+                        treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/add.gif\" class=\"tree_icon_img\" title=\"{% trans 'Add Project User' %}\" onclick=\"gotoUrl('#project_rightDiv','"+add_project_user_url_now+"','#project_target_url','"+get_project_users_url_now+"','#project_tree_li_id','"+f_id+"')\">";
+                        treeHtml = treeHtml + "</lable>\n";
+                        {% endpermission %}
+                        {% permission 'Update Project' %}
+                        treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+                        treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/edit_1.png\" class=\"tree_icon_img\" title=\"{% trans 'Update Project' %}\" onclick=\"gotoUrl('#project_rightDiv','"+update_project_url_now+"','#project_target_url','"+update_project_url_now+"','#project_tree_li_id','"+f_id+"')\">";
+                        treeHtml = treeHtml + "</lable>\n";
+                        {% endpermission %}
+{#                        {% endif %}#}
+                        {% permission 'Update Project Quotas' %}
+                        treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+                        treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/edit_2.png\" class=\"tree_icon_img\" title=\"{% trans 'Update Quotas' %}\" onclick=\"gotoUrl('#project_rightDiv','"+update_project_quotas_url_now+"','#project_target_url','"+update_project_quotas_url_now+"','#project_tree_li_id','"+f_id+"')\">";
+                        treeHtml = treeHtml + "</lable>\n";
+                        {% endpermission %}
+                        treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+                        if(item.project_enabled == true){
+                            {% permission 'Delete Project' %}
+                            treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/delete.gif\" class=\"tree_icon_img\" title=\"{% trans 'Delete Project' %}\" onclick=\"openProDialog('"+delete_project_url_now+"', 'proTreeDialogId', '', 250, 150, '#project_target_url', '', '#project_tree_li_id', '"+f_id+"')\">";
+                            {% endpermission %}
+                        }else{
+                            treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/enable.png\" class=\"tree_icon_img\" title=\"{% trans 'Enable Project' %}\" onclick=\"openProDialog('"+enable_project_url_now+"', 'proTreeDialogId', '', 250, 150, '#project_target_url', '', '#project_tree_li_id', '"+f_id+"')\">";
+                        }
+                        treeHtml = treeHtml + "</lable>\n";
+                        treeHtml = treeHtml + "</a>\n";
+                        {% permission 'View Project Users' %}
+                            userItem = item.project_user;
+                        {% endpermission %}
+                        var userItemLen = userItem.length;
+                        if(userItemLen > 0){
+                            treeHtml = treeHtml + "<ul>\n";
+                            for(var j=0; j<userItemLen; j++){
+                                get_project_user_url_now = get_project_user_url.replace("#project_id#",item.project_id).replace("#user_id#",userItem[j].user_id);
+                                edit_project_user_url_now = edit_project_user_url.replace("#project_id#",item.project_id).replace("#user_id#",userItem[j].user_id);
+                                delete_project_user_url_now = delete_project_user_url.replace("#project_id#",item.project_id).replace("#user_id#",userItem[j].user_id);
+                                c_id = f_id + "_c" + j;
+                                treeHtml = treeHtml + "<li id='"+c_id+"'>\n";
+                                treeHtml = treeHtml + "<a class=\"level1\">\n";
+                                treeHtml = treeHtml + "<lable class=\"tree_lable_common\" style=\"margin-top:3px;\"><img src=\"{{ STATIC_URL }}ui/images/icon/user_icon.png\" class=\"tree_icon_img2\"></lable>\n";
+                                treeHtml = treeHtml + "<lable>";
+                                treeHtml = treeHtml + "<span title=\""+userItem[j].user_name+"\" class=\"protree_span_calss\" style=\"_width: 123px; max-width: 123px;\" onclick=\"gotoUrl('#project_rightDiv','"+get_project_user_url_now+"','#project_target_url','','#project_tree_li_id','"+c_id+"')\">";
+                                treeHtml = treeHtml + userItem[j].user_name;
+                                treeHtml = treeHtml + "</span>";
+                                treeHtml = treeHtml + "</lable>\n";
+
+                                var can_edit = true;
+                                if ('{{ request.user.username }}' == userItem[j].user_name) {
+                                    can_edit = false;
+                                }
+                                if (can_edit) {
+                                    {% permission 'Update Project User' %}
+                                    treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+                                    treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/edit_1.png\" class=\"tree_icon_img\" title=\"{% trans 'Edit Project User' %}\" onclick=\"gotoUrl('#project_rightDiv','"+edit_project_user_url_now+"','#project_target_url','"+get_project_users_url_now+"','#project_tree_li_id','"+c_id+"')\">";
+                                    treeHtml = treeHtml + "</lable>\n";
+                                    {% endpermission %}
+                                    {% permission 'Delete Project User' %}
+                                    treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+                                    treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/delete.gif\" class=\"tree_icon_img\" title=\"{% trans 'Delete Project User' %}\" onclick=\"openProDialog('"+delete_project_user_url_now+"', 'proTreeDialogId', '', 250, 150, '#project_target_url', '', '#project_tree_li_id', '"+c_id+"')\">";
+                                    treeHtml = treeHtml + "</lable>\n";
+                                    {% endpermission %}
+                                }
+
+                                treeHtml = treeHtml + "</a>\n";
+                                treeHtml = treeHtml + "</li>\n";
+                            }
+                            treeHtml = treeHtml + "</ul>\n</li>\n";
+                        }else{
+                            treeHtml = treeHtml + "</li>\n";
+                        }
+                    });
+                    $("#project_ajax_tree").html(treeHtml);
+                    $("#project_tree_htmlVal").val(treeHtml);
+                    var btn_flag = $("#tree_btn_flag").val();
+                    if(btn_flag == "1"){
+                        $(".protree_lable_class").each(
+                            function(){
+                                $(this).show();
+                            }
+                        );
+                        $(".tree_icon_img").each(
+                            function(){
+                                $(this).show();
+                            }
+                        );
+                        $("#treeBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_next_icon.png");
+                        $("#treeBtn_id img").attr("title","{% trans 'Hide Button' %}");
+                    }
+                    var target_url = $("#project_target_url").val();
+                    if(target_url){
+                        gotoUrl('#project_rightDiv',target_url,'#project_target_url',target_url,'#project_tree_li_id','');
+                    }else{
+                        hideBackground();
+                    }
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    $("#project_tree").parent().parent().html('');
+                    DWZ.ajaxError(xhr, ajaxOptions, thrownError);
+                }
+            });
+
+        var pro_timer = setInterval(function(){
+            if($("#alertMsgBox") && $("#alertMsgBox").attr("display") == "block"){
+                hideBackground();
+                window.clearInterval(pro_timer);
+            }
+        },1000);
+    });
+
+    function switchBtn(){
+        if($("#protree_id").css("display") == "none"){
+            $(".protree_lable_class").each(
+                function(){
+                    $(this).show();
+                }
+            );
+            $(".tree_icon_img").each(
+                function(){
+                    $(this).show();
+                }
+            );
+            $("#treeBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_next_icon.png");
+            $("#treeBtn_id img").attr("title","{% trans 'Hide Button' %}");
+            $("#tree_btn_flag").val('1');
+        }else{
+            $(".protree_lable_class").each(
+                function(){
+                    $(this).hide();
+                }
+            );
+            $(".tree_icon_img").each(
+                function(){
+                    $(this).hide();
+                }
+            );
+            $("#treeBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_prev_icon.png");
+            $("#treeBtn_id img").attr("title","{% trans 'Show Button' %}");
+            $("#tree_btn_flag").val('');
+        }
+
+    }
+
+    /**
+     * 表单提交回调函数,用于机构树操作
+     * form提交后返回json数据结构
+     */
+    function dialogAjaxDoneForProject(json){
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok){
+            if($("#project_ajax_tree")){
+                var operType = json.operType;
+                if (operType == "add_user") {
+                    add_tree_project_user(json);
+                } else if (operType == 'edit_user') {
+                    edit_tree_project_user(json);
+                } else if (operType == "delete_user") {
+                    delete_tree_project_user(json);
+                } else if (operType == "add_project") {
+                    add_tree_project(json);
+                } else if (operType == "delete_project") {
+                    delete_tree_project(json);
+                } else if (operType == "enable_project") {
+                    enable_tree_project(json);
+                } else if (operType == "update_project") {
+                    update_tree_project(json);
+                }
+            }
+            if (json.navTabId){
+                navTab.reload(json.forwardUrl, {navTabId: json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size()>0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                $.pdialog.closeCurrent();
+            }
+        }
+    }
+</script>
+<style>
+    .protree_lable_class{
+        width: auto;
+        height: 12px;
+        line-height: 12px;
+        display: none;
+    }
+    .tree_icon_img{
+        width: 12px;
+        height: 12px;
+        display: none;
+        margin-top: 4px;
+    }
+    .tree_icon_img2{
+        width: 12px;
+        height: 12px;
+    }
+    .tree_lable_common{
+        line-height: 12px;
+        font-size: 12px;
+        float:left;
+        margin-top: 5px;
+        margin-right: 5px;
+    }
+    .protree_span_calss{
+        float:left;
+        width: auto;
+        _width: 100px;
+        max-width: 100px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .protree_fatherNode{
+
+    }
+</style>
+
+<form id="pagerForm" action="{% url "get_project_list" %}">
+    {% add_in_method 'get'%}
+    {% csrf_token %}
+</form>
+
+<div class="pageContent">
+    <div class="tabsContent">
+        <div id="project_tree" layoutH="12" style="float: left;margin: 5px 0px 5px 5px;display:
+                block;overflow: auto;width: 240px;border: 1px solid rgb(204, 204, 204);line-height: 21px;">
+            <h2 style="width:230px; color: rgb(24, 49, 82); margin-left: 6px; margin-top: 5px; line-height: 14px;">
+                <lable style="float: left;">
+                    <div style="cursor: pointer; height: 16px; line-height: 16px; font-size: 12px;" onclick="gotoUrl('#project_rightDiv','{% url "get_all_project" %}','#project_target_url','','#project_tree_li_id','')">
+                        {% trans "Tenant" %}
+                    </div>
+                </lable>
+
+                <lable style="float: left; margin-left: 5px;">
+                    <div id="protree_id" style="cursor: pointer; width:20px; " class="protree_lable_class">
+                        {% permission 'Create Project' %}
+                        <img src="{{ STATIC_URL }}ui/images/icon/add.gif" style="margin-top: 1px;" class="tree_icon_img" onclick="gotoUrl('#project_rightDiv','{% url "create_project_form" %}','#project_target_url','','#project_tree_li_id','project_ajax_tree')" title="{% trans "Add Project" %}">
+                        {% endpermission %}
+                    </div>
+                </lable>
+
+                <lable style="float:right;">
+                    <div id="treeBtn_id" style="cursor: pointer; width:20px; line-height: 12px; font-size: 12px;">
+                        <img src="{{ STATIC_URL }}ui/images/icon/rnd_br_next_icon.png" title="{% trans "Hide Button" %}" style="margin-top: -2px;" class="tree_icon_img2" onclick="switchBtn()">
+                    </div>
+                </lable>
+            </h2>
+            <ul id="project_ajax_tree" class="tree">
+            </ul>
+        </div>
+        <div id="project_rightDiv" layoutH="12" style=" width:auto; height: auto; margin-left:250px; padding-top: 4px;">
+
+
+        </div>
+
+    </div>
+</div>

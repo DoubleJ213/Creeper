@@ -1,0 +1,349 @@
+{% load i18n %}
+{% load dashboard %}
+
+<div class="pageContent">
+    <style>
+        .quota-dynamic {
+{#            margin-top: 80px;#}
+            position: absolute;
+            top: 70px;
+            right: 10px;
+        }
+
+        .right {
+            float: right;
+            width: 200px;
+        }
+        .quota_title {
+            color: rgb(153, 153, 153);
+            padding-bottom: 0px;
+            margin-bottom: 8px;
+        }
+        .clearfix {
+        }
+        .quota_bar {
+            height: 15px;
+            margin: -8px 0 8px;
+        }
+        .progress_bar {
+            height: 100%;
+            width: 100%;
+            border: 1px solid #CCC;
+            background-color: #CCC;
+        }
+        .progress {
+            overflow: hidden;
+            height: 18px;
+            margin-bottom: 18px;
+            background-color: rgb(247, 247, 247);
+            background-image: -moz-linear-gradient(center top , rgb(245, 245, 245), rgb(249, 249, 249));
+            background-repeat: repeat-x;
+            box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1) inset;
+            border-radius: 4px 4px 4px 4px;
+        }
+        .progress-success.bar {
+            background-color: rgb(94, 185, 94);
+            background-image: -moz-linear-gradient(center top , rgb(98, 196, 98), rgb(87, 169, 87));
+            background-repeat: repeat-x;
+        }
+        .progress .bar {
+            width: 0%;
+            height: 18px;
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            text-align: center;
+            text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+            background-color: rgb(14, 144, 210);
+            background-image: -moz-linear-gradient(center top , rgb(20, 155, 223), rgb(4, 128, 190));
+            background-repeat: repeat-x;
+            box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+            -moz-box-sizing: border-box;
+            transition: width 0.6s ease 0s;
+        }
+        .progress_bar_selected {
+            background-color: rgb(71, 144, 174);
+            width: 0px;
+        }
+        .progress_bar_fill, .progress_bar_selected {
+            height: 100%;
+            float: left;
+        }
+        .progress_bar_fill.progress-warning.bar {
+            background-color: rgb(137, 137, 137);
+            background-image: -moz-linear-gradient(center top , rgb(153, 153, 153), rgb(51, 51, 51));
+            background-repeat: repeat-x;
+        }
+        .progress .bar {
+            width: 0%;
+            height: 18px;
+            color: rgb(255, 255, 255);
+            font-size: 12px;
+            text-align: center;
+            text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+            background-color: rgb(14, 144, 210);
+            background-image: -moz-linear-gradient(center top , rgb(20, 155, 223), rgb(4, 128, 190));
+            background-repeat: repeat-x;
+            box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+            -moz-box-sizing: border-box;
+            transition: width 0.6s ease 0s;
+        }
+        .progress_bar_fill {
+            background-color: rgb(102, 102, 102);
+        }
+        .progress_bar_fill, .progress_bar_selected {
+            height: 100%;
+            float: left;
+        }
+
+        .cp{
+            width:auto;
+            float:right;
+            position: relative;
+            margin: 0px;
+        }
+
+
+    </style>
+    <script type="text/javascript">
+        function validateTenant() {
+            if ($("select[id=tenant_id]").children().length == 0) {
+                alertMsg.error("{% trans "Please select an organization!" %}")
+                return;
+            }
+
+
+            validateCallback($("#volume_form"), volumeCallback)
+        }
+
+        function volumeCallback(json){
+            dialogAjaxDone(json)
+            if(json.statusCode == DWZ.statusCode.ok){
+{#                var tabId='{% trans 'Volume Manage' %}';#}
+{#                navTab.openTab_cover(tabId,'{% url 'get_volume_list' %}',{title:tabId, fresh:true, external:false});#}
+                volume_div();
+            }
+        }
+
+        $(document).ready(function () {
+            $("input[name=volume_name]").bind("blur", function () {
+                if (this.value.indexOf(' ') >= 0) {
+                    alertMsg.error('{% trans 'Contains one or multiple Spaces,Please enter again!' %}');
+                }
+            });
+        });
+
+        $(function(){
+            $("select[id=tenant_id]").bind("change",function(){
+                var tenant_id=$("select[id=tenant_id]").val();
+                $.ajax({
+                    url:'{% url 'fresh_progress_bar' %}',
+                    method:'get',
+                    cache:false,
+                    data:{tenant_id:tenant_id},
+                    success:function(htmlData){
+                        $("#progress_bar_refresh").empty();
+                        $("#progress_bar_refresh").html(htmlData).initUI();
+
+
+                        var snapshots_div=$("#snapshots_div_temp").html();
+                        $("#snapshots_div").empty();
+                        $("#snapshots_div").html(snapshots_div);
+                    }
+                })
+            });
+        })
+
+        $(function(){
+            var snapshots=$("#snapshots");
+            if(snapshots){
+                $(snapshots).bind('change',function(i){
+                    var display_size=$(this).find("option:selected").attr("snapshot_size");
+                    var display_name=$(this).find("option:selected").attr("snapshot_display_name");
+                    var display_description=$(this).find("option:selected").attr("snapshot_description");
+                    var snapshot_id=$(this).val();
+
+                    $("#id_volume_name").val(display_name);
+                    var show_size= display_size == 10?'small':display_size==20?'medium':display_size==50?'large':display_size==100?'max':''
+                    $("a[name=volume_size]").text(display_size);
+                    $("a[name=volume_size]").val(show_size);
+                    $("select[id=volume_size]").val(show_size);
+                    $("textarea[name=volume_description]").val(display_description);
+                    $("input[name=snapshot_id]").val(snapshot_id)
+                })
+            }
+        })
+
+        $(function(){
+            $("#btn_id").click(function(){
+
+            });
+        })
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_volume_action" %}" class="pageForm required-validate"
+          id="volume_form">
+        {% add_in_method "post" %}
+        {% csrf_token %}
+
+        <input type="hidden" name="snapshot_id" value="{% if snapshot %}{{ snapshot.id }}{% endif %}">
+
+        <div class="pageFormContent" layouth="50">
+
+            <div style="width:100%;float: left">
+                <div class="unit">
+                    <label>
+                        {% trans "Tenant" %}：
+                    </label>
+                    <select class="combox" id="tenant_id" name="tenant_id">
+
+                        {% if snapshot %}
+                            <option value='{{ snapshot.tenant_id }}'>{{ snapshot.project_name }}</option>
+                        {% else %}
+                            {% for key,value in tenants_dic.items %}
+                                <option value='{{ key }}' {% if key == current_tenant %}selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                <div class="unit">
+                    <label>
+                        {% trans "Volume Name" %}：
+                    </label>
+                    <input type="text" name="volume_name" size="27" minlength="2" maxlength="10" id="id_volume_name"
+                           class="required" value="{% if snapshot %}{{ snapshot.display_name }}{% endif %}" onkeydown="javascript: if (event.keyCode == 13) return false"/>
+                </div>
+                <div class="unit">
+                    <label>
+                        {% trans "Volume Description" %}：
+                    </label>
+                    <textarea name="volume_description" size="30" cols="30" rows="6"
+                              maxlength="100" style="resize: none">{% if snapshot %}{{ snapshot.display_description }}{% endif %}</textarea>
+                </div>
+{#                <div class="unit">#}
+{#                    <label>#}
+{#                        {% trans "Volume Type" %}：#}
+{#                    </label>#}
+{#                    <select name="volume_type" id="volume_type">#}
+{#                        <option value="">--{% trans "Please select one" %}--</option>#}
+{#                        {% for volume_type in volume_types %}#}
+{#                            <option value="{{ volume_type.id }}">{{ volume_type.name|truncatechars:20 }}</option>#}
+{#                        {% endfor %}#}
+{#                    </select>#}
+{#                </div>#}
+
+                <div class="unit">
+                    <label>
+                        {% trans "Volume Size" %}：</label>
+                    {% if snapshot != None %}
+                        <select id="volume_size" name="volume_size" >
+                            {% if snapshot.size == 10 %}
+                                <option value="small"  >10</option>
+                            {% elif snapshot.size == 20  %}
+                                <option value="medium">20</option>
+                            {% elif snapshot.size == 50 %}
+                                <option value="large">50</option>
+                            {% elif snapshot.size == 100 %}
+                                <option value="max">100</option>
+                            {% endif %}
+                        </select>
+                    {% else %}
+                        <select id="volume_size" name="volume_size">
+                            <option value="small" >10</option>
+                            <option value="medium" >20</option>
+                            <option value="large">50</option>
+                            <option value="max">100</option>
+                        </select>
+                    {% endif %}
+                    <label>GB</label>
+
+                </div>
+
+                {% if snapshot %}
+                    <div class="unit">
+                        <label>
+                            {% trans "Use snapshot as a source" %}：</label>
+                        <select id="snapshot">
+                            <option selected>{{ snapshot.display_name|truncatechars:20 }}（{{ snapshot.size }}GB）</option>
+                        </select>
+
+                    </div>
+                {% endif %}
+
+                {% if snapshots %}
+                    <div class="unit" id="snapshots_div">
+                        <label>
+                            {% trans "Use snapshot as a source" %}：</label>
+                        <select id="snapshots">
+                            <option value="">{% trans "Choose a snapshot" %}</option>
+                            {% for snapshot in snapshots %}
+                                <option value="{{ snapshot.id }}" snapshot_size="{{ snapshot.size }}" snapshot_display_name="{{ snapshot.display_name }}" snapshot_description="{{ snapshot.display_description }}">{{ snapshot.display_name|truncatechars:10 }}（{{ snapshot.size }}GB）</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                 {% else %}
+                    <div class="unit" id="snapshots_div">
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="right quota-dynamic" id="progress_bar_refresh">
+                {% if usages != None %}
+                    <div class="quota_title clearfix">
+                        <strong>{% trans "Total Gigabytes" %} <span>({{ usages.gigabytes.used }}GB)</span></strong>
+
+                        <p style="width:auto;float:none;position: relative;margin: 0px;height: auto;padding: 0">{% trans "Available Gigabytes" %}:{{ usages.gigabytes.available }}GB</p>
+                    </div>
+
+                    <div id="quota_size" data-progress-indicator-for="volume_size" data-quota-limit="{{  usages.gigabytes.quota }}"
+                         data-quota-used="{{  usages.gigabytes.used }}" class="quota_bar">
+                        {% creeper_progress_bar usages.gigabytes.used usages.gigabytes.quota %}
+                    </div>
+
+                    <div class="quota_title clearfix">
+                        <strong>{% trans "Number of Volumes" %} <span>({{ usages.volumes.used }})</span></strong>
+                        <p style="width:auto;float:none;position: relative;margin: 0px;height: auto;padding: 0">{% trans "Available Volumes" %}:{{ usages.volumes.available }}</p>
+                    </div>
+
+                    <div id="quota_volumes" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.volumes.quota }}"
+                         data-quota-used="{{ usages.volumes.used }}" class="quota_bar">
+                        {% creeper_progress_bar usages.volumes.used usages.volumes.quota %}
+                    </div>
+                    <script type="text/javascript" charset="utf-8">
+                        if(typeof horizon.Quota !== 'undefined') {
+                            horizon.Quota.init();
+                        } else {
+                            addHorizonLoadEvent(function() {
+                                horizon.Quota.init();
+                            });
+                        }
+                    </script>
+                {% else %}
+                    {% trans 'Failed to get agency quotas!' %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="button" class="submit"
+                                    onclick="validateTenant()">{% trans "Submit" %}</button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">{% trans "Cancel" %}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+
+
+

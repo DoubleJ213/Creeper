@@ -1,0 +1,90 @@
+{% load i18n %}
+
+<script type="text/javascript">
+    $(document).ready(function (){
+        if($("#project_tree_li_id_old")){
+            $("#project_tree_li_id_old").val('');
+        }
+    });
+</script>
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="panelBar">
+        <ul>
+            <li style="line-height: 23px;">{% trans 'Update Quotas' %}</li>
+        </ul>
+    </div>
+    <form method="post" action="{% url "update_project_quotas_action" tenant_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDone);">
+        <input id="tenant_id" name="tenant_id" type="hidden" value="{{ form.fields.tenant_id.initial}}" >
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>{% trans "Tenant" %}：</label>
+                <input type="text" readonly="readonly" name="tenant_name" size="30" value ="{{ form.fields.tenant_name.initial}}" />
+            </div>
+{#            <div class="unit">#}
+{#                <label>{% trans "Metadata Items" %}：</label>#}
+{#                <input type="text" name="metadata_items" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.metadata_items.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})#}
+{#            </div>#}
+{#            <div class="unit">#}
+{#                <label>{% trans "Injected Files" %}：</label>#}
+{#                    <input type="text" name="injected_files" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.injected_files.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})#}
+{#            </div>#}
+{#            <div class="unit">#}
+{#                <label>{% trans "Injected File Bytes" %}：</label>#}
+{#                <input type="text" name="injected_file_content_bytes" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.injected_file_content_bytes.initial}}" />&nbsp&nbsp&nbsp({% trans "Bytes" %})#}
+{#            </div>#}
+            <div class="unit">
+                <label>{% trans "VCPUs" %}：</label>
+                <input type="text" name="cores" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.cores.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+            </div>
+            <div class="unit">
+                <label>{% trans "Instances" %}：</label>
+                <input type="text" name="instances" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.instances.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+            </div>
+            <div class="unit">
+                <label>{% trans "Disk Num" %}：</label>
+                <input type="text" name="volumes" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.volumes.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+            </div>
+            <div class="unit">
+                <label>{% trans "Disk Volume" %}：</label>
+                <input type="text" name="gigabytes" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.gigabytes.initial}}" />&nbsp&nbsp&nbsp({% trans "GB" %})
+            </div>
+            <div class="unit">
+                <label>{% trans "RAM" %}：</label>
+                <input type="text" name="ram" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.ram.initial}}" />&nbsp&nbsp&nbsp({% trans "MB" %})
+            </div>
+            <div class="unit">
+                <label>{% trans "Floating IPs" %}：</label>
+                <input type="text" name="floating_ips" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.floating_ips.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+            </div>
+{#            <div class="unit">#}
+{#                <label>{% trans "Fixed Ips" %}：</label>#}
+{#                <input type="text" name="fixed_ips" size="30" minlength="1" maxlength="10" class="required" value ="{{ form.fields.fixed_ips.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})#}
+{#            </div>#}
+            <div class="unit">
+                <label>{% trans "Security Groups" %}：</label>
+                <input type="text" name="security_groups" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.security_groups.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+            </div>
+            <div class="unit">
+                <label>{% trans "Security Group Rules" %}：</label>
+                <input type="text" name="security_group_rules" size="30" minlength="1" maxlength="10" class="required digits" value ="{{ form.fields.security_group_rules.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

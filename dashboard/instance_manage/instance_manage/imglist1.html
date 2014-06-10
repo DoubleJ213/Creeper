@@ -1,0 +1,45 @@
+{% load i18n %}
+{% load dashboard %}
+<form id="pagerForm" action="{% url "image_list" %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{page_obj.paginator.per_page}}" />
+</form>
+<div class="pageContent listContent">
+    <table class="table" width="100%" layoutH="75">
+        <thead>
+        <tr>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Public' %}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for image in page_obj.object_list %}
+            <tr>
+                <td>{{ image.name }}</td>
+                <td>{{ image.is_public }}</td>
+                <td>
+                    <a target="dialog"   href="{% url "launch_form_image" image.id %}" tmask="true">启动</a>
+
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>{% trans 'Display' %}  </span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+            </select>
+            <span> {% trans 'Records' %}，{% trans 'Total' %}  {{ page_obj.paginator.count }}  {% trans 'Records' %}</span>
+        </div>
+        <div class="pagination" targetType="dialog" totalCount="{{page_obj.paginator.count}}" numPerPage="{{page_obj.paginator.per_page}}" pageNumShown="{{ page_obj.paginator.num_pages }}" currentPage="{{ page_obj.number }}"></div>
+    </div>
+</div>
+

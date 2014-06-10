@@ -1,0 +1,128 @@
+{% load i18n %}
+{% load dashboard %}
+
+{#<script type="text/javascript">#}
+{##}
+{#    $(function(){#}
+{#        global_val=''#}
+{#        $("select[name=instance_id]").bind("change",function(){#}
+{#            if($(this).val()!=''){#}
+{#                $.ajax({#}
+{#                    url:'{% url get_instance_volume %}',#}
+{#                    method:'get',#}
+{#                    cache:false,#}
+{#                    data:{instance_id:$("select[name=instance_id]").val()},#}
+{#                    success:function(response){#}
+{#                        var _data=eval("("+response+")");#}
+{#                        global_val=_data;#}
+{#                        if(_data.attach_volume!=''){#}
+{#                            alertMsg.info("已挂载:"+_data.attach_volume);#}
+{#                        }#}
+{#                    }#}
+{#                });#}
+{#            }#}
+{#        });#}
+{##}
+{#        $("#sub_volume").click(function(){#}
+{#                var val=$("input[name=device]").val();#}
+{#                var gval="ab"+global_val.attach_volume#}
+{#                if(gval.indexOf(val)>0){#}
+{#                    alertMsg.info("磁盘名称重复!")#}
+{#                }else{#}
+{#                    validateCallback($("#volume_form"),dialogAjaxDone);#}
+{#                }#}
+{#        });#}
+{#    });#}
+{#</script>#}
+
+<style>
+    .detail_text {
+        float: left;
+        line-height: 21px;
+        white-space: nowrap;
+    }
+</style>
+<script type="text/javascript">
+
+   $(function(){
+      $("#attach_btn").bind("click",function(){
+          var old_H=$("#volume_div > form > div > .gridScroller").height();
+          var th_widths = new Array();
+
+          var $box=$("#volume_div");
+          $box.children(" form ").eq(1).find(" .grid > .gridHeader > .gridThead > table > thead > tr > th").each(function (i) {
+              th_widths.push($(this).width());
+          });
+          validateCallback($("#attach_form"),function(json){
+              json.navTabId=''
+              dialogAjaxDone(json);
+              if(json.statusCode ==DWZ.statusCode.ok){
+                  var volume_id = '{{ volume_id }}';
+                  $("#volume_" + volume_id + " > td:eq(5)").html("<div class='status_loading'></div>"+"{% trans 'attaching' %}");
+                  $("#attach_volume_" + volume_id).hide();
+                  $("#delete_volume_" + volume_id).hide();
+                  $("#snapshot_" + volume_id).hide();
+              }
+          });
+      })
+   })
+
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "handle_attach_volume" volume_id %}" class="pageForm required-validate"
+         id="attach_form">
+        {% csrf_token %}
+        {# {% include 'user_manage/_create.html' %} #}
+        <div class="pageFormContent" layouth="58">
+{#            <table class="table" width="100%">#}
+{#                   <thead>#}
+{#                   <tr>#}
+{#                        <th>{% trans "Server Name" %}</th>#}
+{#                        <th>{% trans "volume to instance"%}</th>#}
+{#                        <th>{% trans "action" %}</th>#}
+{#                   </tr>#}
+{#                   </thead>#}
+{#                <tbody>#}
+{#                 <tr>#}
+{#                     <td>aaaaaa</td>#}
+{#                     <td>aaaaaa</td>#}
+{#                     <td>aaaaaa</td>#}
+{#                 </tr>#}
+{#                </tbody>#}
+{#            </table>#}
+            <div class="unit">
+                <label>{% trans "Select an Instance" %}：</label>
+                <select name="instance_id" class="required select">
+                    {% for key,value in instances %}
+                        <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+{#            <div class="unit">#}
+{#                <label>{% trans "Attach on" %}：</label>#}
+{#                <span class="detail_text">/dev/vd</span><input type="text" name="device" value="c" minlength="0" maxlength="1" class="required" size=6 />#}
+{##}
+{#            </div>#}
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="button" value="submit" id="attach_btn">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

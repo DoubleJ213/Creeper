@@ -1,0 +1,409 @@
+{% load i18n%}
+
+<style type="text/css">
+    #image_name , #min_disk, #min_ram  {
+        background: url("{{ STATIC_URL }}/ui/images/input_bg.png") no-repeat ;
+        border:0;
+        width: 240px;
+        height: 25px;
+    }
+
+
+    .divSelect_bg{
+        width: 237px;
+        height: 29px;
+        line-height: 29px;
+        border: 0px solid #add8e6;
+    }
+    .divSelect_bg .select_bg_img {
+        width: 237px;
+        line-height: 29px;
+        float: left;
+        overflow: hidden;
+        background-image: url("{{ STATIC_URL }}/ui/images/box_4.png");
+    }
+    .divSelect_bg .select1right{
+        width: 237px;
+        height:29px;
+        line-height: 20px;
+        float: left;
+        text-align: right;
+        cursor: pointer;
+
+    }
+    .divSelect_select_bg{
+        width: 237px;
+        height: 100px;
+        line-height: 29px;
+        border: 1px solid #e2e2e2;
+        border-top: 0px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: none;
+        background: #ffffff;
+{#        #background: white;#}
+        position: absolute;
+{#        #position: relative;#}
+        z-index:1;
+    }
+    .divSelect_select_bg .selectDiskOptionClass ,.divSelect_select_bg .selectImageDataOptionClass,.divSelect_select_bg  .selectTenantOptionClass{
+        width: 237px;
+        height: 20px;
+        line-height: 20px;
+        text-align: left;
+        padding-left: 5px;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .divSelect_select_bg .selectDiskOptionClass:hover ,.divSelect_select_bg .selectImageDataOptionClass:hover,.divSelect_select_bg  .selectTenantOptionClass:hover{
+        background: #bc8f8f;
+
+    }
+   </style>
+<script type="text/javascript">
+    function dialogAjaxDone_image(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                image_id = json.image_id;
+                img_obj_id = json.img_obj_id;
+
+                $.get("prepare_manage/prepare/image/"+image_id+"/page/"+img_obj_id+"/",function(data){
+                    $("#image_pageContent_id").css("height","90%");
+                    $("#image_pageContent_id").html(data).initUI();
+                    $("#image_pageContent_id > div ").height($("#image_pageContent_id").height());
+                });
+            }
+        }
+    }
+
+
+    $(document).ready(function(){
+        $(".selectDiskOptionClass").click(function(){
+            $("#selectDiskFormatText").html($(this).attr("name"));
+            $("#selectDiskFormatText").val($(this).attr("value"));
+            $("#disk_format").val($(this).attr("value"));
+
+        });
+        $(document).click(function(){
+            if($("#selectDiskFormat").css("display") == "block"){
+                $("#selectDiskFormat").hide();
+            }
+        });
+        $(".selectImageDataOptionClass").click(function(){
+            $("#selectDataText").html($(this).attr("name"));
+            $("#selectDataText").val($(this).attr("value"));
+            $("#image_data").val($(this).attr("value"));
+
+        });
+        $(document).click(function(){
+            if($("#selectImageData").css("display") == "block"){
+                $("#selectImageData").hide();
+            }
+        });
+
+        $(".selectTenantOptionClass").click(function(){
+            $("#selectTenantText").html($(this).attr("name"));
+            $("#selectTenantText").val($(this).attr("value"));
+            $("#img_tenant_id").val($(this).attr("value"));
+
+        });
+        $(document).click(function(){
+            if($("#selectTenantList").css("display") == "block"){
+                $("#selectTenantList").hide();
+            }
+        });
+    });
+
+    function selectDiskBgOut(obj){
+        var div_db = $("#"+obj);
+        div_db.bind('mouseover',function(){
+            $(this).show();
+        });
+        div_db.bind('mouseout',function(){
+            $(this).hide();
+        });
+    }
+
+    function selectMouseOver(obj){
+        var div_db = $("#"+obj);
+        div_db.bind('mouseover',function(){
+            $(this).show();
+        });
+        div_db.bind('mouseout',function(){
+            $(this).hide();
+        });
+    }
+
+</script>
+<script type="text/javascript">
+
+    function selectDisk(){
+        stopBubble();
+        if($("#selectDiskFormat")){
+            if($("#selectDiskFormat").css("display") == "none"){
+                $("#selectDiskFormat").show();
+            }else{
+                $("#selectDiskFormat").hide();
+            }
+        }
+    }
+    function selectData(){
+        stopBubble();
+        if($("#selectImageData")){
+            if($("#selectImageData").css("display") == "none"){
+                $("#selectImageData").show();
+            }else{
+                $("#selectImageData").hide();
+            }
+        }
+    }
+
+    function selectTenant(){
+        stopBubble();
+        if($("#selectTenantList")){
+            if($("#selectTenantList").css("display") == "none"){
+                $("#selectTenantList").show();
+            }else{
+                $("#selectTenantList").hide();
+            }
+        }
+    }
+
+    function ajax_disk_ram() {
+        var $_image_name = $("#image_name").val();
+        if ($_image_name.length < 2 || $_image_name.length > 10) {
+            alertMsg.error('{% trans "Image Name value between 2 and 10." %}');
+            return false;
+        }
+
+        var disk_format = $("#disk_format").val();
+        if (disk_format == '' || disk_format.length < 1) {
+            alertMsg.error('{% trans "Please select a flavor" %}');
+            return false;
+        }
+
+        var img_tenant_id = $("#img_tenant_id").val();
+        if (img_tenant_id == '' || img_tenant_id.length < 1) {
+            alertMsg.error('{% trans 'Select a project' %}');
+            return false;
+        }
+
+        var image_data = $("#image_data").val();
+        if (image_data.length == '' || image_data.length < 1) {
+            alertMsg.error('{% trans "Select a Image Data" %}');
+            return false;
+        }
+        var _min_disk = $("#min_disk").val();
+        var _min_ram = $("#min_ram").val();
+    {##}
+        if(isNaN(_min_disk)){
+            alertMsg.error("{% trans 'Image mindisk format wrong!' %}");
+            return false;
+        }
+    {##}
+        if(isNaN(_min_ram)){
+            alertMsg.error("{% trans 'Image minram format wrong!' %}");
+            return false;
+        }
+
+        if (_min_disk > 30) {
+            alertMsg.error("{% trans 'Image disk value is too big! not in (15~30).' %}");
+            return false;
+        }
+
+        if (_min_disk < 15) {
+            alertMsg.error("{% trans 'Image disk value is too short! not in (15~30).' %}");
+            return false;
+        }
+    {##}
+        if (_min_ram < 512) {
+            alertMsg.error("{% trans 'Image ram value is too short! not in (512~16384).' %}");
+            return false;
+        }
+
+        if (_min_ram > 16384) {
+            alertMsg.error("{% trans 'Image ram value is too big! not in (512~16384).' %}");
+            return false;
+        }
+        return true;
+    }
+    function button_submit_create_image(){
+        if (ajax_disk_ram()){
+            $.ajax({
+                       url:'{% url "create_image_index" img_obj_id %}',
+                       type:'GET',
+                       data:$("#form_create_id").serializeArray(),
+                       global:false,
+                       success:function (response) {
+                           var _data = eval("(" + response + ")");
+                           var image_id = _data['image_id'];
+                           var img_obj_id = $("#img_obj_id").val();
+
+                           if (_data["statusCode"] == 200){
+                               $.get("prepare_manage/prepare/image/"+image_id+"/page/"+img_obj_id+"/",function(data){
+                                   $("#image_pageContent_id").css("height","90%");
+                                   $("#image_pageContent_id").html(data).initUI();
+                                   $("#image_pageContent_id > div ").height($("#image_pageContent_id").height());
+                               });
+
+                           }else{
+                               alertMsg.error(_data['message']);
+                           }
+                       }
+                   });
+        }
+    }
+    $(function(){
+        $("select[id=img_tenant_id]").bind("change",function(){
+            var img_tenant_id=$("select[id=img_tenant_id]").val();
+            $.ajax({
+                       url:'{% url 'img_fresh_progress' %}',
+                       method:'get',
+                       cache:false,
+                       data:{img_tenant_id:img_tenant_id},
+                       success:function(response){
+                           console.log('1');
+                       },
+                       error:function(response){
+                           console.log('2');
+                       }
+                   });
+        });
+    });
+
+
+
+</script>
+
+<div class="pageContent"  id="image_pageContent_id">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" id="form_create_id" action="{% url "create_image_index" img_obj_id %}" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone_image);">
+        <input name="img_obj_id" id="img_obj_id" type="hidden" value="{{ img_obj_id }}" />
+        <input name="u_uid" type="hidden" value="{{ uuid }}">
+        <div class="pageFormContent"  layouth="58">
+            <div class="unit">
+                <label>
+                    {% trans "Image Name" %}：</label>
+                <input type="text" name="name" size="30" minlength="2" maxlength="10" class="required" id="image_name"/><span style="color: red; margin-left: -10px;">*</span>
+            </div>
+
+            <div class="unit" >
+                <label style="float: left;">{% trans "Disk Format" %}:</label>
+                <div style="width: 238px; float:left;">
+                    <div class="divSelect_bg" onmouseout="selectMouseOver('selectDiskFormat');">
+                        <div id="selectDiskFormatText" onclick="selectDisk();" class="select_bg_img">&nbsp;{% trans "Please select a flavor" %}
+                            <input type="hidden" id="flavor_val" class="required"/>
+                        </div>
+{#                        <div class="select1right"></div>#}
+                    </div>
+
+                    <div id="selectDiskFormat" class="divSelect_select_bg"  onmouseover="selectMouseOver('selectDiskFormat');">
+                        {% for key,value in form.fields.disk_format.choices %}
+                            <div class="selectDiskOptionClass" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" > {{ value|truncatechars:59 }} </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <input type="hidden" id="disk_format"  name="disk_format" >
+
+            </div>
+
+            <div class="unit">
+                <label style="float: left;">{% trans "Image Data" %}:</label>
+                <div style="width: 238px; float:left;">
+                    <div class="divSelect_bg">
+                        <div id="selectDataText" onclick="selectData();"  onmouseout="selectMouseOver('selectImageData');" class="select_bg_img">&nbsp;{% trans "Select a Image Data" %}
+                            <input type="hidden" id="flavor_val" class="required"/>
+                        </div>
+                    </div>
+
+                    <div id="selectImageData" class="divSelect_select_bg"  onmouseover="selectMouseOver('selectImageData');">
+                        {% for key,value in form.fields.image_data.choices %}
+                            <div class="selectImageDataOptionClass" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" > {{ value|truncatechars:59 }} </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if form.fields.image_data.choices|length == 1  %}
+                    <div id="image_datahelp" style="left:240px; color:#FFFFFF;overflow-y:auto;height:25px;width:240px;position: absolute;background: red" >{% trans "if image date is null,please add software" %}</div>
+                {% endif %}
+                <input type="hidden" id="image_data"  name="image_data" >
+
+
+            </div>
+            <div class="unit" id="img_tenant_unit">
+                <label style="float: left;">{% trans "Tenant" %}:</label>
+                <div style="width: 238px; float:left;">
+                    <div class="divSelect_bg">
+                        <div id="selectTenantText" onclick="selectTenant();" onmouseout="selectMouseOver('selectTenantList');" class="select_bg_img">&nbsp;{% trans "Select a project" %}
+                            <input type="hidden" id="flavor_val" class="required"/>
+                        </div>
+                    </div>
+
+                    <div id="selectTenantList" class="divSelect_select_bg" onmouseover="selectMouseOver('selectTenantList');">
+                        {% for key,value in form.fields.img_tenant_id.choices %}
+{#                            {% if key == old_tenant_id %}#}
+{#                                <div class="selectTenantOptionClass" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" > {{ value|truncatechars:59 }} </div>#}
+{#                            {% else %}#}
+                                <div class="selectTenantOptionClass" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" > {{ value|truncatechars:59 }} </div>
+{#                            {% endif %}#}
+
+                        {% endfor %}
+                    </div>
+                </div>
+                <input type="hidden" id="img_tenant_id"  name="img_tenant_id" >
+
+            </div>
+
+            {#        Minimum Disk (GB)#}
+            <div class="unit">
+                <label>
+                    {% trans "Min Disk (GB)" %}：</label>
+                <input type="text" name="min_disk" id="min_disk" size="30" value ="15" maxlength="4"  class="required digits"/><span style="color: red; margin-left: -10px;">*</span>
+            </div>
+            {#        Minimum Ram (MB)#}
+            <div class="unit">
+                <label>
+                    {% trans "Min Ram (MB)" %}：</label>
+                <input type="text" name="min_ram" id="min_ram" size="30" value ="512"  maxlength="6" class="required digits"/><span style="color: red; margin-left: -10px;">*</span>
+            </div>
+
+            {# public #}
+            <div class="unit">
+                <label>
+                    {% trans "Public" %}：</label>
+                <input type="checkbox"  name="is_public" />
+            </div>
+            <div id="launch_image_pageForm" style="display: none"></div>
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive" id="btnActiveSubmit1">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button" id="btnActCancel">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+

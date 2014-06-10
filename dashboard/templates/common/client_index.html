@@ -1,0 +1,630 @@
+{% load i18n %}
+{% load dashboard %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    {#    <title>北信源云智能管理系统</title>#}
+    <link href="{{ STATIC_URL }}ui/themes/css/core_client.css" rel="stylesheet" type="text/css" media="screen"/>
+    <script src="{{ STATIC_URL }}ui/js/jquery.1.7.2.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}ui/js/jquery.cookie.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}ui/js/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}ui/js/jquery.bgiframe.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}ui/js/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}ui/js/core.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}ui/js/ajax.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_URL }}ui/js/timer.task.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var contentAry=new Array();
+        $(document).ready(function(){
+            var height = $(window).height();
+            var width = $(window).width();
+            if (width > 840 || height > 400) {
+                var _themeFullscreenHref = "{{ STATIC_URL }}ui/themes/css/core_client_fullscreen.css";
+                $("head").find("link[href$='core_client.css']").attr("href", _themeFullscreenHref);
+            }
+
+            var $tr=$("#vm_instance_table > tbody > tr ");
+            $tr.each(function(){
+                var $td=$(this).find("td:eq(4)");
+                contentAry.push($td.text().split(";")[1])
+            });
+
+            $(window).resize(function() {
+                var height = 0;
+                var width = 0;
+                var height = $(window).height();
+                var width = $(window).width();
+                if (width > 840 || height > 400) {
+                    var _themeFullscreenHref = "{{ STATIC_URL }}ui/themes/css/core_client_fullscreen.css";
+                    $("head").find("link[href$='core_client.css']").attr("href", _themeFullscreenHref);
+                    $tr.each(function(i){
+                        var $td=$(this).find("td:eq(4)");
+                        try{
+                            var td_str=contentAry[i];
+{#                            var maxLen = 22;#}
+{#                            var morelength = getMoreBytesCount(td_str);#}
+{#                            var len = td_str.length + morelength;#}
+{#                            if(len > maxLen){#}
+{#                                var str1 = td_str.replace(/([\u0391-\uffe5])/ig,"$1a");#}
+{#                                var str2 = str1.substring(0,maxLen-1);#}
+{#                                td_str = str2.replace(/([\u0391-\uffe5])a/ig,"$1");#}
+{#                                td_str = td_str + "...";#}
+{#                            }#}
+                            $td.text(td_str);
+                        }catch(e){
+
+                        }
+                    });
+                } else {
+                    var _themeHref = "{{ STATIC_URL }}ui/themes/css/core_client.css";
+                    $("head").find("link[href$='core_client_fullscreen.css']").attr("href", _themeHref);
+                    $tr.each(function(i){
+                        var $td=$(this).find("td:eq(4)");
+                        try{
+                            var td_str=contentAry[i];
+                            var maxLen = 16;
+                            var morelength = getMoreBytesCount(td_str);
+                            var len = td_str.length + morelength;
+                            if(len > maxLen){
+                                var str1 = td_str.replace(/([\u0391-\uffe5])/ig,"$1a");
+                                var str2 = str1.substring(0,maxLen-1);
+                                td_str = str2.replace(/([\u0391-\uffe5])a/ig,"$1");
+                                td_str = td_str + "...";
+                            }
+                            $td.text(td_str);
+                        }catch(e){
+
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body oncontextmenu="return false" onselectstart="return false" style="background: #E8EAED;">
+
+<div class="maindiv">
+<script lang="text/javascript">
+    var INSTANCE_ACTION_REBOOT = "REBOOT";
+    var INSTANCE_ACTION_SUSPEND = "SUSPEND";
+    var INSTANCE_ACTION_RESTORE = "RESTORE";
+
+    var g_instance_action = "";
+    var g_instance_url = "";
+
+    var iRows = new Array();
+
+    function initialize() {
+        for (var i = 0; i < iRows.length; i++) {
+            var _url = $("#instance_" + iRows[i]).attr("url");
+            var _task = $("#instance_" + iRows[i]).attr("task");
+            $.ajax({
+                url:_url,
+                global:false,
+                success:function (response) {
+                    var _data = eval("(" + response + ")");
+                    var _status;
+                    var _id;
+                    for (var key in _data) {
+                        _status = _data[key];
+                        _id = key;
+                    }
+                    if (_status == 'ACTIVE') {
+                        $("#instance_" + _id + " > td[upgrade=status]").empty();
+                        $("#instance_" + _id + " > td[upgrade=status]").text(_status);
+                        $("#instance_" + _id + "_img").empty();
+                        _status = return_display_name(_status);
+                        $("#instance_" + _id + "_img").text(_status);
+                    } else {
+                        $("#instance_" + _id + " > td[upgrade=status]").empty();
+                        $("#instance_" + _id + " > td[upgrade=status]").html("<div class='status_loading'></div>" + _status);
+                        $("#instance_" + _id + "_img").empty();
+                        _status = return_display_name(_status);
+                        $("#instance_" + _id + "_img").html(_status);
+                    }
+                },
+                error:function(xhr, ajaxOptions, thrownError) {
+                    $("#alert_content").html(xhr.responseText);
+                    $("#alertMsg").show();
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        if($("#vm_instance_table")){
+            $("#vm_instance_table").find("tbody > tr").each(function (i, row) {
+                iRows.push($(row).attr("id").substring(9));
+            });
+            var navTabId = "{% trans 'Instance Manage' %}";
+            Timer.submit(navTabId, initialize, {period:5000});
+        }
+
+        $(".imgButton").mouseover(function(){
+            var srcUrl = $(this).attr("src");
+            srcUrl = srcUrl.substring(0,srcUrl.length-5) + "press.png";
+            $(this).attr("src",srcUrl);
+        });
+        $(".imgButton").mouseout(function(){
+            var srcUrl = $(this).attr("src");
+            srcUrl = srcUrl.substring(0,srcUrl.length-9) + "n.png";
+            $(this).attr("src",srcUrl);
+        });
+
+    });
+
+    $(document).ready(function () {
+        var $tr = $("#vm_instance_table > tbody > tr");
+        var tr_len = $tr.length;
+        var $td = $tr.last().find('td:first');
+        var $td1 = $tr.last().find('td:last');
+        if(tr_len % 2 == 0){
+            $td.removeClass('dtr1');
+            $td1.removeClass('dtr2');
+            $td.addClass('even_left1');
+            $td1.addClass('even_right1');
+        }else{
+            $td.removeClass('str1');
+            $td1.removeClass('str2');
+            $td.addClass('odd_left');
+            $td1.addClass('odd_right');
+        }
+{#        $("#vm_instance_table > tbody > tr").each(function(){#}
+{#            var $td3 = $(this).find("td:eq(3)");#}
+{#            var content = $td3.text().trim();#}
+{#            alert(content);#}
+{#            $td3.text(content.substring(0,17)+"...");#}
+{#        })#}
+    });
+</script>
+{#                                 <div class="panelBar">#}
+{#                                     <ul class="toolBar">#}
+{#                                     </ul>#}
+{#                                 </div>#}
+<script lang="text/javascript">
+function rebootInstanceConfirm(url) {
+    g_instance_action = INSTANCE_ACTION_REBOOT;
+    g_instance_url = url;
+    $("#confirm_content").html("确定重启虚拟机？");
+    $("#confirmMsg").show();
+}
+function stopInstanceConfirm(url) {
+    g_instance_action = INSTANCE_ACTION_SUSPEND;
+    g_instance_url = url;
+    $("#confirm_content").html("确定停止虚拟机？");
+    $("#confirmMsg").show();
+}
+function unstopInstanceConfirm(url) {
+    g_instance_action = INSTANCE_ACTION_RESTORE;
+    g_instance_url = url;
+    $("#confirm_content").html("确定恢复虚拟机？");
+    $("#confirmMsg").show();
+}
+function closeConfirmMsg() {
+    $("#confirmMsg").hide();
+    $("#confirm_content").html("");
+}
+function instance_action() {
+    closeConfirmMsg();
+    if (g_instance_action == INSTANCE_ACTION_REBOOT) {
+        rebootInstance(g_instance_url);
+    } else if (g_instance_action == INSTANCE_ACTION_SUSPEND) {
+        stopInstance(g_instance_url);
+    } else if (g_instance_action == INSTANCE_ACTION_RESTORE) {
+        unstopInstance(g_instance_url);
+    }
+}
+
+function rebootInstance(url)
+{
+    $.ajax({
+        url:url,
+        global:false,
+        success:function (response) {
+            var _data = eval("(" + response + ")");
+            var _status;
+            var _result;
+            var _id;
+            for (var key in _data) {
+                if(key=="status")
+                {
+                    _status = _data[key];
+                }else
+                {
+                    _result = _data[key];
+                    _id = key;
+                }
+            }
+            if (_result == 'success') {
+                $("#alert_content").html("重启虚拟机成功");
+                $("#alertMsg").show();
+                if (_status == 'ACTIVE') {
+                    $("#instance_" + _id + " > td[upgrade=status]").empty();
+                    $("#instance_" + _id + " > td[upgrade=status]").text(_status);
+                    $("#instance_" + _id + "_img").empty();
+                    _status = return_display_name(_status);
+                    $("#instance_" + _id + "_img").text(_status);
+                } else {
+                    $("#instance_" + _id + " > td[upgrade=status]").empty();
+                    $("#instance_" + _id + " > td[upgrade=status]").html("<div class='status_loading'></div>" + _status);
+                    $("#instance_" + _id + "_img").empty();
+                    _status = return_display_name(_status);
+                    $("#instance_" + _id + "_img").html(_status);
+                }
+            } else {
+                $("#alert_content").html("重启虚拟机失败");
+                $("#alertMsg").show();
+            }
+        },
+        error:function(xhr, ajaxOptions, thrownError){
+            $("#alert_content").html(xhr.responseText);
+            $("#alertMsg").show();
+        }
+    });
+}
+
+function stopInstance(url)
+{
+    $.ajax({
+        url:url,
+        global:false,
+        success:function (response) {
+            var _data = eval("(" + response + ")");
+            var _status;
+            var _result;
+            var _id;
+            for (var key in _data) {
+                if(key=="status")
+                {
+                    _status = _data[key];
+                }else
+                {
+                    _result = _data[key];
+                    _id = key;
+                }
+            }
+            if (_result == 'success') {
+                $("#alert_content").html("停止虚拟机成功");
+                $("#alertMsg").show();
+                $("#instance_" + _id + " > td[upgrade=status]").empty();
+                $("#instance_" + _id + " > td[upgrade=status]").text(_status);
+                $("#instance_" + _id + "_img").empty();
+                _status = return_display_name(_status);
+                $("#instance_" + _id + "_img").text(_status);
+            } else {
+                $("#alert_content").html("停止虚拟机失败");
+                $("#alertMsg").show();
+            }
+        },
+        error:function(xhr, ajaxOptions, thrownError){
+            $("#alert_content").html(xhr.responseText);
+            $("#alertMsg").show();
+        }
+    });
+}
+
+function unstopInstance(url)
+{
+    $.ajax({
+        url:url,
+        global:false,
+        success:function (response) {
+            var _data = eval("(" + response + ")");
+            var _status;
+            var _result;
+            var _id;
+            for (var key in _data) {
+                if(key=="status")
+                {
+                    _status = _data[key];
+                }else
+                {
+                    _result = _data[key];
+                    _id = key;
+                }
+            }
+            if (_result == 'success') {
+                $("#alert_content").html("恢复虚拟机成功");
+                $("#alertMsg").show();
+                $("#instance_" + _id + " > td[upgrade=status]").empty();
+                $("#instance_" + _id + " > td[upgrade=status]").text(_status);
+                $("#instance_" + _id + "_img").empty();
+                _status = return_display_name(_status);
+                $("#instance_" + _id + "_img").text(_status);
+            } else {
+                $("#alert_content").html("恢复虚拟机失败");
+                $("#alertMsg").show();
+            }
+        },
+        error:function(xhr, ajaxOptions, thrownError) {
+            $("#alert_content").html(xhr.responseText);
+            $("#alertMsg").show();
+        }
+    });
+}
+
+function get_instance_gtk_client(statusurl,url) {
+    var _status;
+    var ajax_error_text = "";
+
+    $.ajax({
+        url:statusurl,
+        global:false,
+        async:false,
+        success:function (response) {
+            var _data = eval("(" + response + ")");
+
+            var _id;
+            for (var key in _data) {
+                _status = _data[key];
+                _id = key;
+            }
+        },
+        error:function(xhr, ajaxOptions, thrownError) {
+            ajax_error_text = xhr.responseText;
+        }
+    });
+
+    if (ajax_error_text != "") {
+        $("#alert_content").html(ajax_error_text);
+        $("#alertMsg").show();
+        return;
+    }
+    if (_status != 'ACTIVE') {
+        $("#alert_content").html("无法远程链接虚拟机");
+        $("#alertMsg").show();
+        return;
+    }
+
+    $.ajax({
+        type:'GET',
+        url:url,
+        data: {},
+        cache:false,
+        success:function (response) {
+            var _data = eval('(' + response + ')');
+            window.location= "/authorize_manage/clientinstances?ip="+_data["ip"]+"&port="+_data["port"]+"&control="+_data["umask"];
+        },
+        error:function(xhr, ajaxOptions, thrownError) {
+            $("#alert_content").html(xhr.responseText);
+            $("#alertMsg").show();
+        }
+    });
+}
+
+function onloadlist()
+{
+    window.location= "/authorize_manage/clientinstances";
+}
+
+function get_display_name(str) {
+    var maxLen = 20;
+    var morelength = getMoreBytesCount(str);
+    var len = str.length + morelength;
+    if(len > maxLen){
+        var str1 = str.replace(/([\u0391-\uffe5])/ig,"$1a");
+        var str2 = str1.substring(0,maxLen-1);
+        str = str2.replace(/([\u0391-\uffe5])a/ig,"$1");
+        str = str + "...";
+    }
+    document.write(str);
+}
+
+function get_display_name1(str) {
+    var maxLen = 20;
+    var morelength = getMoreBytesCount(str);
+    var len = str.length + morelength;
+    if(len > maxLen){
+        var str1 = str.replace(/([\u0391-\uffe5])/ig,"$1a");
+        var str2 = str1.substring(0,maxLen-1);
+        str = str2.replace(/([\u0391-\uffe5])a/ig,"$1");
+        str = str + "...";
+    }
+    document.write(str);
+}
+function get_display_name2(str) {
+    var maxLen = 12;
+    var morelength = getMoreBytesCount(str);
+    var len = str.length + morelength;
+    if(len > maxLen){
+        var str1 = str.replace(/([\u0391-\uffe5])/ig,"$1a");
+        var str2 = str1.substring(0,maxLen-1);
+        str = str2.replace(/([\u0391-\uffe5])a/ig,"$1");
+        str = str + "...";
+    }
+    document.write(str);
+}
+
+function get_system_bg(str,img_str){
+    if(str && img_str){
+        //alert($("#"+str).html());
+        if(img_str.indexOf("win")>=0){
+            $("#"+str).addClass("img2");
+        }else if (img_str.indexOf("ubuntu")>=0){
+            $("#"+str).addClass("img1");
+        }else{
+            $("#"+str).addClass("img3");
+        }
+    }
+}
+
+function return_display_name(str) {
+    var maxLen = 16;
+    var morelength = getMoreBytesCount(str);
+    var len = str.length + morelength;
+    if(len > maxLen){
+        var str1 = str.replace(/([\u0391-\uffe5])/ig,"$1a");
+        var str2 = str1.substring(0,maxLen-1);
+        str = str2.replace(/([\u0391-\uffe5])a/ig,"$1");
+        str = str + "...";
+    }
+    return str;
+}
+function getMoreBytesCount(str){
+    if(str == null){
+        return 0;
+    }else{
+        return(str.replace(/[\u0000-\u00ff]/g,"").length);
+    }
+}
+function checkDiv(){
+    if ($("#img_vm_instance").css("display") == "none") {
+        $("#img_vm_instance").css("display", "block");
+        $("#table_vm_instance").css("display", "none");
+    } else if ($("#table_vm_instance").css("display") == "none") {
+        $("#img_vm_instance").css("display", "none");
+        $("#table_vm_instance").css("display", "block");
+    }
+}
+function closeAlertMsg(){
+    $("#alertMsg").hide();
+    $("#alert_content").html("");
+}
+</script>
+<div id="titlediv">
+    {#        <a href="#" onclick="onloadlist()"><img src="{{ STATIC_URL }}ui/images/client/icon2.png" style="float: left; width: 23px; height: 25px; margin-left: 5px; border: 0px;" /></a>#}
+    <a href="javascript:void(0);" onclick="onloadlist()" class="title-name">虚拟机管理</a>
+    <img onclick="checkDiv();" src="{{ STATIC_URL }}ui/images/client/btn_qianhuan_n.png" class="qiehuan" />
+    {#        <span style="float: right; margin-right: 10px; line-height: 25px; cursor: pointer" onclick="checkDiv()">切换</span>#}
+</div>
+<div class="line"></div>
+<div id="listdiv">
+    <div id="confirmMsg" class="alertMsgClass">
+        <div>
+            <div id="confirm_content" class="content"></div>
+            <div class="buttonDiv">
+                <div class="alertbutton" style="float: left; margin-left: 80px;" onclick="instance_action()">确&nbsp;定</div>
+                <div class="alertbutton" style="float: left; margin-left: 40px" onclick="closeConfirmMsg()">取&nbsp;消</div>
+            </div>
+        </div>
+    </div>
+    <div id="alertMsg" class="alertMsgClass">
+        {#            <div class="head">#}
+        {#                &nbsp;提示框#}
+        {#            </div>#}
+        <div>
+            <div id="alert_content" class="content"></div>
+            <div class="buttonDiv">
+                <div class="alertbutton" onclick="closeAlertMsg()">确&nbsp;定</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="table_vm_instance" style="display: none;">
+    <div style="display: none;" id="instance_length">{{ instances|length }}</div>
+        <table id="vm_instance_table" border="0" cellspacing="0px" style="border-collapse: collapse; border-color: #808080;">
+            <thead>
+            <tr>
+                <th class="th0"></th>
+                <th class="th1" style="text-align: left;">{% trans 'sequence' %}</th>
+                <th class="th2">{% trans 'Instance Name' %}</th>
+                <th class="th3">{% trans 'IP Address' %}</th>
+                <th class="th4">{% trans 'Size' %}</th>
+                <th class="th5">{% trans 'Status' %}</th>
+                <th class="th6">{% trans 'Action' %}</th>
+                <th class="th7"></th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for instance in instances %}
+                {#                    <tr {% if instance.numtype %} class="str" onmouseover="this.className='trover'" onmouseout="this.className='strout'" {% else %}onmouseover="this.className='trover'" onmouseout="this.className='dtrout'" class="dtr" {% endif %}url="{{ instance.status_link }}" id="instance_{{ instance.id }}" task="{{ instance.task_link }}" power="{{ instance.power_link }}">#}
+                <tr id="instance_{{ instance.id }}" url="{{ instance.status_link }}" task="{{ instance.task_link }}" power="{{ instance.power_link }}">
+                    <td {% if instance.numtype %} class="str1" {% else %} class="dtr1" {% endif %}></td>
+                    <td {% if instance.numtype %} class="str" {% else %} class="dtr" {% endif %} style="border-right:1px solid #808080 ">{{ instance.num }}</td>
+                    <td {% if instance.numtype %} class="str" {% else %} class="dtr" {% endif %} title="{{ instance.name }}" style="border-right:1px solid #808080; text-align: center;">
+                        <script>get_display_name2("{{ instance.name }}")</script>
+                    </td>
+                    <td {% if instance.numtype %} class="str" {% else %} class="dtr" {% endif %} style="border-right:1px solid #808080; text-align: center;" title="{% for network, ip_list in instance.addresses.items %}{% for ip in ip_list %}{% if not forloop.last %}{{ ip.addr }},&nbsp;{% else %}{{ ip.addr }}{% endif %} {% endfor %}{% endfor %}">
+{#                        {% for network, ip_list in instance.addresses.items %}#}
+{#                            {% for ip in ip_list %}#}
+{#                                {% if not forloop.last %}{{ ip.addr }},&nbsp;#}
+{#                                {% else %}{{ ip.addr }}{% endif %}#}
+{#                            {% endfor %}#}
+{#                        {% endfor %}#}
+                        <script>get_display_name("{% for network, ip_list in instance.addresses.items %}{% for ip in ip_list %}{% if not forloop.last %}{{ ip.addr }},&nbsp;{% else %}{{ ip.addr }}{% endif %} {% endfor %}{% endfor %}")</script>
+                    </td>
+                    <td {% if instance.numtype %} class="str" {% else %} class="dtr" {% endif %} style="border-right:1px solid #808080; text-align: center; width: 180px;">
+
+                <script>get_display_name1("{{ instance.full_flavor.ram }} MB,{{ instance.full_flavor.vcpus }} VCPU,{{ instance.full_flavor.disk }} GB");</script>
+{#                        {{ instance.full_flavor.vcpus }} VCPU,#}
+{#                        {{ instance.full_flavor.disk }} GB#}
+                    </td>
+                    <td upgrade='status' {% if instance.numtype %} class="str" {% else %} class="dtr" {% endif %} style="border-right:1px solid #808080; text-align: center;">
+                        {% if instance.status != 'ACTIVE' %}
+                            <div class='status_loading'></div>
+                        {% endif %}
+                        {{ instance.status }}
+                    </td>
+                    <td resize="resize" {% if instance.numtype %} class="str" {% else %} class="dtr" {% endif %} style="border-color: #808080; text-align: center;">
+                        {#                    <a target="dialog" href="{% url get_instance_detail instance.id %}" tmask="true" width="550"#}
+                        {#                       height="580">{% trans 'detail' %}</a>#}
+                        <a href="javascript:void(0);" onclick="rebootInstanceConfirm('{{ instance.rebooturl }}');" tmask="true">{% trans "Reboot" %}</a>
+                        <a style="padding-left: 10px;" href="javascript:void(0);" onclick="stopInstanceConfirm('{{ instance.stopurl }}');" tmask="true">{% trans "Suspend" %}</a>
+                        <a style="padding-left: 10px;" href="javascript:void(0);" onclick="unstopInstanceConfirm('{{ instance.unstopurl }}');" tmask="true">{% trans "Restore" %}</a>
+                        <a style="padding-left: 10px;" href="javascript:void(0);" onclick="get_instance_gtk_client('{{ instance.status_link }}','{{ instance.gtkurl }}')" rel="{{ instance.name }}">{% trans 'Use' %}</a>
+                    </td>
+                    <td {% if instance.numtype %} class="str2" {% else %} class="dtr2" {% endif %}></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="img_vm_instance" class="img_instance_class">
+        {% for instance in instances %}
+            <div class="box" id="{{ instance.id }}">
+                <div class="left">
+                    <div class="leftimg">
+                        {#                        <img src="{{ STATIC_URL }}ui/images/client/index/instance.png" class="instanceImg"/>#}
+                    </div>
+                    <div class="font">
+                        <div>
+                            <div class="fontLeft">{% trans 'Name' %}:</div>
+                            <div class="fontRight" style="height: 17px;" title="{{ instance.name }}">
+                                <script>get_display_name("{{ instance.name }}")</script>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fontLeft">{% trans 'Address' %}:</div>
+                            <div class="fontRight" style="height: 17px;" title="{% for network, ip_list in instance.addresses.items %}{% for ip in ip_list %}{% if not forloop.last %}{{ ip.addr }},&nbsp;{% else %}{{ ip.addr }}{% endif %} {% endfor %}{% endfor %}">
+                                <script>get_display_name("{% for network, ip_list in instance.addresses.items %}{% for ip in ip_list %}{% if not forloop.last %}{{ ip.addr }},&nbsp;{% else %}{{ ip.addr }}{% endif %} {% endfor %}{% endfor %}")</script>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fontLeft">{% trans 'Size' %}:</div>
+                            <div class="fontRight" style="height: 17px;" title="{{ instance.full_flavor.ram }}{% trans "MB" %},&nbsp;{{ instance.full_flavor.vcpus }} {% trans "VCPU" %},&nbsp;{{ instance.full_flavor.disk }}{% trans "GB" %}">
+                                <script>get_display_name("{{ instance.full_flavor.ram }}MB, {{ instance.full_flavor.vcpus }} VCPU, {{ instance.full_flavor.disk }}GB")</script>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fontLeft">{% trans 'Status' %}:</div>
+                            <div id="instance_{{ instance.id }}_img" class="fontRight" style="height: 17px;" title="{{ instance.status }}">
+                                <script>get_display_name("{{ instance.status }}")</script>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fontLeft">{% trans 'System' %}:</div>
+                            <div class="fontRight" style="height: 17px;" title="{{ instance.image_name }}">
+                                <script>get_system_bg("{{ instance.id }}","{{ instance.image_name }}")</script>
+                                <script>get_display_name("{{ instance.image_name }}")</script>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="icon"><img title="{% trans "reboot instance" %}" src="{{ STATIC_URL }}ui/images/client/icon_fresh_n.png" class="imgButton" onclick="rebootInstanceConfirm('{{ instance.rebooturl }}');"/></div>
+                    <div class="icon"><img title="{% trans "suspend instance" %}" src="{{ STATIC_URL }}ui/images/client/icon_stop_n.png" class="imgButton" onclick="stopInstanceConfirm('{{ instance.stopurl }}');"/></div>
+                    <div class="icon"><img title="{% trans "restore instance" %}" src="{{ STATIC_URL }}ui/images/client/icon_huifu_n.png" class="imgButton" onclick="unstopInstanceConfirm('{{ instance.unstopurl }}');"/></div>
+                    <div class="icon"><img title="{% trans 'Use' %}" src="{{ STATIC_URL }}ui/images/client/icon_play_n.png" class="imgButton" onclick="get_instance_gtk_client('{{ instance.status_link }}','{{ instance.gtkurl }}')"/></div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+<script type="text/javascript">
+    function noticeSubmitForm() {
+        var $checkedbox = $("input[name=notice_check]:checked");
+        if ($checkedbox.length == 0) {
+            alertMsg.error('{% trans "Please select one!" %}');
+            return;
+        }
+        alertMsg.confirm("{% trans "Are you sure for deleting" %} " + $checkedbox.length + " {% trans "items" %}", {
+            okCall:function () {
+                $("#delete_notices_form").submit();
+            }
+        });
+    }
+</script>
+
+<form id="pagerForm" action="{% url "get_notice_list" %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{page_obj.paginator.per_page}}" />
+</form>
+<div class="pageContent listContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+            {% permission 'Create Notice' %}
+                <li><a class="add" target="dialog"  href="{% url "create_notice" %}" tmask="true"><span>{% trans "Add Notice" %}</span></a></li>
+            {% endpermission %}
+            {% permission 'Delete Notice' %}
+                <li>
+                    <a class="delete" onclick="noticeSubmitForm()" href="javascript:void(0)" tmask="true">
+                        <span>{% trans "Batch Delete Notices" %}</span>
+                    </a>
+                </li>
+            {% endpermission %}
+        </ul>
+	</div>
+    <form id="delete_notices_form" action="{% url "delete_notices" %}"
+          method="post" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+        {% add_in_method "delete" %}
+        {% csrf_token %}
+	<table class="table" width="100%" layoutH="75">
+		<thead>
+			<tr>
+                {% permission 'Delete Notice' %}
+                <th>
+                    <input type="checkbox" target_event="notice_check"/>
+                    {% trans 'Check All' %}
+                </th>
+                {% endpermission %}
+                <th>{% trans "Sequence Number" %}</th>
+                <th>{% trans "Title" %}</th>
+                <th>{% trans "Author" %}</th>
+                <th>{% trans "Create Time" %}</th>
+                <th>{% trans "Release" %}</th>
+                <th>{% trans "Level" %}</th>
+                <th>{% trans "Action" %}</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for notice in page_obj.object_list %}
+            <tr url="{{ notice.status_link }}" id="notice_{{ notice.uuid }}">
+                {% permission 'Delete Notice' %}
+                <td align="center" upgrade="checkbox">
+                    <input type="checkbox" name="notice_check" value="{{ notice.uuid }}"/>
+                </td>
+                {% endpermission %}
+                <td align="center">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                <td>
+                    <a target="dialog" href="{% url "notice_action" notice.uuid "detail" %}" tmask="true" width="800" height="500">
+                        {{ notice.title }}
+                    </a>
+                </td>
+                <td>
+                    {% for user in users %}
+                        {% if user.id == notice.operater_id %}
+                            {{ user.name }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ notice.create_time | datetime_from_utctime }}</td>
+                <td>{% if notice.release == '1' %}{% trans "Is Released" %}{% else %}{% trans "No Released" %}{% endif %}</td>
+                <td>{% if notice.level == '1' %}{% trans "High Level" %}{% else %}{% trans "General" %}{% endif %}</td>
+                <td>
+                    {% permission 'Update Notice' %}
+                        <a target="dialog" href="{% url "notice_action" notice.uuid "edit" %}" title="{% trans 'Edit Notice' %}" tmask="true">
+                            <img src="{{ STATIC_URL }}ui/images/edit.png" title="{% trans 'Update' %}"/>
+                        </a>
+                    {% endpermission %}
+                    {% permission 'Delete Notice' %}
+                        <a target="dialog" href="{% url "notice_action" notice.uuid "delete" %}" title="{% trans 'Delete Notice' %}" tmask="true" width="250" height="150">
+                            <img src="{{ STATIC_URL }}ui/images/delete.png" title="{% trans 'Delete' %}"/>
+                        </a>
+                    {% endpermission %}
+                </td>
+            </tr>
+        {% endfor %}
+		</tbody>
+	</table>
+    </form>
+    <div class="panelBar">
+        <div class="pages">
+            <span>{% trans 'Display' %}</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+            </select>
+            <span> {% trans 'records' %}，{% trans 'total' %}  {{page_obj.paginator.count}}  {% trans 'records' %}</span>
+        </div>
+        <div class="pagination" targetType="navTab" totalCount="{{page_obj.paginator.count}}" numPerPage="  {{page_obj.paginator.per_page}}" pageNumShown="{{ page_obj.paginator.num_pages }}" currentPage="{{ page_obj.number }}"></div>
+    </div>
+</div>

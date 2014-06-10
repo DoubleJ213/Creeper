@@ -1,0 +1,68 @@
+{% load i18n %}
+{% load dashboard %}
+{% if hardware != None %}
+    <div class="unit">
+        <label>
+            {% trans 'Server Name' %}</label>
+        <select name="instance_id" id="id_instance_id" class="required" onchange="instance_status();">
+            {% for instance in instance_list %}
+                <option value= {{ instance.id }} >{{ instance.name }}</option>
+            {% endfor %}
+
+        </select>
+    </div>
+    <div class="pro_bar quota-dynamic" id="pro_bar_refresh">
+    <div style="width: 80%;">
+        <div class="quota_title clearfix">
+            CPU&nbsp;({{ hardware.vcpus_used }}/{{ hardware.vcpus }})
+        </div>
+        <div id="quota_cpu" data-progress-indicator-for="instance_cpus" data-quota-limit="{{  hardware.vcpus }}"
+             data-quota-used="{{  hardware.vcpus_used }}" class="quota_bar">
+            {% creeper_progress_bar hardware.vcpus_used hardware.vcpus %}
+        </div>
+    </div>
+    <div style="width: 80%;">
+        <div class="quota_title clearfix" style="width:auto;">
+            {% trans "RAM" %}&nbsp;({{ hardware.memory_mb_used }}/{{ hardware.memory_mb }})
+        </div>
+        <div id="quota_ram" data-progress-indicator-for="instance_ram" data-quota-limit="{{  hardware.memory_mb }}"
+             data-quota-used="{{  hardware.memory_mb_used }}" class="quota_bar">
+            {% creeper_progress_bar hardware.memory_mb_used hardware.memory_mb %}
+        </div>
+    </div>
+    <div style="width: 80%;">
+        <div class="quota_title clearfix" style="width:auto;">
+            {% trans "DISK" %}&nbsp;({{ hardware.local_gb_used }}/{{ hardware.local_gb }}){% trans "MB" %}
+        </div>
+        <div id="quota_disk" data-progress-indicator-for="instance_disk" data-quota-limit="{{  hardware.local_gb }}"
+             data-quota-used="{{  hardware.local_gb_used }}" class="quota_bar">
+            {% creeper_progress_bar hardware.local_gb_used hardware.local_gb %}
+        </div>
+    </div>
+    <div style="width: 80%;">
+    <div class="quota_title clearfix" style="width:auto;">
+        {% trans "Network" %}&nbsp;({{ ips_used}}/{{ ips_total }}){% trans "MB" %}
+    </div>
+    <div id="quota_ips" data-progress-indicator-for="instance_ram" data-quota-limit="{{  ips_used }}"
+         data-quota-used="{{  ips_total }}" class="quota_bar">
+        {% creeper_progress_bar ips_used ips_total %}
+    </div>
+    </div>
+    </div>
+{% else %}
+    {% trans "Fail to get project quotas!" %}
+
+{% endif %}
+<script type="text/javascript" charset="utf-8">
+    if(typeof horizon.Quota !== 'undefined') {
+        horizon.Quota.init();
+    } else {
+        addHorizonLoadEvent(function() {
+            horizon.Quota.init();
+        });
+    }
+
+    $(document).ready(function(){
+        instance_status();
+    });
+</script>

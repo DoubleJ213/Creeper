@@ -1,0 +1,66 @@
+{% load i18n %}
+{% load dashboard %}
+
+<style type="text/css">
+    .td_tr{
+        font-size: 16px;
+        font-family: '宋体';
+    }
+    .btn_background_img{
+        width:80px;
+        height: 28px;
+        background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+        text-align: center;
+        line-height: 28px;
+        font-size: 15px;
+
+
+    }
+    .btn_background_div{
+        text-align: center;
+        line-height: 27px;
+        height: 27px;
+    }
+</style>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="pageFormContent" layouth="58">
+        <table style="background-color: #ffffff; width:auto;height: 60%;margin-left: 10%;">
+            <tr>
+                <td class="td_tr"><img src="{{ STATIC_URL }}ui/images/icon_1.png" width="20" height="20" />&nbsp;{% trans "Prompt" %}：</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="2" class="td_tr">{% trans "Here to give two options" %}</td>
+            </tr>
+            <tr>
+                <td class="td_tr">{% trans "First, create image, and then create instance" %}&nbsp;</td>
+                <td>
+                    <div class="btn_background_img">
+                        <a target="dialog" title="{% trans 'CreateImages' %}" width="550" height="400"
+                           href="{% url "create_image_form_page" img_obj_id=img_obj_id page_id='1' %}"
+                           tmask="true"
+                           style="text-decoration: none">
+                            <div  class="btn_background_div">GO</div>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="td_tr">{% trans "Second, create image and create instance" %}&nbsp;</td>
+                <td>
+                    <div class="btn_background_img">
+                        <a target="dialog" title="{% trans 'ActiveAndStart' %}"  width="700" height="500"
+                           href="{% url "launch_form_image_index" image_id='None' img_obj_id=img_obj_id page_id='instance' %}"
+                           tmask="true"
+                           style="text-decoration: none">
+                            <div class="btn_background_div">GO</div>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>

@@ -1,0 +1,7 @@
+{% load i18n%}
+
+
+<form action="{% url "update_instance" instance_id %}" method="post">
+    {{ form.as_p }}{% csrf_token %}
+    <input type="submit" value="提交">
+</form>

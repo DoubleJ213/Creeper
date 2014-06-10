@@ -1,0 +1,55 @@
+{% load i18n %}
+
+<script type="text/javascript">
+
+    $(document).ready(function (){
+        setProTreeNodeId();
+    });
+
+    function setProTreeNodeId(){
+        if($("#project_tree_htmlVal")){
+            $("#project_tree_hidden").html($("#project_tree_htmlVal").val());
+        }
+        if($("#project_tree_li_id_old")){
+            $("#project_tree_li_id_old").val('');
+        }
+    }
+
+    function enable_tree_project(json){
+        if($("#project_tree_li_id") && $("#project_tree_li_id").val()!=""){
+            var f_id = $("#project_tree_li_id").val();
+            var obj = $("#project_tree_hidden #" + f_id + " a lable");
+            if(obj){
+                obj.first().html("<img src=\"{{ STATIC_URL }}ui/images/icon/preso_icon_1.png\" class=\"tree_icon_img2\">");
+                var treeNodeObj = json.treeNodeObj;
+                var project_id = treeNodeObj.project_id;
+                var lastVal = "<img src=\"{{ STATIC_URL }}ui/images/icon/delete.gif\" class=\"tree_icon_img\" title=\"{% trans 'Delete Project' %}\" "
+                              + " onclick=\"openProDialog('/project_manage/projects/" + project_id + "/delete', 'proTreeDialogId', '', 250, 150, '#project_target_url', '', '#project_tree_li_id', '" + f_id + "')\">"
+                obj.eq(5).html(lastVal);
+            }
+            if($("#project_tree_htmlVal")){
+                $("#project_tree_htmlVal").val($("#project_tree_hidden").html());
+            }
+            $("#project_tree_hidden").html('');
+        }
+    }
+
+</script>
+
+<Table align="center" width="100%" height="100%" valign="middle">
+    <tr>
+        <td align="center">
+            {% trans "Are you sure for enabling this project?" %}
+        </td>
+    </tr>
+    <tr>
+        <td align="center">
+            <form action="{% url "enable_project_action" tenant_id %}" method="post" onsubmit="return validateCallback2(this,dialogAjaxDoneForProject);">
+                {% csrf_token %}
+                <input type="submit" value={% trans "Submit" %} />
+                <input type="button" onclick="$.pdialog.closeCurrent()" value={% trans "Cancel" %} />
+            </form>
+        </td>
+    </tr>
+</Table>
+<div id="project_tree_hidden" style="display: none"></div>

@@ -1,0 +1,60 @@
+{% load i18n %}
+{% load dashboard %}
+
+<form id="pagerForm" action="{% url "get_routers_projects_list" tenant_id %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{page_obj.paginator.per_page}}" />
+</form>
+
+<div class="pageContent listContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+
+            {% if page_obj.paginator.count == 10 %}
+                <li style="line-height: 23px;">{% trans 'the most router projects number is 10' %}</li>
+            {% else %}
+                <li style="line-height: 23px;">{% trans 'Router Projects' %}</li>
+
+            {% endif %}
+            <li></li>	</ul>
+    </div>
+    <table class="table" width="100%" layoutH="75">
+        <thead>
+        <tr>
+            <th>{% trans "Sequence Number" %}</th>
+            <th>{% trans 'Tenant' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'External Network' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for routerProject in page_obj.object_list %}
+            <tr>
+                <td style="text-align: center; width: 50px;">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                <td>
+                    {{ tenant_name }}
+                </td>
+
+                <td>{{ routerProject.name }}</td>
+                <td>
+                {% if routerProject.status == "ACTIVE" %}
+                    {% trans 'ACTIVE' %}
+                {% else %}
+                    {% trans "DOWN" %}
+                {% endif %}</td>
+                <td>
+                    {{ routerProject.external_gateway_info.network }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>{% trans 'Total' %}  {{page_obj.paginator.count}}  {% trans 'Records' %}</span>
+        </div>
+    </div>
+</div>

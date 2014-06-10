@@ -1,0 +1,57 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=7" />
+ <script language="javascript" type="text/javascript">
+        $(function () {
+           getlistdata();
+        });
+        function getlistdata(){
+          $.ajax({
+                type: "GET",
+                url: "{% url "get_authorized_tenants" %}",
+                dataType: "json",
+                success: function (data){
+                    $.each(data, function (i, item) {
+                          var parent = "<li>"+"<a >"+item.name+"</a>";
+                          var instances_content_begin = "<ul>";
+                          var instances_content_end = "</ul></li>";
+                          var j=0;
+                          for(j=0;j<item["instances"].length;j++)
+                          {
+                                var instance_item = item["instances"][j];
+                                var instance_item_content;
+                                if(instance_item.status=="ACTIVE"){
+                                    instance_item_content = "<li iconCls='computer_status_online'>"+"<a href='"+instance_item.link+"'  target='ajax' rel='jbsxBox'>"+instance_item.name+"</a></li>";
+                                }
+                                else{
+                                    instance_item_content = "<li iconCls='computer_status_offline'>"+"<a href='"+instance_item.link+"'  target='ajax' rel='jbsxBox'>"+instance_item.name+"</a></li>";
+                                }
+                                instances_content_begin = instances_content_begin + instance_item_content;
+                          }
+                       
+                          if(j>0){
+                                 parent = parent + instances_content_begin + instances_content_end;
+                                 $("#ajax_tree").append(parent);
+                          }
+                    });
+                   init_AjaxTree();
+                },
+                error: function () {
+                    alert("ajax_tree数据获取失败");
+                }
+            });
+        }
+    </script>
+ <div class="pageContent">
+		<div class="tabsContent">
+				<div  layoutH="100%" style="float:left; margin:5px 0 5px 5px; display:block; overflow:auto; width:240px; border:solid 1px #CCC; line-height:21px; background:#fff">
+                   <ul  id="ajax_tree"  class="tree treeFolder" >
+				     </ul>
+				</div>
+				<div id="jbsxBox" class="unitBox" style="margin-left:245px; border-left:0px solid #b8d0d6;">
+				</div>
+		</div>
+</div>
+
+
+	
+

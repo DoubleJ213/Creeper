@@ -1,0 +1,33 @@
+{% load i18n %}
+
+<script type="text/javascript" charset="utf-8">
+    document.location = '/virtual_keypairs_manage/keypairs/{{ keypair_name }}/download/';
+</script>
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% csrf_token %}
+    <div class="pageFormContent" layouth="58" >
+        <div class="panelBar">
+            <ul>
+                <li style="line-height: 23px;">{% trans "Download Keypair" %}</li>
+        	</ul>
+        </div>
+
+
+         <div class="unit">
+                <b>
+                    {{ keypair_name }} ,{% trans 'The keypair should download automatically. If not use the link below.' %}</b>
+
+
+
+         </div>
+        <div class="unit">
+            <a href="/virtual_keypairs_manage/keypairs/{{ keypair_name }}/download/">
+                {% trans "Download Keypair" %} {{ keypair_name}}
+            </a>
+        </div>
+
+
+    </div>
+</div>

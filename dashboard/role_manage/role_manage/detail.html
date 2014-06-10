@@ -1,0 +1,109 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+
+<style type="text/css">
+    .unit_div_1 {
+        width: 120px;
+        float: left;
+    }
+    .unit_div_2{
+        line-height: 25px;
+        float: left;
+    }
+    .permission_title { clear:both; padding:0 5px; height:20px; padding-top:5px; border:0px;}
+    .detail_ul_li ul li{
+        text-align: left;
+        padding-top: 4px;
+        float:left;
+        width:120px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .list_right_div_2 ul li {
+        float: left;
+        width:120px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .list_right_div_1 {
+        width:122px;
+        float:left;
+        text-align: center;
+        }
+    .list_right_div_2 {width: 100%;float:left;}
+    .list_right_div_2 ul {width: 82%;float:left;}
+    .list_right_div_2 ul li{height: 18px;}
+    .all_div_title{
+        width:120px;
+        float:left;
+    }
+    #description_id{
+        resize: none;
+        width:600px;
+        height:60px;
+        border:none;
+        background-color: #ffffff;
+    }
+</style>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="pageFormContent" layouth="58">
+        {% if role.name != 'ProjectAdmin' and role.name != 'Member' and role.name != 'Auditor' and role.name != 'Admin' %}
+        {% permission "Update Role" %}
+            <div class="permission_title">
+                <a target="dialog" style="float:right;" title="{% trans 'Update Role' %}"  height='600' width='800' href="{% url 'edit_role_form' role.id %}" tmask="true">
+                    <img src="{{ STATIC_URL }}ui/images/edit.png" title="{% trans 'Update Role' %}"/>
+                </a>
+            </div>
+        {% endpermission %}
+        {% endif %}
+        <div class="unit">
+            <div class="unit_div_1">
+                <label>{% trans "Role Name" %}：</label>
+            </div>
+            <div class="unit_div_2">
+                {{ role.name }}
+            </div>
+
+        </div>
+
+        <div class="unit">
+            <label>{% trans "Description" %}：</label>
+            {% if role.description %}
+                <textarea name="description" id="description_id" size="30" cols="29" readonly="readonly" >{{ role.description }}</textarea>
+            {% else %}
+                {% trans "None" %}
+            {% endif %}
+        </div>
+        <div class="formBar" style="height:20px;">
+            <label style="font-size: 14px;width: auto;">
+	            {% trans "Available Permission" %}
+            </label>
+        </div>
+        <br/>
+	    <div >
+		    {% for rights in right_list %}
+			    <div class="list_right_div_2" style="background-color:#FFFFFF">
+			    {% for right in rights %}
+				    {% if forloop.first %}
+					    <div class="list_right_div_1">
+		                    <div class="all_div_title" title="{% trans right %}"><strong>{% trans right %}</strong></div>
+		                </div>
+				    {% endif %}
+				{% endfor %}
+			    <ul>
+			    {% for right in rights %}
+				    {% if not forloop.first %}
+				        <li title="{% trans right %}">{% trans right %}</li>
+				    {% endif %}
+				{% endfor %}
+			    </ul>
+			    </div>
+		    {% endfor %}
+	    </div>
+    </div>
+</div>

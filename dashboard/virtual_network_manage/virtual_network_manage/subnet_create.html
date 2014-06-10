@@ -1,0 +1,178 @@
+{% load i18n %}
+<style type="text/css">
+    .pageFormContent label {
+        width: 150px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function(){
+       var help = $("#subnetnamehelp");
+    });
+    function onfocusViewHelp(a,divid)
+    {
+        document.getElementById(divid).style.display="block"
+        document.getElementById(divid).style.left = a.offsetLeft+ a.offsetWidth+'px'
+        document.getElementById(divid).style.top = a.offsetTop+'px'
+    }
+
+    function onblurViewHelp(divid)
+    {
+        document.getElementById(divid).style.display="none"
+    }
+
+    function changeGatewayIpEnble(qateway)
+    {
+        o = document.getElementById("gateway_ip");
+        if(qateway.checked == true)
+        {
+
+            if(o.getAttribute("disabled") != "disabled")
+            {
+                o.setAttribute("disabled","disabled");
+            }
+        }
+        else
+        {
+
+            if(o.getAttribute("disabled") == "disabled")
+            {
+                o.removeAttribute("disabled");
+            }
+        }
+    }
+    function oninputchange(a, divid){
+        document.getElementById(divid).style.display="none"
+    }
+
+    function onIpVersionChange(ipversion,helpid,poolhelpid){
+        if($(ipversion).val() == 6){
+            help = '{% trans "Network address in CIDR format (e.g. 3ffe:0:0:0:c8ff:fe4d:fd3d:0/112),and the cidr suffix part should all be 0. (e.g. *:*::*:*:*/112, the last 16 bits should be *:*::*:*:*:0000000000000000)" %}';
+            $("#" + helpid).html(help);
+
+            poolhelp = '{% trans "IP address allocation pools. Each entry is <start_ip_address>,<end_ip_address> (e.g., 3ffe:cc4f:58e5:58e5:c8ff:fe4d:fd3d:2,3ffe:cc4f:58e5:58e5:c8ff:fe4d:fd3d:fd3d) and one entry per line." %}';
+            $("#" + poolhelpid).html(poolhelp);
+
+        }else{
+            $("#" + helpid).html('{{ form.fields.cidr.help_text }}');
+            $("#" + poolhelpid).html('{{ form.fields.allocation_pools.help_text }}');
+        }
+    }
+
+</script>
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_subnet_action" network.id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDone);">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{network.tenant_id}}">
+        <input type="hidden" name="network_id" id="network_id" value="{{network.id}}">
+        {% include 'securitygroup_manage/_create.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "Subnet Info" %}</li>
+                </ul>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Subnet Name' %}:</label>
+                <input type="text" id="id_subnet_name" name="subnet_name" onfocus="onfocusViewHelp(this,'subnetnamehelp');"
+                       onblur="onblurViewHelp('subnetnamehelp');" oninput="oninputchange(this,'subnetnamehelp');"
+                       size="30" minlength="2" maxlength="10" class="required"/>
+                <div id="subnetnamehelp" style="color:#FFFFFF;overflow-y:auto;height:25px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.subnet_name.help_text }}</div>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Network Address' %}(CIDR):</label>
+                <input type="text" id="id_cidr" name="cidr" onfocus="onfocusViewHelp(this,'subnetcidrhelp');"
+                       onblur="onblurViewHelp('subnetcidrhelp');" oninput="oninputchange(this,'subnetcidrhelp');"
+                       size="45" minlength="2" maxlength="45"  class="required" />
+                <div id="subnetcidrhelp" style="color:#FFFFFF;overflow-y:auto; height:80px; width:240px;display:none;position: absolute;background: red" >{{ form.fields.cidr.help_text }}</div>
+            </div>
+
+            <div class="unit">
+                <label>
+                        {% trans 'IP Version' %}:</label>
+                <select id="ip_version" name="ip_version" onchange="onIpVersionChange(this,'subnetcidrhelp', 'subnetallocationpoolshelp')">
+                    {% for key,value in form.fields.ip_version.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Gateway IP' %}:</label>
+                <input type="text" id="gateway_ip" name="gateway_ip" onfocus="onfocusViewHelp(this,'subnetgatewayiphelp');"
+                       onblur="onblurViewHelp('subnetgatewayiphelp');" />
+                <div id="subnetgatewayiphelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.gateway_ip.help_text }}</div>
+            </div>
+
+
+            <div class="unit">
+                <label>
+                    {% trans 'Disable Gateway' %}:</label>
+                <input type="checkbox" name="no_gateway" id="no_gateway" onclick="changeGatewayIpEnble(this)" />
+
+            </div>
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "Subnet Detail" %}</li>
+                </ul>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Enable DHCP' %}:</label>
+                <input type="checkbox" checked="checked" name="enable_dhcp" id="enable_dhcp">
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Allocation Pools' %}:</label>
+                <textarea id="id_allocation_pools" onfocus="onfocusViewHelp(this,'subnetallocationpoolshelp');" onblur="onblurViewHelp('subnetallocationpoolshelp');"  rows="5" cols="30" name="allocation_pools"></textarea>
+                <div id="subnetallocationpoolshelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.allocation_pools.help_text }}</div>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'DNS Name Servers' %}:</label>
+                <textarea id="id_dns_nameservers" onfocus="onfocusViewHelp(this,'subnetdnsnameservershelp');" onblur="onblurViewHelp('subnetdnsnameservershelp');"  rows="5" cols="30" name="dns_nameservers"></textarea>
+                <div id="subnetdnsnameservershelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.dns_nameservers.help_text }}</div>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Host Routes' %}:</label>
+                <textarea id="id_host_routes" onfocus="onfocusViewHelp(this,'subnethostroutesshelp');" onblur="onblurViewHelp('subnethostroutesshelp');" rows="5" cols="30" name="host_routes"></textarea>
+                <div id="subnethostroutesshelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.host_routes.help_text }}</div>
+            </div>
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+{#                            <button type="button" class="close" onclick="gotonwUrl('/virtual_network_manage/network/{{ network.tenant_id }}/{{network.id }}/getnetworkinfo/','')">#}
+{#                                {% trans "Cancel" %}#}
+{#                            </button>#}
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

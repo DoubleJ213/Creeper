@@ -1,0 +1,136 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=7"/>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var content = "";
+        $.ajax({
+            type:"GET",
+            url:"{% url "get_instance_monitor_info" instance_id %}",
+            dataType:"json",
+            success:function (data) {
+                if(data != "Not Found"){
+                    var memory = data["memory"];
+                    var cpu_data = data["cpu0_time"];
+                    var cpu_element = $("#cpu_info");
+                    if (cpu_element.html().trim() == "") {
+                        cpu_element.append("cpu0_time").append(": ").append(cpu_data);
+                    }
+                    var vda_read = data["vda_read"];
+                    var vda_write = data["vda_write"];
+                    var vda_write_req = data["vda_write_req"];
+                    var vda_read_req = data["vda_read_req"];
+                    var vda_errors = data["vda_errors"];
+                    var instance_element = $("#instance_disk");
+                    if (instance_element.html().trim() == "") {
+                        instance_element.append("vda_read").append(": ").append(vda_read).append("<br/>")
+                                .append("vda_write").append(": ").append(vda_write).append("<br/>")
+                                .append("vda_write_req").append(": ").append(vda_write_req).append("<br/>")
+                                .append("vda_read_req").append(": ").append(vda_read_req).append("<br/>")
+                                .append("vda_errors").append(": ").append(vda_errors).append("<br/>");
+                    }
+                    var memory_element = $("#memory_info");
+                    if (memory_element.html().trim() == "") {
+                        memory_element.append("memory").append(": ").append(memory);
+                    }
+                    var network_element = $("#instance_network");
+                    if (network_element.html().trim() == "") {
+                        for (var key in data) {
+                            if (key.substring(0, 3) == "tap") {
+                                network_element.append(key).append(": ").append(data[key]).append("<br/>");
+                            }
+                        }
+                    }
+                }
+            },
+            error: DWZ.ajaxError
+        });
+    });
+</script>
+<style>
+
+
+    #instance_info dl {
+        height: 30px;
+    }
+
+    #instance_info dt {
+        text-align: center;
+        float: left;
+        position: relative;
+        width: 150px;
+    }
+
+    #instance_info dd {
+        text-align: center;
+        float: left;
+        position: relative;
+        width: 300px;
+    }
+
+    .part_title {
+        font-size: 14px;
+        height: 20px;
+        margin: 10px 0px;
+        line-height: 20px;
+        padding-bottom: 10px;
+        text-align: left;
+        border-bottom: solid 2px #999;
+        font-weight: bold;
+        color: #999;
+    }
+
+
+</style>
+<div class="pageContent" layoutH="10" style=" padding:5px;">
+    <div id="content_subject" style="height: 100%;color:#7cfc00;width:100%; text-align:center;;position: relative; ">
+        <div class="instance_bg">
+
+
+            <div id="instance_cpu" class="cpu_content">
+                <div class="cpu_info" id="cpu_info"></div>
+            </div>
+            <div class="disk_content">
+                <div class="part_title">Disk信息</div>
+                <div id="instance_disk" class="content_info"></div>
+            </div>
+
+
+            <div id="instance_memory" class="memory_content">
+                <div class="memory_info" id="memory_info"></div>
+            </div>
+            <div class="network_content">
+                <div class="part_title">NetWork信息</div>
+                <div id="instance_network" class="content_info"></div>
+            </div>
+
+
+            <!--<div style="position:relative;margin:0 auto; width:800px; padding-top: 10px; ">
+                  <div id="instance_cpu" class="instance_cpu_info">
+                      <div class="cpu_content">
+                      <div class="cpu_info" id="cpu_info">
+                      </div>
+                      </div>
+                  </div>
+
+                  <div id="instance_memory" class="instance_memory_info">
+                    <div class="memory_content">
+                      <div class="memory_info" id="memory_info">
+                      </div>
+                      </div>
+                  </div>
+                   <div id="instance_disk" class="instance_part_info">
+                      <div class="part_title">
+                         Disk&nbsp;信息
+                      </div>
+                  </div>
+                  <div id="instance_net" class="instance_part_info">
+                      <div class="part_title">
+                      NetWork&nbsp;信息
+                      </div>
+                  </div>
+
+            </div>-->
+
+        </div>
+    </div>
+

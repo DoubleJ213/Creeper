@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<br>
+<form action="{% url "restore_instance_data" instance_id %}" method="post">
+    <select name="restore">
+        {% for snap in page_obj.object_list %}
+            <option value="{{ snap.id }}">{{ snap.name }} </option>
+        {% endfor %}
+    </select>
+   {% csrf_token %}
+<input type="submit" value="还原">
+</form>

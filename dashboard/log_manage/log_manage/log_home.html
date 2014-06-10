@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load dashboard %}
+
+{% for form in form_list %}
+        <div style="width:100%; height: auto; margin-top: 10px; margin-left: 6px;">
+            <a target="dialog" href="{% url "get_log_detail" form.uuid %}" title="{% trans "detail" %}">
+                <div style="float: left; width:17%; line-height: 16px; font-size: 12px; white-space: nowrap; text-overflow:ellipsis; overflow:hidden; margin-left: 6px; margin-top:2px; font-family:'宋体';">{{ form.username }}</div>
+                <div style="float: left; width: 57%; line-height: 16px; font-size: 12px; white-space: nowrap; text-overflow:ellipsis; overflow:hidden; font-family:'宋体';  margin-top:2px;">{{ form.content }}</div>
+                <div style="float: left; width: 22%; line-height: 12px;  font-size: 11px; text-overflow:ellipsis; font-family:'宋体';  margin-top:2px;">{{ form.create_at | datetime_from_utctime }}</div>
+            </a>
+        </div>
+{#    <div style="white-space: nowrap; text-overflow:ellipsis; overflow:hidden; margin-left: 10px; margin-top:2px; font-family:'宋体';">#}
+{#    <a style="font-size: 14px; width: 312px; white-space: nowrap; line-height: 26px;" target="dialog" href="{% url "get_log_detail" form.uuid %}" >&nbsp;&nbsp;&nbsp;&nbsp;#}
+{#    </a></div>#}
+{% endfor %}

@@ -1,0 +1,52 @@
+{% load i18n %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "associate_ip_action" ip_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <input type="hidden" name="floating_ip_id" id="floating_ip_id" value="{{ip_id}}">
+        <input type="hidden" name="floating_ip" id="floating_ip" value="{{form.fields.floating_ip.initial}}">
+        {% include 'securitygroup_manage/_associate_ip.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>
+                    {% trans 'IP' %}：</label>
+                {{form.fields.floating_ip.initial }}
+            </div>
+
+
+            <div class="unit">
+                <label>
+                    {% trans 'Instances' %}：</label>
+                <select id="instance_id" name="instance_id" class="required select" >
+                    {% for key,value in form.fields.instance_id.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Descriptyion' %}：</label>
+                <p>{% trans 'Associate a floating ip with an instance.' %}</P>
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close" onclick="back_up()">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

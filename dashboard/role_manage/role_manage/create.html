@@ -1,0 +1,284 @@
+{% load i18n %}
+
+<script type="text/javascript">
+    function get_right_list() {
+        $.ajax_no_cover({
+                   type:"GET",
+                   url:"{% url "get_right_list" role_id=None %}",
+                   dataType:"json",
+                   async:false,
+                   success:function (data) {
+
+                       $("#rights_id").html(data);
+                       $("#rights_id").css('display','block');
+                   },
+                   error:function () {
+                       alert("权限列表数据获取失败");
+                   }
+               });
+    }
+
+
+
+function check_only(obj,r_id){
+    if(obj.checked){
+    $.ajax_no_cover({
+               type:"GET",
+               url:"{% url "checkbox_right" %}",
+               data:{'right_id':r_id},
+               dataType:"json",
+               async:false,
+               success:function (data) {
+                   $.each(data, function (i, item) {
+                       var depends = item.depend_keys;
+                       for(var i=0;i<depends.length;i++){
+                           $("#"+depends[i]+"_input").checked;
+                       }
+                   });
+               },
+               error:function () {
+                   console.log('获取权限依赖出错');
+               }
+           });
+    }
+}
+    function set_right_checked(){
+        var right_list = document.getElementsByName("rights_list");
+        var rights ='';
+        for(var i = 0;i<right_list.length;i++){
+            if(right_list[i].checked){
+                rights +=right_list[i].value +',';
+            }
+        }
+        var result = $("#rights_list_id");
+        result.val(rights);
+
+    }
+
+function right_select_change(obj){
+    var role_id = $(obj).val();
+
+    if(role_id == null || role_id == ''){
+        $(".list_right_div_1 input").removeAttr('checked');
+        $(".list_right_div_2 ul li input").removeAttr('checked');
+        var result = $("#rights_list_id");
+        result.val('');
+    }else{
+    $.ajax_no_cover({
+               type:"GET",
+               url:"{% url "get_rights_relation" %}",
+               data:{'role_id':role_id},
+               dataType:"json",
+               async:false,
+               success:function (data) {
+                   $(".list_right_div_1 input").removeAttr('checked');
+
+                   $(".list_right_div_2 ul li input").removeAttr('checked');
+                   $.each(data, function (i, item) {
+                       $("#"+item+"_input").attr("checked",'checked');
+                   });
+
+               },
+               error:function () {
+                   console.log('获取权限依赖出错');
+               }
+           });
+
+    }
+    set_right_checked();
+
+}
+</script>
+<style type="text/css">
+    .list_right_div_2 ul li {
+        float: left;
+        width:120px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    .list_right_div_ul{
+        width:122px;
+    }
+    .list_right_div_1 .name_li{
+        text-align: left;
+        padding-top: 4px;
+        float:left;
+         width:100px;
+    }
+    .list_right_div_1 .input_check_li{
+        float:left;
+        width:18px;
+    }
+    .list_right_div_1 {width:122px;float:left;text-align: center;
+        top:4px;}
+    .list_right_div_2 {width: 100%;float:left;}
+    .list_right_div_2 ul {width: 82%;float:left;}
+    span.error{
+        left:120px;
+    }
+    .all_div_title{
+        width:100px;float:left;line-height: 18px;
+    }
+</style>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_role" %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        {% include 'user_manage/_create.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div style="width: 49%;float: left;height: 60px;">
+                <div class="unit">
+                    <label>
+                        {% trans "Role Name" %}：</label>
+                    <input type="text" name="name" size="30" minlength="2" maxlength="10"  class="required" />
+                </div>
+
+                <div class="unit">
+                    <label>
+                        {% trans "Extends role" %}：</label>
+                    <select id="extends_role" name="parent_role_id" onchange="right_select_change(this)" >
+                        {% for key,value in form.fields.parent_role_id.choices %}
+{#                        {% for key,value in parent_choices %}#}
+{#                            {% if 'ProjectAdmin' == value or 'Member' == value or 'admin' == value or 'Auditor' == value %}#}
+                            <option value="{{ key}}">{{ value }}</option>
+{#                            {% endif %}#}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div style="width: 49%;float: left;">
+                <div class="unit">
+                    <label>
+                        {% trans "Description" %}：</label>
+                    <textarea name="description" size="30" cols="29" style="resize: none"  minlength="6" maxlength="400"  class="required"></textarea>
+                </div>
+            </div>
+
+            <div class="formBar" style="height:20px;">
+                <label style="font-size: 14px;">
+                    {% trans "Permission" %}</label>
+            </div>
+            <input type='hidden' id='rights_list_id' name='rights' value='' />
+
+{#            <div class="unit">#}
+{#                <label>#}
+{#                    {% trans "Permission" %}：</label>#}
+{#                <img src="{{ STATIC_URL }}ui/images/edit.png" title="{% trans 'Update Role' %}" onclick="get_right_list();"/>#}
+{#            </div>#}
+            <div class="unit" style="height: 300px;" id="rights_id" >
+            </div>
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        get_right_list();
+    });
+    $(document).ready(function(){
+        $(".list_right_div_2 ul li input").click(function(){
+            var r_id = $(this).val();
+            var all_id = r_id.substr(0,2);
+            var all_checked =$("#"+all_id+"00_title");
+            if(this.checked){
+                $.ajax_no_cover({
+                           type:"GET",
+                           url:"{% url "checkbox_right" %}",
+                           data:{'right_id':r_id},
+                           dataType:"json",
+                           async:false,
+                           success:function (data) {
+                               $.each(data, function (i, item) {
+                                   $("#"+item+"_input").attr("checked",'checked');
+                               });
+                           },
+                           error:function () {
+                               console.log('获取权限依赖出错');
+                           }
+                       });
+
+
+                var _inputs = $("#"+all_id+"00_ul li input");
+                var num = 0;
+                for(var i=0;i<_inputs.length;i++){
+                    if(_inputs[i].checked != true){
+                        num = 1;
+                    }
+                }
+                if(num == 0 && all_checked.checked != true){
+                    all_checked.attr('checked','checked');
+                }
+                set_right_checked();
+            }else{
+                $.ajax_no_cover({
+                           type:"GET",
+                           url:"{% url "checkbox_right_cancel" %}",
+                           data:{'right_id':r_id},
+                           dataType:"json",
+                           async:false,
+                           success:function (data) {
+                               $.each(data, function (i, item) {
+                                   $("#"+item+"_input").removeAttr('checked');
+                                   if($("#"+item+"_title")){
+                                       $("#"+item+"_title").removeAttr('checked');
+                                   }
+                               });
+                           },
+                           error:function () {
+                               console.log('获取权限依赖出错');
+                           }
+                       });
+                all_checked.removeAttr('checked');
+                set_right_checked();
+            }
+        });
+
+
+        $(".list_right_div_1 input").click(function(){
+            var r_id = $(this).val();
+            if(this.checked){
+                $("#"+r_id+"_ul li input").attr('checked','checked');
+                $.ajax_no_cover({
+                           type:"GET",
+                           url:"{% url "all_checkbox_right" %}",
+                           data:{'right_id':r_id},
+                           dataType:"json",
+                           async:false,
+                           success:function (data) {
+                               $.each(data, function (i, item) {
+                                   $("#"+item+"_input").attr("checked",'checked');
+                               });
+                           },
+                           error:function () {
+                               console.log('获取权限依赖出错');
+                           }
+                       });
+                set_right_checked();
+            }else{
+                $("#"+r_id+"_ul li input").removeAttr('checked');
+                set_right_checked();
+            }
+        });
+
+    });
+</script>

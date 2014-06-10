@@ -1,0 +1,88 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=7"/>
+
+<script type="text/javascript">
+
+    var chart;
+    $(document).ready(function() {
+        var item_name = ['status_num'];
+        var div_name = ['#instance_id'];
+        var item_data = [
+            []
+        ];
+        var title_name = ['{% trans "Instance status" %}'];
+        var node_name = [];
+        $.ajax({
+            type:"GET",
+            url:"{% url "get_static_resource" "instance" %}",
+            dataType:"json",
+            global:false,
+            async:false,
+            success:function (data) {
+                $.each(data, function (i, item) {
+                    node_name.push(item['status']);
+                    for (var j = 0, len = item_name.length; j < len; j++) {
+                        item_data[j].push(item[item_name[j]]);
+                    }
+                });
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                DWZ.ajaxError(xhr, ajaxOptions, thrownError);
+            }
+        });
+
+        for (var j = 0, len = item_data.length; j < len; j++) {
+            set_chart(node_name, div_name[j], title_name[j], item_data[j]);
+        }
+
+        function set_chart(node_name, div_name, title, item_data){
+            var data =[
+                [],
+                [],
+                [],
+                [],
+                [],
+                []
+            ];
+            for (var i = 0, len = node_name.length; i < len; i++) {
+                data[i][0] = node_name[i];
+                data[i][1] = item_data[i];
+            }
+            $(div_name).highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: title
+                },
+                tooltip: {
+                    //pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+                    percentageDecimals: 1
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: false
+                        },
+                        showInLegend: true
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: '{% trans "NUMBER" %}',
+                    data: data
+                }]
+            });
+        }
+    });
+</script>
+
+<br>
+<div class="pageContent" layoutH="10">
+    <div id="instance_id"></div>
+</div>

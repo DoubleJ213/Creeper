@@ -1,0 +1,72 @@
+{% load i18n %}
+{% load dashboard %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_node_action" %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        {% include 'node_manage/_create.html' %}
+        <script type="text/javascript">
+            var cloud_physical_nodes = new Object();
+            {% for key,value in form.fields.real_ip.choices %}
+                cloud_physical_nodes['{{ key }}'] = "{{ value }}";
+            {% endfor %}
+
+            function autoFillNodeIP(element) {
+                var ip = cloud_physical_nodes[element.value];
+                $("#real_host_ip").val(ip)
+            }
+        </script>
+        <div class="pageFormContent" layouth="58">
+
+
+            <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+                <select name = 'host_name' class="required select" onchange="autoFillNodeIP(this);">
+                    {% for key,value in form.fields.host_name.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'IP' %}：</label>
+                <input type="text" name="host_ip" id="real_host_ip" size="30" minlength="6" maxlength="20" class="required ip" readonly="readonly" value="{{ form.fields.real_ip.choices.0.1 }}"/>
+            </div>
+{#            <div class="unit">#}
+{#                <label>#}
+{#                    {% trans 'Password' %}：</label>#}
+{#                <input type="password" name="passwd"  size="30" minlength="6" maxlength="20" class="required" />#}
+{#            </div>#}
+            <div class="unit">
+                <label>
+                    {% trans 'Type' %}：</label>
+                <select name = 'type'>
+                    {% for key,value in form.fields.type.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+

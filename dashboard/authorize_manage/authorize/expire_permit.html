@@ -1,0 +1,106 @@
+{% load i18n %}
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% trans "VRV Cloud" %}</title>
+    <link href="{{ STATIC_URL }}ui/images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+    <style type="text/css">
+        .expire_contain{
+            margin: 0 auto;
+            width: 431px;
+            height: 221px;
+            background: url("{{ STATIC_URL }}ui/images/expire_bg.png") no-repeat;
+            margin-top: 15%;
+        }
+        .expire_contain .expire_line{
+            margin: 0 auto;
+            width: 425px;
+            height: 1px;
+            border-bottom: 1px solid #cccccc;
+        }
+        .expire_contain .head{
+            width: 425px;
+            height: 40px;
+        }
+        .head .title{
+            margin-left: 15px;
+            line-height: 40px;
+            font-size: 18px;
+            font-family: "微软雅黑";
+            color: #333333;
+            font-weight: bold;
+        }
+        .exp_left{
+            float: left;
+            width: 80px;
+            background: url("{{ STATIC_URL }}ui/images/expire_icon.png") no-repeat;
+            background-position:18px 15px ;
+            height: 130px;
+        }
+        .exp_right{
+            float: left;
+            width: 320px;
+            height: 130px;
+        }
+        .exp_right .title_rig{
+            width: auto;
+            height: 40px;
+            line-height: 40px;
+            font-size: 17px;
+            font-family: '微软雅黑';
+            font-weight: bold;
+            margin-left: 20px;
+        }
+        .exp_right .font{
+            width: 250px;
+            font-size: 14px;
+            font-family: '宋体';
+            line-height: 25px;
+            word-wrap: break-word;
+            margin-left: 20px;
+            color: #333333;
+        }
+        .expire_contain .update_button{
+            width: 425px;
+            height: 40px;
+            margin-top: 15px;
+            padding: 1px;
+        }
+        .update_button .sub{
+            float: right;
+            margin-right: 15px;
+        }
+        .update_href {
+            text-decoration: none;
+            color: #000000;
+            font-size: 13px;
+            padding: 3px 10px 3px 10px;
+            border: 1px solid #a1a2a2;
+            font-family: '宋体';
+        }
+    </style>
+</head>
+<body>
+<div class="expire_contain">
+    <div class="head">
+         <div class="title">
+             {% trans 'License Expired' %}
+         </div>
+    </div>
+    <div class="expire_line"></div>
+    <div style="width: 420px; padding: 1px">
+        <div class="exp_left"></div>
+        <div class="exp_right">
+            <div class="title_rig">{% trans "VRV Cloud" %}</div>
+            <div class="font">
+                {% trans 'Dear customer.Your license has expired.Please click on the Update button to update your license.' %}
+            </div>
+        </div>
+    </div>
+    <div class="update_button">
+        <div class="sub"><a class="update_href" href="{% url 'get_permit_view' %}">{% trans 'Update License' %}</a></div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load dashboard %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="pageFormContent" layouth="58" >
+        <input type="hidden" name="prepare_volume_id" id="prepare_volume_id" value="{{ prepare_volume_id }}"/>
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{ tenant_id }}"/>
+
+        <table style="background-color: #ffffff; width:auto;height: 60%;margin-left: 10%;margin-top: 5px;">
+            <tr>
+                <td colspan="4"><img src="{{ STATIC_URL }}ui/images/sun.png" width="30" height="30" />{% trans "Update Quotas Success" %}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Click" %}</td>
+                <td>
+
+                    <div class="unit">
+                        <div class="button" id="btnActCancel">
+                            <div class="buttonContent">
+                                <button type="button" onclick="$.pdialog.closeCurrent()" class="close">
+                                    {% trans "Finish" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>{% trans "or continue to add node" %}</td>
+                <td>
+                    <div class="unit">
+                        <div class="button">
+                            <a target="dialog" title="{% trans 'Add Node' %}" href="{% url "create_node_in_volume" prepare_volume_id %}" tmask="true" style="text-decoration: none; padding-right: 5px;" >
+                                <div class="buttonContent">
+                                    {% trans "GO" %}</div>
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+

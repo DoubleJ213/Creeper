@@ -1,0 +1,50 @@
+{% load i18n %}
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script>
+    $(document).ready( function() {
+        var snaps = $("#restore");
+        if(snaps.find("> option").size() == 0){
+            alertMsg.info("{% trans 'No backups find' %}");
+            return false;
+        }
+    });
+</script>
+    <form method="post" action="{% url "restore_instance_data" instance_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <div class="pageFormContent" layouth="58">
+
+
+            <div class="unit">
+                <label>
+                    {% trans 'Snapshot Name' %}：</label>
+                <select id="restore" name="restore" class="required">
+                    {% for snap in page_obj.object_list %}
+                        <option value="{{ snap.id }}">{{ snap.name }} </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

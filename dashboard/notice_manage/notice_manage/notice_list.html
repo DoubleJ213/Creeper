@@ -1,0 +1,54 @@
+{% load i18n %}
+{% load dashboard %}
+
+<form id="pagerForm" action="{% url "get_notice_list_for_head" %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{page_obj.paginator.per_page}}" />
+</form>
+<div class="pageContent listContent">
+    <div class="panelBar">
+        <ul>
+            <li style="line-height:21px">{% trans 'Notice List' %}</li>
+        </ul>
+    </div>
+	<table class="table" width="100%" layoutH="75">
+		<thead>
+			<tr>
+                <th style="width: 80px;">{% trans "Sequence Number" %}</th>
+                <th style="width: 320px;">{% trans "Title" %}</th>
+                <th style="width: 320px;">{% trans "Release_time" %}</th>
+                <th>{% trans "Content" %}</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for notice in page_obj.object_list %}
+            <tr url="{{ notice.status_link }}">
+                <td align="center">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                <td>
+                    <a target="dialog" href="{% url "detail_notice_for_head" notice.uuid %}" tmask="true" width="800" height="500">
+                        {{ notice.title }}
+                    </a>
+                </td>
+                <td>{{ notice.update_time | datetime_from_utctime }}</td>
+                <td>{{ notice.content | truncatechars:100 }}</td>
+            </tr>
+        {% endfor %}
+		</tbody>
+	</table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>{% trans 'Display' %}  </span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+            </select>
+            <span> {% trans 'records' %}，{% trans 'total' %}  {{ page_obj.paginator.count }}  {% trans 'records' %}</span>
+        </div>
+        <div class="pagination" targetType="navTab" totalCount="{{page_obj.paginator.count}}" numPerPage="{{page_obj.paginator.per_page}}" pageNumShown="{{ page_obj.paginator.num_pages }}" currentPage="{{ page_obj.number }}"></div>
+    </div>
+</div>

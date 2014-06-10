@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load dashboard %}
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <form action="{% url "instance_classify_action" %}" class="pageForm required-validate"
+          method="post" onsubmit="return validateCallback(this,dialogAjaxDone);" id="instance_classify_id">
+        {% add_in_method "post" %}
+        {% csrf_token %}
+        <div class="pageFormContent" layouth="58">
+
+            <div class="unit">
+                    <label>{% trans "Please Add Instance Classify" %}</label>
+                    <input type="text" name="classify" size="30" minlength="2" maxlength="10" class="required">
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

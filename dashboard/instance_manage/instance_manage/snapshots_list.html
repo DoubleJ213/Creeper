@@ -1,0 +1,64 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+<form id="pagerForm" action="{% url "get_snapshots_list" instance_id %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{page_obj.paginator.per_page}}" />
+</form>
+<form id="snap_create" method="post">
+    {% csrf_token %}
+</form>
+<script type="text/javascript">
+    function snap_create(url){
+        $("#snap_create").attr("action",url);
+        validateCallback($("#snap_create"),dialogAjaxDone);
+    }
+</script>
+<div class="pageContent listContent">
+    <table class="table" width="100%" layoutH="75">
+        <thead>
+        <tr>
+            <th>{% trans 'Snapshot Name' %}</th>
+            <th>{% trans 'Public' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for snap in page_obj.object_list %}
+            <tr>
+                <td>{{ snap.name }}</td>
+                <td>
+                    {% if snap.is_public %}
+                        {% trans 'True' %}
+                    {% else %}
+                        {% trans 'False' %}
+                    {% endif %}
+                </td>
+                <td>{% trans snap.status %}</td>
+                <td>
+                    {% permission 'Quickly Create Image Templates' %}
+                        <img src="{{ STATIC_URL }}ui/images/create_image.png" title="{% trans 'Quickly Create Image Templates' %}" onclick="snap_create('{% url 'set_snapshot_public' snap.id instance_id %}')" />
+                    {% endpermission %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>{% trans 'Display' %}  </span>
+            <select class="combox" name="numPerPage" onchange="dialogPageBreak({numPerPage:this.value})">
+                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+            </select>
+            <span> {% trans 'Records' %}，{% trans 'Total' %}  {{ page_obj.paginator.count }}  {% trans 'Records' %}</span>
+        </div>
+        <div class="pagination" targetType="dialog" totalCount="{{page_obj.paginator.count}}" numPerPage="{{page_obj.paginator.per_page}}" pageNumShown="{{ page_obj.paginator.num_pages }}" currentPage="{{ page_obj.number }}"></div>
+    </div>
+</div>
+

@@ -1,0 +1,205 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+<script type="text/javascript">
+
+    var iRows_volume=new Array();
+
+    $("#volume_table").find("tbody > tr").each(function (i, row) {
+        iRows_volume.push($(row).attr("id").substring(7));
+    });
+
+</script>
+<form id="pagerForm" action="{% url "get_volume_list_temp" %}" method="get">
+    {% add_in_method 'get' %}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}"/>
+    <input type="hidden" name="numPerPage"
+           value="{{ page_obj.paginator.per_page }}" />
+    <input type="hidden" name="volume_name" value="{{ volume_name }}"/>
+</form>
+<div class="panelBar">
+    <ul class="toolBar">
+        <li>
+            {% permission 'Create Volume' %}
+                <a class="add" target="dialog" width="590" height="330"
+                   href="{% url "create_volume_form" 'tenant' uuid %}"
+                   tmask="true"><span>{% trans "Create Volume" %}</span></a>
+            {% endpermission %}
+        </li>
+{#        <li><a class="add" target="dialog" width="500" height="330"#}
+{#               href="{% url "get_volume_type_list" %}"#}
+{#               tmask="true"><span>{% trans "Create Volume Type" %}</span></a>#}
+{#        </li>#}
+{#        <li>#}
+{#            <a class="delete" width="650" height="330" onclick="submitForm()"#}
+{#               id="delete_a" href="javascript:void(0)"#}
+{#               tmask="true"><span>{% trans "Delete Volumes" %}</span></a>#}
+{#        </li>#}
+        {#               <li>#}
+        {#                   <a class="delete" width="650" height="330" target="dialog"  href="{% url 'get_snapshot_index' %}"#}
+        {#                      tmask="true"><span>{% trans "Delete Volumes" %}</span></a>#}
+        {#               </li>#}
+        <div>
+            <form action="{% url "get_volume_list_temp" %}" method="get"
+                  onsubmit="return  divSearch(this,'volume_div')">
+                {% add_in_method 'get' %}
+                {% csrf_token %}
+                <span style="padding-left: 10px; padding-right: 5px; cursor: auto;">{% trans "Volume Name" %}：</span>
+                <input name="volume_name" type="text" class="textInput"
+                      maxlength="10" value="{{ volume_name }}" >
+            </form>
+        </div>
+    </ul>
+</div>
+{#{% if "chrome" in request.META.HTTP_USER_AGENT|lower %}410{% else %}350{% endif %}#}
+    <form id="delete_volumes_form" action="{% url "delete_volumes" %}" method="post"
+          onsubmit="return iframeCallback(this,dialogAjaxDone)"
+          class="pageForm required-validate">
+        {% add_in_method "delete" %}
+        {% csrf_token %}
+        <table class="table" width="100%" layoutH="75"  id="volume_table">
+            <thead>
+            <tr>
+                {#            <th>#}
+                {#                <div style="float: left; padding-top: 1px;"><input#}
+                {#                        type="checkbox" id="check_all" name="check_all"#}
+                {#                        onclick="checkAll(this)"/></div>#}
+                {#                <div style="float: left; padding-top: 5px;">{% trans 'Check All' %}</div>#}
+                {#            </th>#}
+                <th>{% trans "Sequence Number" %}</th>
+                <th>{% trans 'Pertain Tenant' %}</th>
+                <th>{% trans 'Volume Name' %}</th>
+
+                <th>{% trans 'Volume Description' %}</th>
+                <th>{% trans "Volume Size" %}（G）</th>
+                <th>{% trans 'Volume Status' %}</th>
+                {#            <th>{% trans 'Volume Type' %}</th>#}
+                <th>{% trans 'Volume To Instance' %}</th>
+                <th id="volume_actionId">{% trans 'Action' %}</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            {% for volume in page_obj.object_list %}
+                {#                <tr refresh="{% url get_volume_list %}">#}
+                <tr status="{{ volume.status_link }}" id="volume_{{ volume.id }}">
+
+                    {#                <td align="center" upgrade="checkbox"><input type="checkbox"#}
+                    {#                                                             name="delete_volume"#}
+                    {#                                                             value="{{ volume.id }}"#}
+                    {#                                                             onclick="is_checkAll()"/>#}
+                    {#                </td>#}
+                    <td align="center">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                    <td>{{ volume.tenant.name }}</td>
+                    <td><a href="{% url "get_volume_detail" volume.id %}"
+                           tmask="true" target="dialog"
+                           height="480">{{ volume.display_name }}</a></td>
+                    <td>
+                        {% if volume.display_description == 'None' or volume.display_description == '' %}
+                            {% trans 'None' %}
+                        {% else %}
+                            {{ volume.display_description|truncatechars:30 }}
+                        {% endif %}
+                    </td>
+                    <td>{{ volume.size }}</td>
+                    <td upgrade='status'>
+                        {% if volume.status != 'available' and volume.status != 'in-use' and volume.status != 'error' %}
+                            <div class="status_loading"></div>{% endif %}
+                        {% trans volume.status %}
+                    </td>
+                    {#                <td>{{ volume.volume_type }}</td>#}
+                    <td>
+                        {% if volume.instance_name == None %}
+                            {% trans 'None' %}
+                        {% else %}
+                            {{ volume.instance_name|truncatechars:10 }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% permission 'Delete Volume' %}
+                            {% if  volume.status == 'available' or volume.status == 'error' or volume.status == 'error-deleting' %}
+                                <a  id="delete_volume_{{ volume.id }}" href="javascript:void(0)" tmask="true" onclick="delete_single_volume('{{ volume.id }}')" title="{% trans 'Delete Volume' %}">
+                                    <img src="{{ STATIC_URL }}ui/images/delete.png" title="{% trans 'Delete Volume' %}" alt="{% trans 'Delete Volume' %}"/>
+                                </a>
+                            {% else %}
+                                <a  id="delete_volume_{{ volume.id }}" href="javascript:void(0)" tmask="true" ></a>
+                            {% endif %}
+                        {% endpermission %}
+
+                        {% permission 'Attach Volume' %}
+                            {% if volume.status == 'available' %}
+                                <a href="{% url "attach_volume_form" volume.tenant.id volume.id %}" id="attach_volume_{{ volume.id }}"
+                                   tmask="true" target="dialog" title="{% trans "Attach Volume" %}" tenant="{{ volume.tenant.id }}">
+                                    <img src="{{ STATIC_URL }}ui/images/attach_volume.png" title="{% trans "Attach Volume" %}" alt="{% trans "Attach Volume" %}"/>
+                                </a>
+                            {% else %}
+                                <a href="javascript:void(0);" id="attach_volume_{{ volume.id }}" tmask="true" target="dialog" tenant="{{ volume.tenant.id }}" ></a>
+                            {% endif %}
+                        {% endpermission %}
+
+                        {% permission 'Detach Volume' %}
+                            {% if volume.status == 'in-use' %}
+                                <a href="javascript:void(0);" tmask="true" id="detach_volume_{{ volume.id }}"
+                                   title="{% trans "Detach Volume" %}" instance_id="" onclick="detach_volume('{{ volume.id }}','{{ volume.instance_id }}')">
+                                    <img src="{{ STATIC_URL }}ui/images/detach_volume.png" title="{% trans "Detach Volume" %}" alt="{% trans "Detach Volume" %}"/>
+                                </a>
+                            {% else %}
+                                <a id="detach_volume_{{ volume.id }}" href="javascript:void(0);" tmask="true" instance_id="{{ volume.instance_id }}"></a>
+                            {% endif %}
+                        {% endpermission %}
+
+
+                        {%  permission 'Create Volume Snapshot' %}
+                            {% if volume.status == 'available' %}
+                                {% if volume.tenant and volume.tenant.enabled %}
+                                    <a href="{% url "create_volume_snapshot_form" volume.tenant.id volume.id %}" id="snapshot_{{ volume.id }}" tenant="{{ volume.tenant.id }}"
+                                       tmask="true" onmouseover="" target="dialog" title="{% trans 'Create Volume Snapshot' %}">
+                                        <img src="{{ STATIC_URL }}ui/images/snapshot.png" title="{% trans 'Create Volume Snapshot' %}" alt="{% trans 'Create Volume Snapshot' %}"/>
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <a href="javascript:void(0);" id="snapshot_{{ volume.id }}" tenant="{{ volume.tenant.id }}"
+                                   tmask="true" onmouseover="" target="dialog"></a>
+                            {% endif %}
+                        {% endpermission %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </form>
+<form action="" method="post" id="detach_volume_form" onsubmit="return iframeCallback(this,detachCallback)">
+    {% csrf_token %}
+    {% add_in_method "post" %}
+</form>
+<div class="panelBar">
+    <div class="pages">
+        <span>{% trans 'Display' %}  </span>
+        <select class="combox" name="numPerPage" onchange="divPageBreak({numPerPage:this.value},'volume_div')">
+            <option value="10"  {% if page_obj.paginator.per_page == 10 %}
+                    selected {% endif %} >10
+            </option>
+            <option value="20"  {% if page_obj.paginator.per_page == 20 %}
+                    selected {% endif %} >20
+            </option>
+            <option value="50"  {% if page_obj.paginator.per_page == 50 %}
+                    selected {% endif %} >50
+            </option>
+            <option value="100" {% if page_obj.paginator.per_page == 100 %}
+                    selected {% endif %} >100
+            </option>
+            <option value="200" {% if page_obj.paginator.per_page == 200 %}
+                    selected {% endif %} >200
+            </option>
+        </select>
+        <span> {% trans 'records' %}，{% trans 'total' %} {{ page_obj.paginator.count }} {% trans 'records' %}</span>
+    </div>
+    <div class="pagination" targetType="div"
+         totalCount="{{ page_obj.paginator.count }}"
+         numPerPage="  {{ page_obj.paginator.per_page }}"
+         pageNumShown="{{ page_obj.paginator.num_pages }}"
+         currentPage="{{ page_obj.number }}" rel="volume_div"></div>
+
+
+</div>

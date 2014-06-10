@@ -1,0 +1,5733 @@
+
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-14 14:32+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: middleware.py:164 utils/decorators.py:56
+msgid "Please log in to continue."
+msgstr "请先登录"
+
+#: api/keystone.py:54
+#, python-format
+msgid "%(type)s (%(backend)s backend)"
+msgstr "%(type)s (%(backend)s 后端)"
+
+#: api/nova.py:183
+#, python-format
+msgid "ALLOW %(from)s:%(to)s from %(group)s"
+msgstr "允许：%(from)s:%(to)s %(group)s"
+
+#: api/nova.py:188
+#, python-format
+msgid "ALLOW %(from)s:%(to)s from %(cidr)s"
+msgstr "允许：%(from)s:%(to)s  %(cidr)s"
+
+#: api/swift.py:114
+msgid "Unicode is not currently supported for object copy."
+msgstr "对象拷贝目前不支持Unicode"
+
+#: authorize/forms.py:49
+msgid "Region"
+msgstr ""
+
+#: authorize/forms.py:50 instance_manage/instance_manage/index.html:84
+msgid "User"
+msgstr "用户"
+
+#: authorize/forms.py:51 instance_manage/forms.py:105 node_manage/forms.py:49
+#: node_manage/node_manage/create.html:24 user_manage/forms.py:48
+#: user_manage/forms.py:144 user_manage/forms.py:187
+msgid "Password"
+msgstr "密码"
+
+#: authorize/forms.py:132
+msgid "Unable to authenticate for that project."
+msgstr "无权访问该项目"
+
+#: authorize/forms.py:146 authorize/utils.py:92
+msgid "Invalid user name or password."
+msgstr "无效的用户名或密码"
+
+#: authorize/forms.py:152 authorize/utils.py:101
+#, python-format
+msgid ""
+"An error occurred authenticating. Please try again later.\n"
+" %s"
+msgstr ""
+"验证过程出错。请稍后再试.\n"
+"，%s"
+
+#: authorize/forms.py:169 authorize/utils.py:123
+msgid "You are not authorized for any projects."
+msgstr "您未被授权访问任何机构。"
+
+#: authorize/forms.py:192 authorize/utils.py:146
+msgid "You are not authorized for any available projects."
+msgstr "您未被授权访问任何可用机构。"
+
+#: authorize/utils.py:80
+#, fuzzy, python-format
+msgid "Unable to authenticate for that project.Error is %s"
+msgstr "无权访问该项目"
+
+#: control_manage/forms.py:39 software_manage/forms.py:38
+msgid "Label Name"
+msgstr "标签名称"
+
+#: control_manage/forms.py:40
+msgid "Action Name"
+msgstr "行为名称"
+
+#: control_manage/forms.py:41
+msgid "type"
+msgstr "类型"
+
+#: control_manage/forms.py:42
+#: project_manage/project_manage/edit_user_role.html:11
+#: project_manage/project_manage/get_user.html:23 software_manage/forms.py:39
+msgid "role"
+msgstr "角色"
+
+#: control_manage/forms.py:55
+msgid "Unable to retrieve controllers."
+msgstr "无法获取管控"
+
+#: control_manage/forms.py:56
+msgid "Root Menu"
+msgstr "Root菜单"
+
+#: control_manage/forms.py:66 software_manage/forms.py:54
+#: software_manage/views.py:91 user_manage/forms.py:66
+msgid "Unable to retrieve user roles."
+msgstr "无法获取用户角色"
+
+#: control_manage/views.py:93
+#, python-format
+msgid "Can not create controller %s"
+msgstr "无法创建管控%s"
+
+#: control_manage/views.py:105
+#, python-format
+msgid "Can not delete controller =%s"
+msgstr "无法删除管控 =%s"
+
+#: hard_template/forms.py:34 image_template/forms.py:34
+#: image_template/forms.py:74 image_template/image_template/detail.html:17
+#: instance_manage/instance_manage/detail.html:108
+#: instance_manage/instance_manage/detail1.html:101 node_manage/forms.py:47
+#: node_manage/node_manage/create.html:14 project_manage/forms.py:49
+#: volume_manage/volume_manage/detail.html:21
+msgid "Name"
+msgstr "名称"
+
+#: hard_template/forms.py:36
+msgid "Memory MB"
+msgstr "内存 MB"
+
+#: hard_template/forms.py:37
+msgid "Root Disk GB"
+msgstr "根磁盘 GB"
+
+#: hard_template/forms.py:38
+msgid "Ephemeral Disk GB"
+msgstr "临时磁盘 GB"
+
+#: hard_template/views.py:58
+msgid "Can not get flavor list!"
+msgstr "无法获取虚拟硬件模板列表！"
+
+#: hard_template/views.py:89
+msgid "Can not create flavor!"
+msgstr "无法创建虚拟硬件模板！"
+
+#: hard_template/views.py:107
+msgid "Unauthorized attempt to access flavor list."
+msgstr "无权查看虚拟硬件模板列表"
+
+#: hard_template/views.py:122
+msgid "No flavor can be found!"
+msgstr "无虚拟硬件模板存在！"
+
+#: hard_template/views.py:139
+#, python-format
+msgid "Can not find flavor with id (%s) "
+msgstr "无法根据id(%s)得到虚拟硬件模板"
+
+#: hard_template/views.py:141
+msgid "Something was wrong!"
+msgstr "有错误！"
+
+#: hard_template/views.py:156
+msgid "Can not delete flavor!"
+msgstr "不能删除虚拟硬件模板！"
+
+#: hard_template/views.py:173
+#, python-format
+msgid "Can not find the flavor with id (%s)"
+msgstr "无法根据id(%s)得到虚拟硬件模板"
+
+#: hard_template/views.py:175 hard_template/views.py:201
+msgid "Can not update flavor!"
+msgstr "不能更新虚拟硬件模板！"
+
+#: hard_template/hard_template/detail.html:5
+#: hard_template/hard_template/index.html:4
+msgid "image_template manage"
+msgstr "母盘模板管理"
+
+#: image_template/forms.py:35 image_template/forms.py:92
+#: image_template/image_template/detail.html:65
+#: image_template/image_template/update.html:64
+msgid "Disk Format"
+msgstr "磁盘格式"
+
+#: image_template/forms.py:39
+msgid "AKI - Amazon Kernel Image"
+msgstr ""
+
+#: image_template/forms.py:42
+msgid "AMI - Amazon Machine Image"
+msgstr ""
+
+#: image_template/forms.py:45
+msgid "ARI - Amazon Ramdisk Image"
+msgstr ""
+
+#: image_template/forms.py:48
+msgid "ISO - Optical Disk Image"
+msgstr ""
+
+#: image_template/forms.py:50
+msgid "QCOW2 - QEMU Emulator"
+msgstr ""
+
+#: image_template/forms.py:55
+msgid "Image Data"
+msgstr "母盘数据"
+
+#: image_template/forms.py:56 image_template/forms.py:95
+#: image_template/image_template/detail.html:32
+#: image_template/image_template/update.html:74
+#: instance_manage/instance_manage/imglist.html:14
+#: instance_manage/instance_manage/snapshots_list.html:14
+msgid "Public"
+msgstr "公共"
+
+#: image_template/forms.py:76 image_template/image_template/detail.html:84
+#: image_template/image_template/update.html:23
+msgid "Kernel ID"
+msgstr "内核 ID"
+
+#: image_template/forms.py:81 image_template/image_template/detail.html:92
+#: image_template/image_template/update.html:34
+msgid "Ramdisk ID"
+msgstr "内存磁盘 ID"
+
+#: image_template/forms.py:85 image_template/image_template/detail.html:76
+#: image_template/image_template/update.html:45
+msgid "Architecture"
+msgstr "架构"
+
+#: image_template/forms.py:89 image_template/image_template/detail.html:60
+#: image_template/image_template/update.html:55
+msgid "Container Format"
+msgstr "容器类型"
+
+#: image_template/views.py:57
+msgid "Can not retrieve images !"
+msgstr "无法获取母盘！"
+
+#: image_template/views.py:71
+msgid "No image can be found!"
+msgstr "没有母盘存在！"
+
+#: image_template/views.py:102
+#, python-format
+msgid "Can not update with id (%s)"
+msgstr "无法根据id (%s)更新！"
+
+#: image_template/views.py:130
+msgid "Update image successfully ! "
+msgstr "成功更新母盘！"
+
+#: image_template/views.py:150
+#, python-format
+msgid "Can not find image template with id (%s)"
+msgstr "查找不到id (%s)的模板"
+
+#: image_template/views.py:219
+msgid "Can not create image!"
+msgstr "不能创建母盘！"
+
+#: image_template/image_template/delete.html:6
+msgid "Are you sure for deleting this image ?"
+msgstr "确认删除母盘？"
+
+#: image_template/image_template/delete.html:10
+#: instance_manage/instance_manage/delete.html:11
+#: node_manage/node_manage/delete.html:11
+#: project_manage/project_manage/delete.html:11
+#: project_manage/project_manage/delete_user.html:11
+#: software_manage/software_manage/delete.html:11
+#: user_manage/user_manage/delete.html:10
+msgid "submit"
+msgstr "提交"
+
+#: image_template/image_template/delete.html:11
+#: instance_manage/instance_manage/delete.html:12
+#: node_manage/node_manage/delete.html:12
+#: project_manage/project_manage/delete.html:12
+#: project_manage/project_manage/delete_user.html:12
+#: software_manage/software_manage/delete.html:12
+msgid "cancel"
+msgstr "取消"
+
+#: image_template/image_template/detail.html:14
+#: instance_manage/instance_manage/detail.html:106
+#: instance_manage/instance_manage/detail1.html:99
+#: volume_manage/volume_manage/detail.html:18
+msgid "Info"
+msgstr "信息"
+
+msgid "UserInfo"
+msgstr "用户信息"
+
+#: image_template/image_template/detail.html:22
+#: instance_manage/instance_manage/detail.html:110
+#: instance_manage/instance_manage/detail1.html:103 project_manage/forms.py:47
+#: volume_manage/volume_manage/detail.html:23
+msgid "ID"
+msgstr "ID"
+
+#: image_template/image_template/detail.html:27
+#: image_template/image_template/index.html:25
+#: instance_manage/instance_manage/detail.html:112
+#: instance_manage/instance_manage/detail1.html:105
+#: instance_manage/instance_manage/index.html:79
+#: instance_manage/instance_manage/snapshots_list.html:15
+#: volume_manage/volume_manage/detail.html:29
+msgid "Status"
+msgstr "状态"
+
+#: image_template/image_template/detail.html:37
+msgid "Checksum"
+msgstr ""
+
+#: image_template/image_template/detail.html:42
+#: volume_manage/volume_manage/detail.html:40
+msgid "Created"
+msgstr "创建时间"
+
+#: image_template/image_template/detail.html:47
+msgid "Updated"
+msgstr "更新时间"
+
+#: image_template/image_template/detail.html:52
+#: instance_manage/instance_manage/detail.html:123
+#: instance_manage/instance_manage/detail1.html:116
+#: volume_manage/volume_manage/detail.html:35
+msgid "Specs"
+msgstr "规格"
+
+#: image_template/image_template/detail.html:55
+#: instance_manage/instance_manage/index.html:78
+#: volume_manage/volume_manage/detail.html:38
+msgid "Size"
+msgstr "大小"
+
+#: image_template/image_template/detail.html:71
+msgid "Custom Properties"
+msgstr "Custom Properties"
+
+#: image_template/image_template/detail.html:100
+msgid "Euca2ools state"
+msgstr ""
+
+#: image_template/image_template/detail.html:108
+msgid "Project ID"
+msgstr "机构ID"
+
+#: image_template/image_template/detail.html:116
+msgid "Image Type"
+msgstr "母盘类型"
+
+#: image_template/image_template/index.html:24
+#: image_template/image_template/update.html:12
+#: instance_manage/instance_manage/imglist.html:13
+#: node_manage/node_manage/index.html:59
+#: project_manage/project_manage/get_user.html:20
+#: project_manage/project_manage/index.html:24
+#: project_manage/project_manage/index1.html:18 user_manage/views.py:198
+#: user_manage/user_manage/index.html:24
+#: user_manage/user_manage/index1.html:17
+msgid "name"
+msgstr "姓名"
+
+#: image_template/image_template/index.html:26
+#: instance_manage/instance_manage/imglist.html:15
+#: instance_manage/instance_manage/index.html:86
+#: instance_manage/instance_manage/index.html:120
+#: instance_manage/instance_manage/snapshots_list.html:16
+#: node_manage/node_manage/index.html:65
+#: project_manage/project_manage/get_user.html:24
+#: project_manage/project_manage/index.html:27
+#: project_manage/project_manage/index1.html:21
+#: user_manage/user_manage/index.html:29
+#: user_manage/user_manage/index1.html:22
+msgid "Action"
+msgstr "操作"
+
+#: image_template/image_template/index.html:34
+msgid "update"
+msgstr "更新"
+
+#: image_template/image_template/index.html:35
+#: node_manage/node_manage/index.html:79
+#: project_manage/project_manage/get_user.html:37
+#: project_manage/project_manage/index.html:41
+#: user_manage/user_manage/index.html:48
+msgid "del"
+msgstr "删除"
+
+#: instance_manage/forms.py:37
+msgid "Server Name"
+msgstr "虚拟机名称"
+
+#: instance_manage/forms.py:43 instance_manage/instance_manage/create.html:36
+msgid "User Data"
+msgstr "用户数据"
+
+#: instance_manage/forms.py:45 instance_manage/instance_manage/create.html:42
+#: instance_manage/instance_manage/detail.html:126
+#: instance_manage/instance_manage/detail1.html:119
+msgid "Flavor"
+msgstr "虚拟硬件模板"
+
+#: instance_manage/forms.py:46
+msgid "Size of image to launch."
+msgstr "启动母盘大小"
+
+#: instance_manage/forms.py:47 instance_manage/instance_manage/create.html:52
+msgid "Keypair"
+msgstr "密钥对"
+
+#: instance_manage/forms.py:49
+msgid "Which keypair to use for authentication."
+msgstr "选择密钥对进行鉴权"
+
+#: instance_manage/forms.py:51 instance_manage/instance_manage/create.html:62
+msgid "Instance Count"
+msgstr "虚拟机数目"
+
+#: instance_manage/forms.py:53
+msgid "Number of instances to launch."
+msgstr "启动的虚拟机数目"
+
+#: instance_manage/forms.py:55 instance_manage/instance_manage/create.html:68
+#: instance_manage/instance_manage/detail.html:153
+#: instance_manage/instance_manage/detail1.html:147
+msgid "Security Groups"
+msgstr "安全组"
+
+msgid "Router Projects"
+msgstr "路由项目"
+
+#: instance_manage/forms.py:58
+msgid "Launch instance in these security groups."
+msgstr "在这些安全组中启动虚拟机"
+
+#: instance_manage/forms.py:60 instance_manage/instance_manage/create.html:74
+msgid "Volume or Volume Snapshot"
+msgstr "卷或卷快照"
+
+#: instance_manage/forms.py:62
+msgid "Volume to boot from."
+msgstr "启动卷"
+
+#: instance_manage/forms.py:63 instance_manage/instance_manage/create.html:84
+msgid "Device Name"
+msgstr "设备名称"
+
+#: instance_manage/forms.py:66
+msgid "Volume mount point (e.g. 'vda' mounts at '/dev/vda')."
+msgstr "卷挂載点：（例如. 'vda' 挂載到 '/dev/vda'）。"
+
+#: instance_manage/forms.py:69 instance_manage/instance_manage/create.html:89
+msgid "Delete on Terminate"
+msgstr "在终端删除"
+
+#: instance_manage/forms.py:72
+msgid "Delete volume on instance terminate"
+msgstr "在虚拟机终端删除卷"
+
+#: instance_manage/forms.py:81
+msgid "Select a keypair"
+msgstr "选择密钥对"
+
+#: instance_manage/forms.py:83
+msgid "No keypairs available."
+msgstr "无可用密钥对"
+
+#: instance_manage/forms.py:93 user_manage/forms.py:70
+#: user_manage/forms.py:132
+msgid "Select a project"
+msgstr "请选择一个机构"
+
+msgid "Select a role"
+msgstr "请选择一个角色"
+
+#: instance_manage/forms.py:108
+#: instance_manage/instance_manage/change_pwd.html:17 user_manage/forms.py:53
+#: user_manage/forms.py:151 user_manage/forms.py:194
+#: user_manage/user_manage/updatepassword.html:20
+msgid "Confirm Password"
+msgstr "确认密码"
+
+#: instance_manage/forms.py:125 user_manage/forms.py:81
+#: user_manage/forms.py:173 user_manage/forms.py:209
+msgid "Passwords do not match."
+msgstr "密码不匹配"
+
+#: instance_manage/forms.py:141
+#: instance_manage/instance_manage/create_snapshot.html:11
+#: instance_manage/instance_manage/snapshots_list.html:13
+msgid "Snapshot Name"
+msgstr "快照名称"
+
+#: instance_manage/views.py:65
+msgid "Unable to retrieve instance list."
+msgstr "无法获取虚拟机列表"
+
+#: instance_manage/views.py:72
+msgid "Unable to retrieve instance size information."
+msgstr "无法获取虚拟机大小信息"
+
+#: instance_manage/views.py:79
+msgid "Unable to retrieve instance tenant information."
+msgstr "无法获取虚拟机所在机构信息"
+
+#: instance_manage/views.py:105
+msgid "Can not retrieve vnc url!"
+msgstr "不可获得vnc url!"
+
+#: instance_manage/views.py:132 instance_manage/views.py:488
+#: instance_manage/views.py:520 instance_manage/views.py:551
+#: instance_manage/views.py:586 instance_manage/views.py:619
+#: instance_manage/views.py:638 instance_manage/views.py:671
+#: instance_manage/views.py:960
+#, python-format
+msgid "Can not found instance (%s)"
+msgstr "无法找到虚拟机(%s)"
+
+msgid "Can not retrieve instance detail"
+msgstr "无法获取虚拟机监控信息。"
+
+#: instance_manage/views.py:134
+#, python-format
+msgid "Unable to retrieve details for instance \"%s\"."
+msgstr "无法获取虚拟机\"%s\"详细信息。"
+
+#: instance_manage/views.py:156
+msgid "Unable to retrieve images."
+msgstr "无法获取母盘"
+
+#: instance_manage/views.py:178
+msgid "Unable to retrieve instance flavors."
+msgstr "无法获取虚拟机虚拟硬件模板"
+
+#: instance_manage/views.py:191
+msgid "Unable to retrieve keypairs."
+msgstr "不可获取密钥对"
+
+#: instance_manage/views.py:203
+msgid "Unable to retrieve list of security groups"
+msgstr "不可得到安全组列表"
+
+#: instance_manage/views.py:212
+msgid "Select Volume"
+msgstr "选择卷"
+
+#: instance_manage/views.py:216
+msgid "Snapshot"
+msgstr "快照"
+
+#: instance_manage/views.py:219
+#: instance_manage/instance_manage/detail.html:200
+#: instance_manage/instance_manage/detail1.html:191
+msgid "Volume"
+msgstr "卷"
+
+#: instance_manage/views.py:231 instance_manage/views.py:240
+msgid "Unable to retrieve list of volumes"
+msgstr "无法获取卷列表"
+
+#: instance_manage/views.py:445
+msgid "Delete server error!"
+msgstr "删除虚拟机错误！"
+
+#: instance_manage/views.py:464
+#, python-format
+msgid "Can not recognize the action \"%s\" !"
+msgstr "不可识别的动作\"%s\" !"
+
+#: instance_manage/views.py:482
+msgid "Can not reboot instance,the status is wrong!"
+msgstr "不能重启虚拟机，状态错误！"
+
+#: instance_manage/views.py:496
+msgid "Can not reboot instance!"
+msgstr "无法重启虚拟机！"
+
+#: instance_manage/views.py:526
+msgid "Can not pause instance!"
+msgstr "无法暂停虚拟机！"
+
+#: instance_manage/views.py:557
+msgid "Can not unpause instance!"
+msgstr "无法取消暂停！"
+
+#: instance_manage/views.py:612
+msgid "Can not resume instance whose status is not suspended"
+msgstr "无法恢复停止的虚拟机"
+
+#: instance_manage/views.py:625
+msgid "Can not resume instance!"
+msgstr "无法恢复虚拟机！"
+
+#: instance_manage/views.py:640 instance_manage/views.py:673
+#, fuzzy, python-format
+msgid "Unable to change password for instance \"%s\"."
+msgstr "无法获取虚拟机\"%s\"详细信息。"
+
+#: instance_manage/views.py:701
+#, python-format
+msgid "Change \"%s\" password successfully"
+msgstr "成功修改密码\"%s\""
+
+#: instance_manage/views.py:714
+msgid "There is something wrong!"
+msgstr "有错误！"
+
+#: instance_manage/views.py:780
+msgid "To create a snapshot, the instance status must be in ACTIVE"
+msgstr "虚拟机状态不为ACTIVE ，不可创建快照"
+
+#: instance_manage/instance_manage/change_pwd.html:11 user_manage/views.py:274
+#: user_manage/user_manage/updatepassword.html:15
+msgid "password"
+msgstr "密码"
+
+#: instance_manage/instance_manage/create.html:11
+#: instance_manage/instance_manage/index.html:76
+#: instance_manage/instance_manage/update.html:11
+msgid "Instance Name"
+msgstr "虚拟机名称"
+
+#: instance_manage/instance_manage/create.html:17
+#: instance_manage/instance_manage/index.html:72
+#: project_manage/project_manage/get_user.html:22
+msgid "Tenant"
+msgstr "机构"
+
+#: instance_manage/instance_manage/create1.html:4
+msgid "Launch Instances"
+msgstr "创建虚拟机"
+
+#: instance_manage/instance_manage/create1.html:24
+msgid "Launch Instance"
+msgstr "创建虚拟机"
+
+#: instance_manage/instance_manage/delete.html:6
+msgid "Are you sure for deleting this instance?"
+msgstr "确认删除虚拟机？"
+
+#: instance_manage/instance_manage/detail.html:86
+#: instance_manage/instance_manage/detail.html:98
+#: instance_manage/instance_manage/vnc.html:4
+msgid "Instance VNC Console"
+msgstr "虚拟机VNC 控制台SS"
+
+#: instance_manage/instance_manage/detail.html:88
+#: instance_manage/instance_manage/detail.html:100
+#: instance_manage/instance_manage/vnc.html:6
+msgid ""
+"If VNC console is not responding to keyboard input: click the grey status "
+"bar below."
+msgstr "如果VNC控制台对键盘输入无反应：点击下面的灰色状态横线"
+
+#: instance_manage/instance_manage/detail.html:88
+#: instance_manage/instance_manage/detail.html:100
+#: instance_manage/instance_manage/vnc.html:6
+msgid "Click here to show only VNC"
+msgstr "点击此处置显示VNC"
+
+#: instance_manage/instance_manage/detail.html:128
+#: instance_manage/instance_manage/detail1.html:122
+msgid "RAM"
+msgstr "内存"
+
+#: instance_manage/instance_manage/detail.html:129
+#: instance_manage/instance_manage/detail1.html:123
+msgid "MB"
+msgstr "MB"
+
+#: instance_manage/instance_manage/detail.html:131
+#: instance_manage/instance_manage/detail1.html:125
+#: instance_manage/instance_manage/index.html:105
+msgid "VCPU"
+msgstr "虚拟CPU"
+
+#: instance_manage/instance_manage/detail.html:132
+#: instance_manage/instance_manage/detail1.html:126
+msgid "Disk"
+msgstr "磁盘"
+
+#: instance_manage/instance_manage/detail.html:133
+#: instance_manage/instance_manage/detail1.html:127
+#: instance_manage/instance_manage/index.html:105
+#: volume_manage/volume_manage/detail.html:39
+msgid "GB"
+msgstr "GB"
+
+#: instance_manage/instance_manage/detail.html:138
+#: instance_manage/instance_manage/detail1.html:132
+msgid "IP Addresses"
+msgstr "IP地址"
+
+#: instance_manage/instance_manage/detail.html:162
+#: instance_manage/instance_manage/detail1.html:156
+msgid "No rules defined."
+msgstr "无规则"
+
+#: instance_manage/instance_manage/detail.html:174
+#: instance_manage/instance_manage/detail1.html:166
+msgid "Meta"
+msgstr "Meta"
+
+#: instance_manage/instance_manage/detail.html:177
+#: instance_manage/instance_manage/detail1.html:169
+msgid "Key Name"
+msgstr "密钥名称"
+
+#: instance_manage/instance_manage/detail.html:180
+#: instance_manage/instance_manage/detail1.html:172
+msgid "Image Name"
+msgstr "母盘名称"
+
+#: instance_manage/instance_manage/detail.html:191
+#: instance_manage/instance_manage/detail1.html:182
+msgid "Volumes Attached"
+msgstr "附加卷"
+
+#: instance_manage/instance_manage/detail.html:195
+#: instance_manage/instance_manage/detail1.html:186
+#: volume_manage/volume_manage/detail.html:50
+msgid "Attached To"
+msgstr "附加到"
+
+#: instance_manage/instance_manage/detail.html:197
+#: instance_manage/instance_manage/detail1.html:188
+#: volume_manage/volume_manage/detail.html:54
+msgid "on"
+msgstr "on"
+
+#: instance_manage/instance_manage/detail.html:201
+#: instance_manage/instance_manage/detail1.html:192
+msgid "No volumes attached."
+msgstr "无附加卷"
+
+#: instance_manage/instance_manage/imglist1.html:2
+msgid "images manage"
+msgstr "母盘管理"
+
+#: instance_manage/instance_manage/index.html:74
+msgid "Host"
+msgstr "主机"
+
+#: instance_manage/instance_manage/index.html:77
+msgid "IP Address"
+msgstr "IP地址"
+
+#: instance_manage/instance_manage/index.html:81
+msgid "Task"
+msgstr "任务"
+
+#: instance_manage/instance_manage/index.html:82
+msgid "Power State"
+msgstr "电源状态"
+
+#: instance_manage/instance_manage/index.html:119
+msgid "detail"
+msgstr "详情"
+
+#: instance_manage/instance_manage/index.html:122
+msgid "distribution"
+msgstr "分配"
+
+#: instance_manage/instance_manage/index.html:124
+msgid "undistribution"
+msgstr "取消分配"
+
+#: log_manage/views.py:55
+msgid "Unable to retrieve log list."
+msgstr "无法获得日志列表。"
+
+#: log_manage/views.py:72
+msgid "Unable to clean logs."
+msgstr "无法删除日志。"
+
+#: log_manage/views.py:88
+msgid "Unable to clean log."
+msgstr "无法删除日志"
+
+#: log_manage/views.py:103
+msgid "Unable to clean tenant logs."
+msgstr "无法删除机构日志"
+
+#: log_manage/views.py:118
+msgid "Unable to clean the tenant log."
+msgstr "无法删除机构日志"
+
+#: log_manage/views.py:134
+msgid "Unable to retrieve log information of instance tenant."
+msgstr "无法获取机构日志信息"
+
+#: log_manage/views.py:155
+msgid "Unable to get tenant log list."
+msgstr "无法获得机构日志列表"
+
+#: log_manage/views.py:176 log_manage/views.py:211
+msgid "Unable to generate csv file."
+msgstr "无法生成csv文件"
+
+#: log_manage/log_manage/index.html:5
+msgid "log manage"
+msgstr "日志管理"
+
+#: log_manage/log_manage/tenant_log.html:5
+msgid "tenant log"
+msgstr "机构日志"
+
+#: log_manage/log_manage/tenant_log.html:17
+#: log_manage/log_manage/tenant_log_detail.html:5
+msgid "tenant log detail"
+msgstr "机构日志详情"
+
+#: node_manage/forms.py:48 node_manage/node_manage/create.html:19
+#: node_manage/node_manage/index.html:60
+msgid "IP"
+msgstr "IP"
+
+#: node_manage/forms.py:50 node_manage/node_manage/create.html:29
+msgid "Type"
+msgstr "类型"
+
+#: node_manage/views.py:151 node_manage/views.py:223
+#, python-format
+msgid "Can not get node (uuid=%s) information"
+msgstr "无法得到节点(uuid=%s)信息"
+
+#: node_manage/views.py:228
+#, python-format
+msgid ""
+"Can not get node (uuid=%s) monitor information , please check your node."
+msgstr "无法得到节点(uuid=%s)监控信息，请检查节点。"
+
+#: node_manage/views.py:230
+#, python-format
+msgid "Can not get node (uuid=%s) monitor information , please try later."
+msgstr "无法得到节点(uuid=%s)监控信息，请稍后再试。"
+
+#: node_manage/node_manage/delete.html:6
+msgid "Are you sure for deleting this node ?"
+msgstr "确认删除节点？"
+
+#: node_manage/node_manage/index.html:58
+msgid "UUID"
+msgstr ""
+
+#: node_manage/node_manage/index.html:61
+msgid "ROOT Passwd"
+msgstr "ROOT密码"
+
+#: node_manage/node_manage/index.html:62
+msgid "node type"
+msgstr "节点类型"
+
+
+
+#: node_manage/node_manage/index.html:64
+msgid "State"
+msgstr "状态"
+
+#: project_manage/forms.py:38 project_manage/project_manage/create.html:11
+msgid "Project Name"
+msgstr "机构名称"
+
+#: project_manage/forms.py:39 project_manage/project_manage/create.html:16
+msgid "Project Description"
+msgstr "机构描述"
+
+#: project_manage/forms.py:40 project_manage/forms.py:54
+#: project_manage/project_manage/create.html:21
+#: project_manage/project_manage/index.html:26
+#: project_manage/project_manage/index1.html:20
+#: user_manage/user_manage/index.html:26
+#: user_manage/user_manage/index1.html:19
+msgid "Enabled"
+msgstr "激活"
+
+#: project_manage/forms.py:53 project_manage/project_manage/index.html:25
+#: project_manage/project_manage/index1.html:19 volume_manage/forms.py:35
+#: volume_manage/volume_manage/detail.html:26
+msgid "Description"
+msgstr "描述"
+
+#: project_manage/forms.py:64
+#, python-format
+msgid "Unable to get tenant %(tenant)s info."
+msgstr "无法得到机构%(tenant)s信息。"
+
+#: project_manage/forms.py:72
+msgid "ID (name)"
+msgstr "ID(名称)"
+
+#: project_manage/forms.py:74
+msgid "Metadata Items"
+msgstr "元数据条目"
+
+#: project_manage/forms.py:75
+msgid "Injected Files"
+msgstr "注入文件"
+
+#: project_manage/forms.py:76
+msgid "Injected File Bytes"
+msgstr "文件字节"
+
+#: project_manage/forms.py:79
+msgid "Instances"
+msgstr "虚拟机"
+
+#: project_manage/forms.py:80
+msgid "Volumes"
+msgstr "磁盘"
+
+#: project_manage/forms.py:81
+msgid "Gigabytes"
+msgstr "千兆字节数"
+
+#: project_manage/forms.py:82
+msgid "RAM (in MB)"
+msgstr "内存(MB)"
+
+#: project_manage/forms.py:83
+msgid "Floating IPs"
+msgstr "浮动 IPs"
+
+#: project_manage/forms.py:103
+#, python-format
+msgid "Unable to get tenant %(tenant)s quotas information."
+msgstr "无法获取机构%(tenant)s的配额信息。"
+
+#: project_manage/forms.py:108 project_manage/forms.py:160
+#: project_manage/forms.py:197
+#, python-format
+msgid "Unable to find out tenant %(tenant)s ."
+msgstr "无法找到机构%(tenant)s。"
+
+#: project_manage/forms.py:116
+msgid "metadata_items should be larger than or equal to 10."
+msgstr "元数据条目应该大于等于10"
+
+#: project_manage/forms.py:125 project_manage/project_manage/add_user.html:11
+msgid "Available User"
+msgstr "可选用户"
+
+msgid "Available User is required."
+msgstr "可选用户是必选项。"
+
+#: project_manage/forms.py:126 project_manage/forms.py:172
+#: project_manage/project_manage/add_user.html:16 user_manage/forms.py:57
+#: user_manage/forms.py:103 user_manage/user_manage/index.html:28
+#: user_manage/user_manage/index1.html:21
+msgid "Role"
+msgstr "角色"
+
+#: project_manage/forms.py:148 project_manage/forms.py:188
+msgid "Unable to get roles list ."
+msgstr "无法得到角色列表"
+
+#: project_manage/forms.py:152
+msgid "Unable to get user list ."
+msgstr "无法获取用户列表"
+
+#: project_manage/forms.py:156
+#, python-format
+msgid "Unable to get user info on tenant %(tenant)s ."
+msgstr "无法获取机构%(tenant)s中的用户信息。"
+
+#: project_manage/forms.py:193
+#, python-format
+msgid "Unable to find out %(user)s on %(tenant)s ."
+msgstr "无法在机构 %(tenant)s中找到用户%(user)s。"
+
+#: project_manage/project_manage/delete.html:6
+msgid "Are you sure for deleting this project?"
+msgstr "确认删除机构？"
+
+#: project_manage/project_manage/delete_user.html:6
+msgid "Are you sure for deleting this user from this project?"
+msgstr "确认从机构中删除此用户？"
+
+#: project_manage/project_manage/get_user.html:19
+msgid "Id"
+msgstr ""
+
+#: project_manage/project_manage/get_user.html:21 user_manage/forms.py:46
+#: user_manage/views.py:198
+msgid "email"
+msgstr "邮箱"
+
+#: project_manage/project_manage/get_user.html:36
+msgid "edit_project_user"
+msgstr "编辑机构用户"
+
+#: project_manage/project_manage/index.html:38
+#: project_manage/project_manage/index1.html:30
+msgid "get project user"
+msgstr "机构用户"
+
+#: project_manage/project_manage/index.html:39
+#: project_manage/project_manage/index1.html:31
+#: project_manage/project_manage/update_project1.html:4
+msgid "update project"
+msgstr "更新机构"
+
+#: project_manage/project_manage/index.html:40
+#: project_manage/project_manage/index1.html:32
+msgid "update quotas"
+msgstr "更新机构配额"
+
+#: project_manage/project_manage/index1.html:41
+#: user_manage/user_manage/index1.html:55
+msgid "previous"
+msgstr "前一页"
+
+#: project_manage/project_manage/index1.html:45
+#: user_manage/user_manage/index1.html:59
+msgid "Page"
+msgstr "页"
+
+#: project_manage/project_manage/index1.html:49
+#: user_manage/user_manage/index1.html:63
+msgid "next"
+msgstr "后一页"
+
+#: software_manage/forms.py:40
+msgid "flat"
+msgstr "平台"
+
+#: software_manage/views.py:71
+msgid "Can not get list of softwares"
+msgstr "无法得到软件列表"
+
+#: software_manage/software_manage/delete.html:6
+msgid "Are you sure for deleting this software ?"
+msgstr "确认删除软件？"
+
+#: user_manage/forms.py:45 user_manage/forms.py:100 user_manage/forms.py:143
+#: user_manage/user_manage/updatepassword.html:10
+msgid "User Name"
+msgstr "用户名"
+
+#: user_manage/forms.py:56 user_manage/forms.py:102
+#: user_manage/user_manage/index1.html:20
+msgid "Primary Project"
+msgstr "主机构"
+
+#: user_manage/forms.py:86
+msgid "Unable to retrieve user list in handle_create."
+msgstr "无法获取用户列表"
+
+#: user_manage/forms.py:101 user_manage/user_manage/index.html:25
+#: user_manage/user_manage/index1.html:18
+msgid "Email"
+msgstr "邮箱"
+
+#: user_manage/forms.py:122
+msgid "Unable to retrieve roles list."
+msgstr "无法获取角色列表"
+
+#: user_manage/forms.py:127 user_manage/forms.py:163
+#, python-format
+msgid "Unable to retrieve user %(user)s."
+msgstr "无法获取用户%(user)s。"
+
+#: user_manage/forms.py:180
+#, fuzzy
+msgid "OldPassword"
+msgstr "密码"
+
+#: user_manage/forms.py:219
+msgid "The old password is wrong."
+msgstr "原始密码不正确"
+
+#: user_manage/views.py:118
+#, python-format
+msgid "User \"%s\" was successfully created."
+msgstr "成功创建用户\"%s\""
+
+#: user_manage/views.py:210
+msgid "primary project"
+msgstr "主机构"
+
+msgid "Create User"
+msgstr "创建用户"
+
+#: user_manage/user_manage/delete.html:6
+msgid "Are you sure for deleting this user?"
+msgstr "确认删除用户？"
+
+#: user_manage/user_manage/index.html:46
+#: user_manage/user_manage/index1.html:37
+msgid "Update User"
+msgstr "更新用户"
+
+#: user_manage/user_manage/index.html:47
+msgid "Update Password"
+msgstr "更新密码"
+
+#: user_manage/user_manage/index1.html:5
+msgid "user manage"
+msgstr "用户管理"
+
+#: user_manage/user_manage/index1.html:16
+msgid "id"
+msgstr "id"
+
+#: utils/decorators.py:89
+#, fuzzy, python-format
+msgid "You are not authorized to access %s"
+msgstr "您未被授权访问任何机构。"
+
+#: utils/decorators.py:130
+msgid "The services for this view are not available."
+msgstr "此视图服务不可用。"
+
+#: utils/fields.py:46
+msgid "Incorrect format for IP address"
+msgstr "IP地址格式错误"
+
+#: utils/fields.py:47
+msgid "Invalid version for IP address"
+msgstr "IP地址版本无效"
+
+#: utils/fields.py:48
+msgid "Invalid subnet mask"
+msgstr "无效的子网掩码"
+
+#: utils/validators.py:35
+msgid "Password is not accepted"
+msgstr "密码错误"
+
+#: volume_manage/views.py:46
+msgid "Can not retrieve instance list!"
+msgstr "无法获取虚拟机列表"
+
+#: volume_manage/views.py:66
+#, python-format
+msgid "Unable to fetch volumes: %s"
+msgstr "无法获取卷:%s"
+
+#: volume_manage/views.py:82
+msgid "Can not get volume detail information!"
+msgstr "无法得到卷详细信息！"
+
+#: volume_manage/views.py:118
+#, python-format
+msgid "Error Creating Volume: %s"
+msgstr "创建虚拟磁盘错误：%s"
+
+#: volume_manage/views.py:135
+msgid "Can not get volume!"
+msgstr "无法得到卷！"
+
+#: volume_manage/views.py:148
+msgid "Can not delete volume!"
+msgstr "不可删除卷！"
+
+#: volume_manage/views.py:153
+msgid "Please select one or more volumes to delete!"
+msgstr "请选择一个或多个卷删除！"
+
+#: volume_manage/volume_manage/detail.html:15
+msgid "Volume Overview"
+msgstr "卷概览"
+
+#: volume_manage/volume_manage/detail.html:46
+msgid "Attachments"
+msgstr "附加"
+
+#: volume_manage/volume_manage/detail.html:53
+msgid "Instance"
+msgstr "实例"
+
+#: volume_manage/volume_manage/detail.html:59
+msgid "Not attached"
+msgstr "未附加"
+
+#: volume_manage/volume_manage/index.html:13
+msgid "volume manage"
+msgstr "卷管理"
+
+msgid "Can not update image !"
+msgstr "无法更新母盘！"
+
+msgid "Can not delete image !"
+msgstr "无法删除母盘！"
+
+msgid "Can not find the software!"
+msgstr "未找到软件！"
+
+msgid "Image Overview"
+msgstr "母盘概况"
+
+msgid "Instance \"%s\" launched."
+msgstr "虚拟机\"%s\" 创建成功"
+
+msgid "Unable to launch instance: %(exc)s"
+msgstr "无法创建虚拟机：%(exc)s"
+
+msgid "Can not suspend instance whose status is not active"
+msgstr "无法停止激活态的虚拟机"
+
+msgid "Can not suspend instance!"
+msgstr "无法停止虚拟机！"
+
+msgid "Can not change instance password!"
+msgstr "无法修改虚拟机密码！"
+
+msgid "Update instance successfully!"
+msgstr "成功更新虚拟机！"
+
+msgid "Can not update instance with id (%s)"
+msgstr "无法更新id为 (%s)的虚拟机！"
+
+msgid "Can not create snapshots with instance id (%s)"
+msgstr "无法创建id为(%s)的虚拟机快照"
+
+msgid "Can not create snapshot!"
+msgstr "无法创建快照！"
+
+msgid "Create snapshots successfully!"
+msgstr "成功创建快照！"
+
+msgid "The instance does not have snapshots!"
+msgstr "虚拟机无快照！"
+
+msgid "Restore instance successfully!"
+msgstr "成功恢复虚拟机！"
+
+msgid "Can not restore instance!"
+msgstr "无法恢复虚拟机！"
+
+msgid "Instance does not exist!"
+msgstr "虚拟机不存在！"
+
+msgid "Instance Id does not exist!"
+msgstr "虚拟机ID不存在！"
+
+msgid "The snapshots status must be active !"
+msgstr "快照状态需要为active!"
+
+msgid "Instance Overview"
+msgstr "虚拟机概览"
+
+msgid "instance manage"
+msgstr "虚拟机管理"
+
+msgid "restore manage"
+msgstr "还原管理"
+
+msgid "Create node failed, please retry later."
+msgstr "创建节点失败，请稍后再试。"
+
+msgid "update node uuid=%s failed, please retry later."
+msgstr "更新节点(uuid=%s)失败，请稍后再试。"
+
+msgid "Unable to retrieve project list."
+msgstr "无法获取机构列表。"
+
+msgid "Unable to create tenant %(tenant)s."
+msgstr "无法新建机构%(tenant)s。"
+
+msgid "Unable to update tenant %(tenant)s."
+msgstr "无法更新机构%(tenant)s。"
+
+msgid "Unable to update tenant %(tenant)s quotas."
+msgstr "无法更新机构%(tenant)s配额。"
+
+msgid "Unable to delete tenant."
+msgstr "无法删除机构。"
+
+msgid "Unable to delete %(user)s on  %(tenant)s."
+msgstr "无法将用户%(user)s从机构%(tenant)s中删除。"
+
+msgid "Unable to get %(user)s roles on %(tenant)s."
+msgstr "无法获取机构%(tenant)s中用户%(user)s的角色。"
+
+msgid "Unable to get tenant %(tenant)s user."
+msgstr "无法获取机构%(tenant)s用户。"
+
+msgid "Unable to add  %(user)s to %(tenant)s."
+msgstr "无法添加用户%(user)s到机构 %(tenant)s中。"
+
+msgid "Unable to add roles for user to tenant."
+msgstr "无法添加用户的角色到机构中。"
+
+msgid "Unable to remove user from tenant."
+msgstr "无法将用户从机构中删除。"
+
+msgid "Unable to remove user role from tenant."
+msgstr "无法将用户角色从机构中删除。"
+
+
+msgid "Unable to delete user from tenant."
+msgstr "无法将用户从机构中删除。"
+
+msgid "create project"
+msgstr "新建机构"
+
+msgid "edit the user role on this project"
+msgstr "编辑用户角色"
+
+msgid "update project_quotas"
+msgstr "更新机构配额"
+
+msgid "Binary file does not exist!"
+msgstr "二进制文件不存在！"
+
+msgid "Unable to get user %(user)s roles on tenant %(tenant)s."
+msgstr "无法获得机构%(tenant)s中的用户 %(user)s的角色。"
+
+msgid "Unable to retrieve user list."
+msgstr "无法获取用户列表"
+
+msgid "Unable to add user to primary project."
+msgstr "无法将用户添加到主项目中"
+
+msgid "Unable to add user to tenant."
+msgstr "无法将用户添加到机构中"
+
+msgid "Unable to create user. Duplicate user name: %s."
+msgstr "无法创建用户。重复的用户姓名：%s。"
+
+msgid "Unable to create user."
+msgstr "无法创建用户。"
+
+msgid "Unable to update user %(user)s information."
+msgstr "无法更新用户%(user)s信息"
+
+msgid "Unable to update %(user)s on %(tenant)s."
+msgstr "无法更新机构%(tenant)s的用户%(user)s"
+
+msgid "Unable to remove %(user)s from  %(tenant)s."
+msgstr "无法将用户%(user)s从机构%(tenant)s中删除。"
+
+msgid "Unable to add %(user)s %(role)s to %(tenant)s."
+msgstr "无法将用户%(user)s角色%(role)s加入机构 %(tenant)s。"
+
+msgid "Unable to update %(role)s of %(user)s ."
+msgstr "无法更新用户%(user)s的角色%(role)s。"
+
+msgid "Unable to update password of user %(user)s."
+msgstr "无法更新用户%(user)s的密码"
+
+msgid "Updated %(attributes)s for %(user)s."
+msgstr "成功更新了用户%(user)s的%(attributes)s。"
+
+msgid "Unable to update %(attributes)s for %(user)s."
+msgstr "无法更新用户%(user)s的%(attributes)s。"
+
+msgid "Unable to retrieve user information."
+msgstr "无法获取用户信息"
+
+msgid "delete user: %(user)s successfully."
+msgstr "成功删除用户： %(user)s 。"
+
+msgid "can not delete user %(user)s."
+msgstr "无法删除用户：%(user)s"
+
+msgid "can not remove %(user)s from %(tenant)s."
+msgstr "无法将用户%(user)s从机构%(tenant)s中删除。"
+
+msgid "update manage"
+msgstr "更新管理"
+
+msgid "Global Monitor"
+msgstr "云系统监控"
+
+msgid "Resource Manage"
+msgstr "虚拟资源管理"
+
+msgid "Organization Manage"
+msgstr "云组织管理"
+
+msgid "Network Manage"
+msgstr "云网络管理"
+
+msgid "System Manage"
+msgstr "系统管理"
+
+msgid "Foundation Manage"
+msgstr "云设施管理"
+
+msgid "Backup Manage"
+msgstr "备份管理"
+
+msgid "Upgrade Manage"
+msgstr "升级管理"
+
+msgid "Log Manage"
+msgstr "日志管理"
+
+msgid "Network Security Manage"
+msgstr "网络安全管理"
+
+msgid "Virtual sub-net Manage"
+msgstr "虚拟子网管理"
+
+msgid "User Manage"
+msgstr "用户管理"
+
+msgid "Authorization Manage"
+msgstr "机构管理"
+
+msgid "Operation Manage"
+msgstr "业务管理"
+
+msgid "Storage Manage"
+msgstr "存储管理"
+
+msgid "Common Manage"
+msgstr "日常管理"
+
+
+msgid "Instance Manage"
+msgstr "云主机管理"
+
+msgid "Image Manage"
+msgstr "云主机模板"
+
+msgid "Software Manage"
+msgstr "软件库"
+
+msgid "authorize service"
+msgstr "授权服务"
+
+msgid "network service"
+msgstr "网络服务"
+
+msgid "schedule service"
+msgstr "调度服务"
+
+msgid "volume service"
+msgstr "卷服务"
+
+msgid "database service"
+msgstr "数据库服务"
+
+msgid "dns service"
+msgstr "域名系统服务"
+
+msgid "compute service"
+msgstr "计算服务"
+
+msgid "rabbitmq service"
+msgstr "消息服务"
+
+msgid "Change instance password Success"
+msgstr "成功更新虚拟机密码"
+
+msgid "created_at"
+msgstr "创建时间"
+
+msgid "Content type"
+msgstr "文件类型"
+
+msgid "Content total"
+msgstr "文件大小"
+
+msgid "Content name"
+msgstr "文件名"
+
+msgid "Create software Success"
+msgstr "创建软件成功"
+
+msgid "Create software failed."
+msgstr "创建软件失败"
+
+msgid "delete software success"
+msgstr "成功删除软件"
+
+msgid "delete software failed"
+msgstr "删除软件失败"
+
+msgid "dowload"
+msgstr "下载"
+
+msgid "delete image template success"
+msgstr "删除母盘模板成功"
+
+msgid "update image template Success"
+msgstr "更新母盘模板成功"
+
+msgid "Create image Success"
+msgstr "创建母盘成功"
+
+msgid "Create User Success"
+msgstr "创建用户成功"
+
+#user_manage/views.py
+msgid "Update User Success"
+msgstr "更新用户成功"
+
+msgid "Update User Password Success"
+msgstr "更新用户密码成功"
+
+msgid "delete user success"
+msgstr "删除用户成功"
+
+msgid "change password success."
+msgstr "修改密码成功"
+
+msgid "change password error"
+msgstr "修改密码失败"
+
+# project_manage/views.py
+msgid "Create Project Success"
+msgstr "创建机构成功"
+
+msgid "Update Project Success"
+msgstr "更新机构成功"
+
+msgid "Update Project Quotas Success"
+msgstr "更新机构配额成功"
+
+msgid "delete project success"
+msgstr "删除机构成功"
+
+msgid "Add project User Success"
+msgstr "添加机构用户成功"
+
+msgid "Edit project User Success"
+msgstr "编辑用户成功"
+
+msgid "Unable to edit user from tenant."
+msgstr "不能编辑机构中的用户"
+
+msgid "delete project user success"
+msgstr "删除用户成功"
+
+#instance_manage/views.py
+msgid "Launch image Success"
+msgstr "成功启动母盘"
+
+msgid "Unable to launch instance"
+msgstr "无法成功启动虚拟机"
+
+msgid "Reboot success!"
+msgstr "成功重启"
+
+msgid "reboot failed:status is not active or suspend!"
+msgstr "重启失败：状态不为激活或暂停"
+
+msgid "Reboot failed !"
+msgstr "重启失败！"
+
+msgid "Pause instances Success"
+msgstr "成功暂停虚拟机"
+
+msgid "Can not pause instances:status is not active !"
+msgstr "无法暂停虚拟机：状态为非激活！"
+
+msgid "Unpause instances Success"
+msgstr "成功取消暂停"
+
+msgid "Can not unpause instance:status is not paused !"
+msgstr "无法取消暂停：状态为非暂停！"
+
+msgid "Stop instance Success"
+msgstr "成功停止虚拟机"
+
+msgid "Can not suspend instance: status is not active!"
+msgstr "无法停止虚拟机：状态为非激活！"
+
+msgid "Can not stop instance!"
+msgstr "无法停止虚拟机！"
+
+msgid "Can not resume instance whose status is not suspended!"
+msgstr "无法恢复虚拟机：状态为非停止态！"
+
+msgid "Restore instance Success"
+msgstr "成功还原虚拟机"
+
+msgid "Set snapshot public Success"
+msgstr "成功设置快照公共模板"
+
+msgid "unstop instance success"
+msgstr "成功取消停止！"
+
+msgid "delete instance success"
+msgstr "成功删除虚拟机"
+
+msgid "Create relationship between instance and user successfully."
+msgstr "成功创建虚拟机和用户之间的联系。"
+
+msgid "Are you sure for dropping this relationship ?"
+msgstr "确定删除关联？"
+
+msgid "Delete relationship with instance_id successfully"
+msgstr "成功删除虚拟机和用户之间的关联"
+
+msgid "Fail to create relationship between instance and user successfully."
+msgstr "无法创建虚拟机和用户之间的关联。！"
+
+msgid "Missing parameter user_name"
+msgstr "无用户姓名"
+
+msgid "There is no relationship for instance"
+msgstr "虚拟机无用户关联"
+
+msgid "Duplicate relationship for instance"
+msgstr "虚拟机和用户之间的关联已存在"
+
+msgid "Server internal error"
+msgstr "虚拟机内部错误"
+
+msgid "Fail to delete relationship with instance_id ."
+msgstr "无法删除关联。"
+
+
+msgid "Are you sure for unstopping this instance?"
+msgstr "确定恢复虚拟机？"
+
+msgid "Are you sure for unpausing this instance?"
+msgstr "确定取消暂停？"
+
+msgid "Are you sure for stopping this instance?"
+msgstr "确定停止虚拟机？"
+
+msgid "Are you sure for rebooting this instance?"
+msgstr "确定重启虚拟机？"
+
+msgid "Are you sure for pauseing this instance?"
+msgstr "确定暂停虚拟机？"
+
+
+msgid "security groups"
+msgstr "安全组列表"
+
+msgid "securitygroup info"
+msgstr "安全组信息"
+
+msgid "routerproject info"
+msgstr "路由项目信息"
+
+msgid "Add RouterProject"
+msgstr "添加路由器"
+
+msgid "Add Router Interface"
+msgstr "添加路由接口"
+
+msgid "Select Subnet"
+msgstr "选择子网"
+
+msgid "No subnets available"
+msgstr "无可用子网"
+
+msgid "Select network"
+msgstr "选择网络"
+
+msgid "No network available"
+msgstr "无可用网络"
+
+msgid "delete security group"
+msgstr "删除安全组"
+
+msgid "rules tab"
+msgstr "安全规则修改"
+
+msgid "delete rule"
+msgstr "删除安全规则"
+
+msgid "Can not open the software or image_file format wrong !"
+msgstr "无法打开文件或文件格式错误！"
+
+msgid "File not found"
+msgstr "文件不存在"
+
+
+msgid "Create node Success"
+msgstr "成功创建节点"
+
+
+msgid "Update node Success"
+msgstr "成功更新节点"
+
+
+msgid "control node has already exist"
+msgstr "控制节点已经存在"
+
+msgid "Can not delete node uuid=%s"
+msgstr "无法删除节点uuid=%s"
+
+msgid "delete node success"
+msgstr "成功删除节点"
+
+msgid "Are you sure for deleting this security group?"
+msgstr "确认删除安全组？"
+
+msgid "Are you sure for deleting this security group rule?"
+msgstr "确认删除安全组规则？"
+
+msgid "Are you sure for deleting this router project?"
+msgstr "确认删除路由吗？"
+
+msgid "Are you sure for deleting this router project rule?"
+msgstr "确认删除路由项目规则？"
+
+msgid "SecurityGroupLimitExceeded: Quota exceeded, too many security group rules."
+msgstr "无法创建安全组规则：超过机构配额限制。"
+
+msgid "user tab"
+msgstr "用户"
+
+msgid "username has exist."
+msgstr "用户名已经存在"
+
+msgid "project name has exist."
+msgstr "机构名已经存在"
+
+msgid "no blank space allowed during user name"
+msgstr "用户名中不允许有空格"
+
+msgid "TCP/UDP: Enter integer value between 1 and 65535. ICMP: enter a value for ICMP type in the range (-1: 255)"
+msgstr "TCP/UDP: 输入一个1到65535之间的一个整数。ICMP: 输入一个-1到255之间的一个值作为ICMP的类型"
+
+msgid "TCP/UDP: Enter integer value between 1 and 65535. ICMP: enter a value for ICMP code in the range (-1: 255)"
+msgstr "TCP/UDP:输入一个1到65535之间的整数。ICMP:输入一个-1到255之间的一个整数。"
+
+msgid "Classless Inter-Domain Routing (e.g. 192.168.0.0/24)"
+msgstr "类似网络路由地址（例如：192.168.0.0/24)）"
+
+msgid "Unable to delete tenant，please remove it's users。"
+msgstr " 此机构下存在用户，请先移除此机构下的所有用户。"
+
+msgid "Unable to delete your self."
+msgstr " 您不能删除自己。"
+
+msgid "if image date is null,please add software"
+msgstr "如果母盘选择列表为空，请在软件库管理中添加软件"
+
+msgid "Get Node_tree Failed."
+msgstr "获取节点信息失败"
+
+msgid "No users can be distributed."
+msgstr "此机构下无用户可分配,请在授权管理中分配用户。"
+
+msgid "compute name has exist!"
+msgstr "主机名称已存在"
+
+msgid "Over the limit"
+msgstr "无法创建虚拟机：超过机构配额限制"
+
+msgid "Control node is offline now."
+msgstr "管理节点下线。"
+
+msgid "Compute node is offline now."
+msgstr "计算节点下线。"
+
+msgid "VM instance node is offline now."
+msgstr "虚拟机节点下线。"
+
+msgid "Storage node is offline now."
+msgstr "存储节点下线。"
+
+
+
+msgid "Unable to delete tenant.please remove it's users"
+msgstr "无法删除机构，请先移除机构中的用户"
+
+msgid "Unable to delete tenant.please remove it's instance"
+msgstr "无法删除机构，请先移除机构中的虚拟机"
+
+msgid "tenant is not enabled"
+msgstr "机构未激活"
+
+msgid "HardTemplate Manage"
+msgstr "云主机规格"
+
+msgid "injected_file_content_bytes should be larger than or equal to 0."
+msgstr "文件内容字节数应该大于等于0"
+
+msgid "volumes should be larger than or equal to 0."
+msgstr "磁盘个数应该大于等于0"
+
+msgid "gigabytes should be larger than 0."
+msgstr "磁盘容量大小应该大于0"
+
+msgid "ram should be larger than 0."
+msgstr "内存大小应该大于0"
+
+msgid "floating_ips should be larger than 0."
+msgstr "浮动IP数应该大于0"
+
+msgid "instances should be larger than or equal to 0."
+msgstr "实例数目应该大于等于0"
+
+msgid "injected_files should be larger than or equal to 0."
+msgstr "注入文件数应该大于等于0"
+
+msgid "cores should be larger than 0."
+msgstr "VCPU数应该大于0"
+
+
+msgid "delete security group successfully!"
+msgstr "删除安全组成功"
+
+msgid "delete security group rule successfully!"
+msgstr "删除安全规则成功"
+
+msgid "Unable to delete security group."
+msgstr "不能删除此安全组，该组已被启用"
+
+msgid "The ICMP type is invalid."
+msgstr "ICMP的类型无效"
+
+msgid "The ICMP code is invalid."
+msgstr "ICMP的编码无效"
+
+msgid "The ICMP type not in range (-1, 255)"
+msgstr "ICMP的类型值不在 (-1, 255)之中"
+
+msgid "The ICMP code not in range (-1, 255)"
+msgstr "ICMP的编码不在 (-1, 255)之中"
+
+msgid "The from port number is invalid."
+msgstr "From的编码是无效的"
+
+msgid "The to port number is invalid."
+msgstr "To的编码是无效的"
+
+msgid "The from port number not in range (1, 65535)"
+msgstr "From的编码不在(1, 65535)之中"
+
+msgid "The to port number not in range (1, 65535)"
+msgstr "To的编码不在(1, 65535)之中"
+
+msgid "The to port number must be greater than or equal to the ""from"" port number."
+msgstr "To的编码值必须要大于或等于""from""的编码值"
+
+msgid "Either CIDR or Source Group may be specified, but not both."
+msgstr "必须是CIDR或Source Group其中之一"
+
+msgid "Image Name has chinese."
+msgstr "母盘名称中含有中文或中文字符"
+
+msgid "the most security group number is 10"
+msgstr "最多只能创建10个安全组"
+
+msgid "the most router projects number is 10"
+msgstr "最多只能创建10个路由项目"
+
+msgid "Notice Manage"
+msgstr "公告管理"
+
+msgid "Notice List"
+msgstr "公告列表"
+
+msgid "Title"
+msgstr "标题"
+
+msgid "Content"
+msgstr "内容"
+
+msgid "Create_time"
+msgstr "创建时间"
+
+msgid "Release_time"
+msgstr "发布时间"
+
+msgid "Release"
+msgstr "状态"
+
+msgid "Author"
+msgstr "发布人"
+
+msgid "level"
+msgstr "优先级"
+
+msgid "high level"
+msgstr "高级"
+
+msgid "general"
+msgstr "一般"
+
+msgid "Whether Release"
+msgstr "是否发布"
+
+msgid "is released"
+msgstr "已发布"
+
+msgid "no released"
+msgstr "未发布"
+
+msgid "get detail"
+msgstr "查看详情"
+
+msgid "Can not get notice (uuid=%s) information"
+msgstr "无法得到公告(uuid=%s)信息"
+
+msgid "Create notice Success"
+msgstr "创建公告成功"
+
+msgid "Create notice failed, error is %s !"
+msgstr "创建公告失败，错误是%s !"
+
+msgid "Update notice Success"
+msgstr "修改公告成功"
+
+msgid "update notice uuid=%s failed, please retry later."
+msgstr "更新公告(uuid=%s)失败，请稍后再试。"
+
+msgid "Delete notice Success"
+msgstr "删除公告成功"
+
+msgid "Sorry , you do not have this permissions"
+msgstr "对不起，您没有该权限"
+
+msgid "notice title has exist"
+msgstr "公告标题已存在"
+
+msgid "Are you sure for deleting this notice?"
+msgstr "确认删除公告？"
+
+msgid "Can not delete notice"
+msgstr "无法删除公告"
+
+msgid "This rule already exists"
+msgstr "此安全规则已存在"
+
+msgid "Create security group successfully!"
+msgstr "创建安全组成功！"
+
+
+msgid "Create flavor Success"
+msgstr "成功创建云主机规格"
+
+msgid "Are you sure for deleting this hard template?"
+msgstr "确认删除此云主机规格？"
+
+msgid "delete flavor success"
+msgstr "成功删除云主机规格"
+
+
+msgid "save instance classify success"
+msgstr "虚拟机类别保存成功"
+
+msgid "save instance classify failed"
+msgstr "虚拟机类别保存失败"
+
+msgid "instance classify  is not found"
+msgstr "虚拟机类别不存在"
+
+msgid "delete instance classify success"
+msgstr "删除虚拟机类别成功"
+
+msgid "delete instance classify failed"
+msgstr "删除虚拟机类别失败"
+
+msgid "update instance classify name  success"
+msgstr "更新虚拟机类别名称成功"
+
+msgid "update instance classify name  failed"
+msgstr "更新虚拟机类别名称失败"
+
+msgid "update instance flavor success"
+msgstr "更新虚拟机硬件成功"
+
+msgid "update instance flavor failed"
+msgstr "更新虚拟机硬件失败"
+
+msgid "confirm flavor resize success"
+msgstr "确定虚拟机硬件调整成功"
+
+msgid "confirm flavor resize failed"
+msgstr "确定虚拟机硬件调整失败"
+
+msgid "instance classify"
+msgstr "虚拟机分类"
+
+msgid "instance flavor resize"
+msgstr "虚拟机硬件调整"
+
+msgid "%s has already exist"
+msgstr "此%s已存在"
+
+msgid "flavor name has exist."
+msgstr "云主机规格名已经存在"
+
+msgid "eph_gb should be larger than or equal to 0."
+msgstr "临时磁盘容量应该大于或等于0"
+
+msgid "eph_gb should be less than or equal to 2147483647."
+msgstr "临时磁盘容量应该小于或等于2147483647"
+
+msgid "disk_gb should be larger than 0."
+msgstr "根磁盘容量应该大于0"
+
+msgid "no blank space allowed during flavor name"
+msgstr "硬件模板名称中不允许有空格"
+
+msgid "instance name has exist."
+msgstr "虚拟机名称已经存在!"
+
+msgid "Are you sure for delele this instance classify ?"
+msgstr "你确定删除此虚拟机类别吗?"
+
+msgid "Are you sure for instance flavor ?"
+msgstr "确定虚拟机硬件设备调整?"
+
+msgid "no blank space allowed during instance name"
+msgstr "虚拟机名称中不允许有空格！"
+
+msgid "instance name"
+msgstr "虚拟机名称"
+
+msgid "instance classify type"
+msgstr "虚拟机类别:"
+
+msgid "select"
+msgstr "选择"
+
+msgid "instantce classify name"
+msgstr "虚拟机分类名称"
+
+msgid "instantce classify name label"
+msgstr "虚拟机分类名称"
+
+msgid "delete"
+msgstr "删除"
+
+msgid "Add"
+msgstr "添加"
+
+msgid "add"
+msgstr "添加"
+
+msgid "op"
+msgstr "操作"
+
+msgid "please add instance classify"
+msgstr "请添加分类："
+
+msgid "---select instance classify---"
+msgstr "---选择虚拟机类别---"
+
+msgid "collect softwares"
+msgstr "软件收藏夹"
+
+msgid "collect"
+msgstr "收藏"
+
+msgid "Collect Software"
+msgstr "收藏软件"
+
+msgid "Are you sure for collecting this software ?"
+msgstr "您确定要收藏此软件？"
+
+msgid "remove collect"
+msgstr "取消收藏"
+
+msgid "Are you sure for remove collecting this software ?"
+msgstr "您确定取消收藏此软件？"
+
+msgid "this software had be collected"
+msgstr "此软件已经被收藏"
+
+msgid "collect software success"
+msgstr "收藏软件成功"
+
+msgid "collect software failed"
+msgstr "收藏软件失败"
+
+msgid "remove collect software success"
+msgstr "取消收藏软件成功"
+
+msgid "IP has exist!"
+msgstr "IP地址已存在!"
+
+msgid "Instance in task !"
+msgstr "虚拟机处于任务状态中，请稍后!"
+
+msgid "Exceed disk quotas of tenant,can not create instance!"
+msgstr "磁盘大小超过机构配额，无法创建虚拟机！"
+
+msgid "Please input correct IP Address!"
+msgstr "请输入正确的IP地址！"
+
+
+msgid "software name has exist!"
+msgstr "软件名称已存在"
+
+msgid "no blank space allowed during software name"
+msgstr "软件名称中不允许有空格"
+
+msgid "no blank space allowed during node name"
+msgstr "节点名称中不允许有空格"
+
+msgid "instance flavor resize confirm"
+msgstr "确定虚拟机硬件调整"
+
+
+msgid "No snapshot exist!"
+msgstr "无快照！"
+
+msgid "Create security group rule successfully!"
+msgstr "创建安全规则成功!"
+
+msgid "security group name"
+msgstr "安全组名称"
+
+msgid "security group descriptyion"
+msgstr "描述"
+
+msgid "security group rules"
+msgstr "安全规则"
+
+msgid "delete flavor"
+msgstr "删除虚拟硬件模板"
+
+msgid "edit image template"
+msgstr "编辑模板信息"
+
+msgid "software name"
+msgstr "软件包名称"
+
+msgid "software upload"
+msgstr "上传软件包"
+
+msgid "original password"
+msgstr "原始密码"
+
+msgid "new password"
+msgstr "新密码"
+
+msgid "Quickly create image templates"
+msgstr "快速创建母盘模板"
+
+msgid "remote desktop"
+msgstr "远程桌面"
+
+msgid "reboot instance"
+msgstr "重启虚拟机"
+
+msgid "pause instance"
+msgstr "暂停虚拟机"
+
+msgid "suspend instance"
+msgstr "停止虚拟机"
+
+msgid "change instance password"
+msgstr "修改虚拟机密码"
+
+msgid "delete instance"
+msgstr "删除虚拟机"
+
+msgid "update instance info"
+msgstr "修改虚拟机信息"
+
+msgid "backup"
+msgstr "创建备份"
+
+msgid "restore backups"
+msgstr "还原备份"
+
+msgid "get backup list"
+msgstr "获取备份列表"
+
+msgid "restore instance"
+msgstr "恢复虚拟机"
+
+msgid "unpause instance"
+msgstr "取消暂停"
+
+
+msgid "update classify success with instance_id"
+msgstr "虚拟机分类更新成功"
+
+msgid "update classify failed with instance_id"
+msgstr "虚拟机分类更新失败"
+
+
+msgid "check all"
+msgstr "全选"
+
+msgid "volume name"
+msgstr "磁盘名称"
+
+msgid "volume description"
+msgstr "磁盘描述"
+
+msgid "volume size"
+msgstr "磁盘大小"
+
+msgid "volume status"
+msgstr "磁盘状态"
+
+msgid "volume to instance"
+msgstr "附加到实例"
+
+msgid "get volume info"
+msgstr "查看磁盘信息"
+
+msgid "update volume info"
+msgstr "修改磁盘信息"
+
+msgid "delete volume"
+msgstr "删除磁盘"
+
+msgid "edit mount volume"
+msgstr "编辑挂载磁盘"
+
+msgid "Are you sure to detach the volume?"
+msgstr "确认卸载磁盘？"
+
+msgid "Are you sure to delete this volume?"
+msgstr "确认删除磁盘？"
+
+msgid "delete logs success"
+msgstr "成功删除日志"
+
+msgid "Are you sure for downloading all the logs?"
+msgstr "确认下载所有日志?"
+
+msgid "Are you sure for deleting all the logs?"
+msgstr "确认删除所有日志?"
+
+msgid "Are you sure for deleting this log?"
+msgstr "确认删除此条日志?"
+
+msgid "Delete Volumes"
+msgstr "批量删除磁盘"
+
+msgid "Please select one!"
+msgstr "请选择一项！"
+
+msgid "Delete Volumes Failed!"
+msgstr "删除虚拟磁盘失败!"
+
+msgid "Delete Volumes Successfully"
+msgstr "删除虚拟磁盘成功！"
+
+msgid "Volume Manage"
+msgstr "云存储资源"
+
+msgid "edit"
+msgstr "修改"
+
+msgid "login"
+msgstr "登录"
+
+msgid "logout"
+msgstr "退出"
+
+msgid "log module"
+msgstr "归属模块"
+
+msgid "log event"
+msgstr "操作类型"
+
+msgid "begin time"
+msgstr "开始时间"
+
+msgid "end time"
+msgstr "结束时间"
+
+msgid "---select---"
+msgstr "---请选择---"
+
+
+msgid "event"
+msgstr "事件"
+
+msgid "tenant name"
+msgstr "机构名称"
+
+msgid "tenant id"
+msgstr "机构ID"
+
+msgid "is_primary"
+msgstr "是否关键事件"
+
+msgid "user id"
+msgstr "用户ID"
+
+msgid "user_id"
+msgstr "可选用户"
+
+msgid "Module"
+msgstr "模块"
+
+msgid "Log Query"
+msgstr "系统日志管理"
+
+
+msgid "log_list"
+msgstr "日志列表"
+
+msgid "delete log success"
+msgstr "成功删除日志"
+
+msgid "%(user)s,user %(create_at)s login"
+msgstr "用户%(user)s在 %(create_at)s 时间登录系统"
+
+msgid "%(user)s,user %(create_at)s logout"
+msgstr "用户%(user)s在 %(create_at)s 时间登出系统"
+
+msgid "%(user)s,user %(create_at)s created tenant"
+msgstr "用户%(user)s在 %(create_at)s 创建机构"
+
+msgid "%(user)s,user %(create_at)s deleted tenant"
+msgstr "用户%(user)s在 %(create_at)s 删除机构"
+
+msgid "user login"
+msgstr "用户登录系统"
+
+msgid "user client login"
+msgstr "用户客户端登录系统"
+
+msgid "user logout"
+msgstr "用户退出系统"
+
+msgid "create software"
+msgstr "创建软件包"
+
+msgid "delete software"
+msgstr "删除软件包"
+
+msgid "Are you sure for deleting"
+msgstr "你确定删除这"
+
+msgid "items"
+msgstr "项"
+
+msgid "Query"
+msgstr "查询"
+
+msgid "user %(user)s %(create_at)s create securitygroup"
+msgstr "用户 %(user)s %(create_at)s 创建安全组"
+
+msgid "user %(user)s %(create_at)s delete securitygroup"
+msgstr "用户 %(user)s %(create_at)s 删除安全组"
+
+msgid "user %(user)s %(create_at)s create securitygroup rules"
+msgstr "用户 %(user)s %(create_at)s 创建安全规则"
+
+msgid "user %(user)s %(create_at)s delete securitygroup rules"
+msgstr "用户 %(user)s %(create_at)s 删除安全规则"
+
+msgid "user %(user)s %(create_at)s create project"
+msgstr "用户 %(user)s %(create_at)s 创建组织机构"
+
+msgid "user %(user)s %(create_at)s delete project"
+msgstr "用户 %(user)s %(create_at)s 删除机构"
+
+msgid "user %(user)s %(create_at)s create notice"
+msgstr "用户 %(user)s %(create_at)s 创建公告"
+
+msgid "user %(user)s %(create_at)s delete notice"
+msgstr "用户 %(user)s %(create_at)s 删除公告"
+
+msgid "user %(user)s %(create_at)s batch delete notice"
+msgstr "用户 %(user)s %(create_at)s 批量删除公告"
+
+msgid "user %(user)s %(create_at)s edit notice"
+msgstr "用户 %(user)s %(create_at)s 修改公告"
+
+msgid "user %(user)s %(create_at)s create node"
+msgstr "用户 %(user)s %(create_at)s 创建基础设施节点"
+
+msgid "user %(user)s %(create_at)s delete node"
+msgstr "用户 %(user)s %(create_at)s 删除基础设施节点"
+
+msgid "user %(user)s %(create_at)s edit node"
+msgstr "用户 %(user)s %(create_at)s 修改基础设施节点"
+
+msgid "user %(user)s %(create_at)s create image"
+msgstr "用户 %(user)s %(create_at)s 创建母盘"
+
+msgid "user %(user)s %(create_at)s delete image"
+msgstr "用户 %(user)s %(create_at)s 删除母盘"
+
+msgid "user %(user)s %(create_at)s batch delete image"
+msgstr "用户 %(user)s %(create_at)s 批量删除母盘"
+
+msgid "user %(user)s %(create_at)s edit image"
+msgstr "用户 %(user)s %(create_at)s 修改母盘"
+
+msgid "user %(user)s %(create_at)s create flavor"
+msgstr "用户 %(user)s %(create_at)s 创建硬件模板"
+
+msgid "user %(user)s %(create_at)s edit flavor"
+msgstr "用户 %(user)s %(create_at)s 修改硬件模板"
+
+msgid "user %(user)s %(create_at)s delete flavor"
+msgstr "用户 %(user)s %(create_at)s 删除硬件模板"
+
+msgid "user %(user)s %(create_at)s update project info"
+msgstr "用户 %(user)s %(create_at)s 修改机构信息"
+
+msgid "user %(user)s %(create_at)s update quotas"
+msgstr "用户 %(user)s %(create_at)s 修改机构配额"
+
+msgid "user %(user)s %(create_at)s add project users"
+msgstr "用户 %(user)s %(create_at)s 添加机构用户"
+
+msgid "user %(user)s %(create_at)s delete project users"
+msgstr "用户 %(user)s %(create_at)s 删除机构用户"
+
+msgid "user %(user)s %(create_at)s edit project users rule"
+msgstr "用户 %(user)s %(create_at)s 修改机构用户角色"
+
+msgid "user %(user)s %(create_at)s create user"
+msgstr "用户 %(user)s %(create_at)s 创建用户"
+
+msgid "user %(user)s %(create_at)s update user"
+msgstr "用户 %(user)s %(create_at)s 修改用户信息"
+
+msgid "user %(user)s %(create_at)s delete user"
+msgstr "用户 %(user)s %(create_at)s 删除用户"
+
+msgid "user %(user)s %(create_at)s change password"
+msgstr "用户 %(user)s %(create_at)s 修改当前用户自己密码"
+
+msgid "user %(user)s %(create_at)s update user password"
+msgstr "用户 %(user)s %(create_at)s 修改用户密码"
+
+
+msgid "Volume %s has been created successfully!"
+msgstr "创建%s 虚拟磁盘成功"
+
+msgid "Volume %s has been created failed!"
+msgstr "创建%s 虚拟磁盘失败"
+
+msgid "success"
+msgstr "成功"
+
+msgid "fail"
+msgstr "失败"
+
+
+msgid "true"
+msgstr "是"
+
+msgid "false"
+msgstr "否"
+
+
+msgid "Static Resource Manage"
+msgstr "云资源统计管理"
+
+msgid "export"
+msgstr "导出日志"
+
+msgid "clean all logs"
+msgstr "清空日志"
+
+msgid "no logs can be deleted"
+msgstr "无日志可删除！"
+
+msgid "user %(user)s %(create_at)s created instance classify"
+msgstr "用户 %(user)s %(create_at)s 时间创建虚拟机分类"
+
+msgid "user %(user)s %(create_at)s create instance classify"
+msgstr "用户 %(user)s %(create_at)s 时间分配虚拟机分类"
+
+
+msgid "user %(user)s %(create_at)s deleted instance classify"
+msgstr "用户 %(user)s %(create_at)s 时间删除了虚拟机分类"
+
+
+msgid "user %(user)s %(create_at)s created instance"
+msgstr "用户 %(user)s %(create_at)s 时间创建虚拟机"
+
+msgid "user %(user)sr %(create_at)s update instance classify"
+msgstr "用户 %(user)s %(create_at)s 时间更新虚拟机分类"
+
+msgid "user %(user)sr %(create_at)s edit instance classify"
+msgstr "用户 %(user)s %(create_at)s 时间编辑虚拟机分类"
+
+msgid "user %(user)s %(create_at)s updated instance flavor"
+msgstr "用户 %(user)s %(create_at)s 时间更新虚拟机硬件模板"
+
+msgid "user %(user)s %(create_at)s deleted user from instance"
+msgstr "用户 %(user)s %(create_at)s 时间将用户从虚拟机删除"
+
+msgid "user %(user)s%(create_at)s add user to instance"
+msgstr "用户 %(user)s %(create_at)s 时间将用户加入虚拟机"
+
+msgid "user %(user)s %(create_at)s set snapshot public"
+msgstr "用户 %(user)s %(create_at)s 时间设置虚拟机快照权限为公共"
+
+msgid "user %(user)s %(create_at)s restored instance data"
+msgstr "用户 %(user)s %(create_at)s 时间恢复虚拟机数据"
+
+msgid "user %(user)s %(create_at)s created snapshot"
+msgstr "用户 %(user)s %(create_at)s 时间创建虚拟机快照"
+
+msgid "user %(user)s %(create_at)s updated instance"
+msgstr "用户 %(user)s %(create_at)s 时间更新虚拟机名称"
+
+msgid "user %(user)s %(create_at)s changed password of instance"
+msgstr "用户 %(user)s %(create_at)s 时间更改虚拟机密码"
+
+msgid "user %(user)s %(create_at)s unstopped instance"
+msgstr "用户 %(user)s %(create_at)s 时间取消停止虚拟机"
+
+msgid "user %(user)s %(create_at)s stopped instance"
+msgstr "用户 %(user)s %(create_at)s 时间停止虚拟机"
+
+msgid "user %(user)s %(create_at)s unpaused instance"
+msgstr "用户 %(user)s %(create_at)s 时间取消暂停虚拟机"
+
+msgid "user %(user)s %(create_at)s paused instance"
+msgstr "用户 %(user)s %(create_at)s 时间暂停虚拟机"
+
+msgid "user %(user)s %(create_at)s reboot instance"
+msgstr "用户 %(user)s %(create_at)s 时间重启虚拟机"
+
+msgid "user %(user)s %(create_at)s deleted instance"
+msgstr "用户 %(user)s %(create_at)s 时间删除虚拟机"
+
+msgid "user %(user)s %(create_at)s batch deleted instance"
+msgstr "用户 %(user)s %(create_at)s 时间批量删除虚拟机"
+
+msgid "Are you sure for deleting these logs?"
+msgstr "确定删除所有日志?"
+
+
+msgid "update old name %(old)s to new name %(new)s"
+msgstr "更新原名%(old)s为%(new)s"
+
+
+# Thresholds Manage
+msgid "Thresholds Manage"
+msgstr "阈值管理"
+
+msgid "Threshold Name"
+msgstr "阈值名称"
+
+msgid "Threshold Strategy"
+msgstr "阈值策略"
+
+msgid "Current State"
+msgstr "当前状态"
+
+msgid "Enable"
+msgstr "启用"
+
+msgid "Disable"
+msgstr "停用"
+
+msgid "Threshold Host"
+msgstr "主机"
+
+msgid "Threshold Type"
+msgstr "阈值类型"
+
+msgid "Warning Value"
+msgstr "告警阈值"
+
+msgid "Critical Value"
+msgstr "严重阈值"
+
+msgid "Please input the threshold name"
+msgstr "请输入阈值名称"
+
+msgid "Please input the warning value"
+msgstr "请输入告警阈值"
+
+msgid "Please input the critical value"
+msgstr "请输入严重阈值"
+
+msgid "Please input the description"
+msgstr "请输入阈值描述"
+
+msgid "Can not find any records."
+msgstr "未找到相关记录。"
+
+msgid "Can not delete \"default\" threshold."
+msgstr "无法删除默认阈值。"
+
+msgid "Threshold has been already deleted by others."
+msgstr "阈值配置已经被其他人删除。"
+
+msgid "Delete threshold %s successfully"
+msgstr "删除阈值 %s 成功。"
+
+msgid "Create new threshold successfully."
+msgstr "新增阈值配置项成功。"
+
+msgid "Please select host"
+msgstr "请选择主机"
+
+msgid "Invalid request data."
+msgstr "无效的请求数据。"
+
+msgid "Fail to update stragety."
+msgstr "更新策略失败。"
+
+msgid "Update threshold successfully."
+msgstr "更新阈值配置项成功。"
+
+msgid "Warning value must between %s and %s"
+msgstr "告警阈值必须在%s-%s之间。"
+
+msgid "Critical value must between %s and %s"
+msgstr "严重阈值必须在%s-%s之间。"
+
+msgid "Are you sure for deleting this thresholds?"
+msgstr "确定要删除此阈值？"
+
+msgid "Failed to get strategy, please make sure the voyage server is running."
+msgstr "获取阈值策略失败，请确保监控服务处于运行状态。"
+
+msgid "Current active strategy"
+msgstr "当前启用策略"
+
+msgid "common"
+msgstr "默认策略"
+
+msgid "high_cpu"
+msgstr "CPU高负载策略"
+
+msgid "high_store"
+msgstr "存储高负载策略"
+
+msgid "high_net"
+msgstr "网络高负载策略"
+
+msgid "high_all"
+msgstr "高负载策略"
+
+msgid "CPU"
+msgstr "中央处理器"
+
+msgid "MEM"
+msgstr "物理内存"
+
+msgid "DISK"
+msgstr "磁盘"
+
+msgid "DISKSTAT"
+msgstr "磁盘IO"
+
+msgid "NET"
+msgstr "网络带宽"
+
+msgid "New Strategy"
+msgstr "新阈值策略"
+
+#Thresholds Manage logs
+msgid "user %(user)s %(create_at)s added threshold for "
+msgstr "用户 %(user)s %(create_at)s 添加新阈值，主机名："
+
+msgid "user %(user)s %(create_at)s updated threshold successfully."
+msgstr "用户 %(user)s %(create_at)s 修改阈值成功。"
+
+msgid "user %(user)s %(create_at)s deleted threshold for "
+msgstr "用户 %(user)s %(create_at)s 删除阈值，主机名："
+
+
+#volume.views.py
+msgid "Attaching volume successfully!"
+msgstr "成功挂载磁盘！"
+
+msgid "Can not attach volume to instance!"
+msgstr "挂载磁盘产生错误！"
+
+msgid "Can not detach volume!"
+msgstr "卸载磁盘产生错误！"
+
+msgid "Delete volume successfully!"
+msgstr "成功删除磁盘"
+
+msgid "Detach successfully!"
+msgstr "成功卸载磁盘！"
+
+msgid "Delete volume error!"
+msgstr "删除磁盘产生错误！"
+
+msgid "Critical value must greater than warning value"
+msgstr "严重阈值必须大于告警阈值。"
+
+msgid "user %(user)s %(create_at)s create software"
+msgstr "用户 %(user)s %(create_at)s 创建软件包"
+
+msgid "user %(user)s %(create_at)s delete software"
+msgstr "用户 %(user)s %(create_at)s 删除软件包"
+
+msgid "user %(user)s %(create_at)s batch delete software"
+msgstr "用户 %(user)s %(create_at)s 批量删除软件包"
+
+msgid "floating ips"
+msgstr "浮动IP"
+
+msgid "pool"
+msgstr "浮动IP池"
+
+msgid "Allocate IP To Project"
+msgstr "分配浮动IP"
+
+msgid "Release Floating IP"
+msgstr "释放浮动IP"
+
+msgid "Batch Release Floating IP"
+msgstr "批量释放浮动IP"
+
+msgid "Associate IP"
+msgstr "绑定虚拟机"
+
+msgid "Disassociate IP"
+msgstr "分离虚拟机"
+
+msgid "Confirm Disassociate IP?"
+msgstr "您确定要将此IP与虚拟机分离？"
+
+msgid "Confirm Release Floating IP?"
+msgstr "您确定要将此IP释放出此机构？"
+
+msgid "descriptyion"
+msgstr "描述"
+
+
+msgid "Associate a floating ip with an instance."
+msgstr "将浮动IP与一个虚拟机绑定。"
+
+msgid "Allocate a floating IP from a given floating ip pool."
+msgstr "在一个浮动IP池中分配一个浮动IP。"
+
+msgid "Unable to allocate this ip pool."
+msgstr "不能从这个浮动IP池中分配IP"
+
+msgid "Allocate IP successfully!"
+msgstr "分配IP成功！"
+
+msgid "Successfully associated Floating IP %(ip)s with Instance: %(inst)s"
+msgstr "将浮动IP %(ip)s 与虚拟机 %(inst)s 绑定成功！"
+
+msgid "Error associated Floating IP %(ip)s with Instance %(inst)s"
+msgstr "不能将此浮动IP:%(ip)s 与 这个虚拟机: %(inst)s 绑定"
+
+msgid "Error associated Floating IP %(ip)s with Instance %(inst)s, please create a router with external interfaces for the subnet that the instance was in."
+msgstr "不能将此浮动IP%(ip)s 与 这个虚拟机%(inst)s绑定，请先为该虚拟机所在的子网添加含有外部接口的路由器。"
+
+msgid "Error associated Floating IP %(ip)s with Instance %(inst)s, as that the instance already has a floating IP."
+msgstr "不能将此浮动IP%(ip)s 与 这个虚拟机%(inst)s绑定，因为该虚拟机已存在浮动IP"
+
+msgid "release ip successfully!"
+msgstr "释放浮动IP成功"
+
+msgid "release ip error."
+msgstr "释放浮动IP失败"
+
+msgid "disassociate ip successfully!"
+msgstr "成功分离IP与虚拟机!"
+
+msgid "disassociate ip error."
+msgstr "分离IP与虚拟机失败。"
+
+msgid "No floating IP pools available."
+msgstr "没有有效的浮动IP池"
+
+msgid "Select an instance"
+msgstr "选择一个虚拟机"
+
+msgid "Select an Instance"
+msgstr "选择一个虚拟机"
+
+msgid "No instances available"
+msgstr "无虚拟机"
+
+msgid "Please select an instance."
+msgstr "请选择一个虚拟机"
+
+msgid "save classify success with instance_id"
+msgstr "保存虚拟机分类成功"
+
+msgid "save classify failed with instance_id"
+msgstr "保存虚拟机分类失败"
+
+msgid "Creating volume size too large"
+msgstr "创建的虚拟磁盘超出可用磁盘范围！"
+
+#: global monitor popup message
+msgid "Memory usage reached the warning threshold."
+msgstr "内存使用率达到告警阈值。"
+
+msgid "Memory usage reached the critical threshold."
+msgstr "内存使用率达到严重阈值。"
+
+msgid "CPU usage reached the warning threshold."
+msgstr "CPU使用率达到告警阈值。"
+
+msgid "CPU usage reached the critical threshold."
+msgstr "CPU使用率达到严重阈值。"
+
+msgid "Network usage reached the warning threshold."
+msgstr "网络带宽使用率到告警阈值。"
+
+msgid "Network usage reached the critical threshold."
+msgstr "网络带宽使用率达到严重阈值。"
+
+msgid "Disk left space reached the warning threshold."
+msgstr "磁盘剩余空间达到告警阈值。"
+
+msgid "Disk left space usage reached the critical threshold."
+msgstr "磁盘剩余空间达到严重阈值。"
+
+msgid "Disk IO reached the warning threshold."
+msgstr "磁盘IO达到告警阈值。"
+
+msgid "Disk IO  reached the critical threshold."
+msgstr "磁盘IO达到严重阈值。"
+
+
+
+msgid "user %(user)s %(create_at)s created volume"
+msgstr "用户 %(user)s %(create_at)s 创建虚拟磁盘"
+
+msgid "user %(user)s %(create_at)s deleted single volume"
+msgstr "用户 %(user)s %(create_at)s 删除单个磁盘"
+
+msgid "user %(user)s %(create_at)s deleted volumes"
+msgstr "用户 %(user)s %(create_at)s 删除多个磁盘"
+
+msgid "ACTIVE"
+msgstr "激活"
+
+msgid "SUSPENDED"
+msgstr "挂起"
+
+msgid "ERROR"
+msgstr "错误"
+
+msgid "SHUTOFF"
+msgstr "关机"
+
+msgid "Shutoff"
+msgstr "关机"
+
+msgid "PAUSED"
+msgstr "暂停"
+
+msgid "BUILD"
+msgstr "资源统计"
+
+msgid "scheduling"
+msgstr "资源调度"
+
+msgid "block_device_mapping"
+msgstr "硬盘初始化"
+
+msgid "networking"
+msgstr "网络初始化"
+
+msgid "spawning"
+msgstr "资源初始化"
+
+msgid "image_snapshot"
+msgstr "虚拟机备份"
+
+msgid "image_pending_upload"
+msgstr "等待上传"
+
+msgid "image_uploading"
+msgstr "备份上传"
+
+msgid "resize_prep"
+msgstr "初始化硬件调整"
+
+msgid "resize_migrating"
+msgstr "硬件迁移"
+
+msgid "resize_migrated"
+msgstr "硬件迁移"
+
+msgid "resize_finish"
+msgstr "初始化完成"
+
+msgid "rebooting"
+msgstr "重启"
+
+msgid "HARD_REBOOT"
+msgstr "重启"
+
+msgid "REBOOT"
+msgstr "系统重启"
+
+msgid "Reboot"
+msgstr "重启"
+
+msgid "rebooting_hard"
+msgstr "重启"
+
+msgid "pausing"
+msgstr "暂停"
+
+msgid "unpausing"
+msgstr "取消暂停"
+
+msgid "suspending"
+msgstr "停止"
+
+msgid "resuming"
+msgstr "恢复"
+
+msgid "migrating"
+msgstr "迁移"
+
+msgid "no_valid_host"
+msgstr "无合适主机"
+
+#instance power state
+msgid "Running"
+msgstr "运行"
+
+msgid "Paused"
+msgstr "暂停"
+
+msgid "Suspended"
+msgstr "停止"
+
+msgid "Suspend"
+msgstr "停止"
+
+msgid "Restore"
+msgstr "恢复"
+
+msgid "No state"
+msgstr "无"
+
+msgid "the most floating Ips number is "
+msgstr "此机构配置浮动IP的个数是 "
+
+
+#msgid "%s has already exist" line 1942 已存在
+#msgstr "%s 已经存在"
+
+msgid "user %(user)s %(create_at)s allocate floating ip"
+msgstr "用户 %(user)s %(create_at)s 分配浮动IP"
+
+msgid "user %(user)s %(create_at)s release floating ip"
+msgstr "用户 %(user)s %(create_at)s 释放浮动IP"
+
+msgid "user %(user)s %(create_at)s batch release floating ip"
+msgstr "用户 %(user)s %(create_at)s 批量释放浮动IP"
+
+msgid "user %(user)s %(create_at)s associate floating ip"
+msgstr "user %(user)s %(create_at)s 绑定虚拟机和浮动IP"
+
+msgid "user %(user)s %(create_at)s disassociate floating ip"
+msgstr "user %(user)s %(create_at)s 分离虚拟机和浮动IP"
+
+msgid "number"
+msgstr "个数"
+
+msgid "display"
+msgstr "显示"
+
+msgid "records"
+msgstr "条"
+
+msgid "total"
+msgstr "共"
+
+msgid "Primary menu"
+msgstr "主菜单"
+
+msgid "HomePage"
+msgstr "首页"
+
+msgid "UserName"
+msgstr "当前用户"
+
+msgid "Logout"
+msgstr "退出"
+
+msgid "Notice"
+msgstr "公告信息"
+
+msgid "Navigation"
+msgstr "快速导航"
+
+msgid "Instance Resource"
+msgstr "虚拟机状态"
+
+msgid "Project Resource"
+msgstr "部门资源"
+
+msgid "Node Resource"
+msgstr "节点资源"
+
+msgid "More"
+msgstr "更多"
+
+msgid "Data"
+msgstr "数据"
+
+msgid "Usage Ranking"
+msgstr "使用量排行榜"
+
+msgid "This Month Usage Ranking"
+msgstr "本月使用量排行"
+
+msgid "Contains one or multiple Spaces,Please enter again!"
+msgstr "包含一个或多个空格,请重新输入!"
+
+msgid "add project"
+msgstr "增加机构"
+
+msgid "delete project"
+msgstr "删除机构"
+
+msgid "delete project user"
+msgstr "删除机构用户"
+
+msgid "hide button"
+msgstr "隐藏按钮"
+
+msgid "show button"
+msgstr "显示按钮"
+
+msgid "edit project user"
+msgstr "编辑机构用户"
+
+msgid "sequence"
+msgstr "序号"
+
+
+msgid "Image name contains spaces,please enter again!"
+msgstr "母盘名称包含空格,请重新输入!"
+
+msgid "project user info"
+msgstr "机构用户信息"
+
+msgid "The new HardTemplate requires a change in size."
+msgstr "存在相同内存值的硬件模板."
+
+msgid "control_node"
+msgstr "控制节点"
+
+msgid "compute_node"
+msgstr "计算节点"
+
+msgid "storage_node"
+msgstr "存储节点"
+
+msgid "AppSoftware"
+msgstr "应用软件"
+
+msgid "SystemSoftware"
+msgstr "系统软件"
+
+msgid "classify"
+msgstr "分类"
+
+msgid "input value should be less than or equal to 2147483647."
+msgstr "输入框内容应小于或等于2147483647."
+
+msgid "Network Address Manage"
+msgstr "网络地址管理"
+
+
+
+msgid "No disk can be created!"
+msgstr "不能创建更多的磁盘!"
+
+msgid "activeAndStart"
+msgstr "创建并启动"
+
+msgid "createImages"
+msgstr "创建母盘"
+
+msgid "Login"
+msgstr "登录"
+
+msgid "The default thresholds of CPU"
+msgstr "默认CPU阈值"
+
+msgid "The default thresholds of Memory"
+msgstr "默认内存阈值"
+
+msgid "The default thresholds of disk space"
+msgstr "默认磁盘空间阈值"
+
+msgid "The default thresholds of network"
+msgstr "默认网络带宽阈值"
+
+msgid "The default thresholds of disk IOWait"
+msgstr "默认磁盘IOWait阈值"
+
+msgid "Monitoring the target host CPU usage,unit%"
+msgstr "监控目标主机CPU使用率，单位%"
+
+msgid "Monitoring the target host memory usage,unit%"
+msgstr "监控目标主机内存使用率，单位%"
+
+msgid "Monitoring the target host disk space usage,unit%"
+msgstr "监控目标主机磁盘使用率，单位%"
+
+msgid "Monitoring the target host NetWork bandwidth usage,unit%"
+msgstr "监控目标主机网络带宽使用率，单位%"
+
+msgid "Monitoring the target host disk TPS usage,unit%"
+msgstr "监控目标主机磁盘TPS使用率，单位%"
+
+
+msgid "Node type"
+msgstr "节点类型"
+
+msgid "Created_at"
+msgstr "创建时间"
+
+msgid "Del"
+msgstr "删除"
+
+msgid "Display"
+msgstr "显示"
+
+msgid "Records"
+msgstr "条"
+
+msgid "Total"
+msgstr "共"
+
+msgid "Submit"
+msgstr "提交"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Update"
+msgstr "编辑"
+
+msgid "Back"
+msgstr "返回"
+
+#Task 221
+msgid "Add Project"
+msgstr "新增机构"
+
+msgid "Add Project User"
+msgstr "添加机构用户"
+
+msgid "Update Project"
+msgstr "更新机构"
+
+msgid "Update Quotas"
+msgstr "更新机构配额"
+
+msgid "Project User Info"
+msgstr "机构用户信息"
+
+msgid "Edit Project User"
+msgstr "编辑机构用户"
+
+msgid "Get Project User"
+msgstr "机构用户"
+
+msgid "Pool"
+msgstr "浮动IP池"
+
+msgid "Descriptyion"
+msgstr "描述"
+
+msgid "Securitygroup Info"
+msgstr "安全组信息"
+
+msgid "RouterProject Info"
+msgstr "路由项目信息"
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Add SecurityGroup"
+msgstr "添加安全组"
+
+msgid "Add Router"
+msgstr "添加路由"
+
+msgid "External Gateway"
+msgstr "外部网关"
+
+msgid "Internal Interface"
+msgstr "内部接口"
+
+msgid "Delete SecurityGroup"
+msgstr "删除安全组"
+
+msgid "Delete RouterProject"
+msgstr "删除路由项目"
+
+
+
+msgid "Delete Rule"
+msgstr "删除安全规则"
+
+#msgid 虚拟机管理
+msgid "Instance Classify"
+msgstr "虚拟机分类"
+
+msgid "Detail"
+msgstr "详情"
+
+msgid "Undistribution"
+msgstr "取消分配"
+
+msgid "Distribution"
+msgstr "分配"
+
+msgid "Remote Desktop"
+msgstr "远程桌面"
+
+msgid "Instance Flavor Resize"
+msgstr "虚拟机硬件调整"
+
+msgid "Reboot Instance"
+msgstr "重启虚拟机"
+
+msgid "Pause Instance"
+msgstr "暂停虚拟机"
+
+msgid "Suspend Instance"
+msgstr "停止虚拟机"
+
+msgid "Change Instance Password"
+msgstr "修改虚拟机密码"
+
+msgid "Delete Instance"
+msgstr "删除虚拟机"
+
+msgid "Update Instance Info"
+msgstr "修改虚拟机信息"
+
+msgid "Backup"
+msgstr "创建备份"
+
+msgid "Restore Backups"
+msgstr "还原备份"
+
+msgid "Get Backup List"
+msgstr "获取备份列表"
+
+msgid "Select"
+msgstr "选择"
+
+msgid "Instantce Classify Name"
+msgstr "虚拟机分类名称"
+
+msgid "Instantce Classify Name Label"
+msgstr "虚拟机分类名称"
+
+msgid "Quickly Create Image Templates"
+msgstr "快速创建母盘模板"
+
+msgid "Please Add Instance Classify"
+msgstr "请添加分类："
+
+
+
+msgid "Delete Flavor"
+msgstr "删除虚拟硬件模板"
+
+# Volume Manage#
+
+msgid "Check All"
+msgstr "全选"
+
+msgid "Volume Name"
+msgstr "磁盘名称"
+
+msgid "Volume Description"
+msgstr "磁盘描述"
+
+msgid "Volume Size"
+msgstr "磁盘大小"
+
+msgid "Volume Status"
+msgstr "磁盘状态"
+
+msgid "Volume To Instance"
+msgstr "附加到实例"
+
+msgid "Get Volume Info"
+msgstr "查看磁盘信息"
+
+msgid "Update Volume Info"
+msgstr "修改磁盘信息"
+
+msgid "Delete Volume"
+msgstr "删除磁盘"
+
+msgid "Edit Mount Volume"
+msgstr "编辑挂载磁盘"
+
+msgid "Create Volume"
+msgstr "创建磁盘"
+
+msgid "Attach volume"
+msgstr "挂载磁盘"
+
+msgid "Attach Volume"
+msgstr "挂载磁盘"
+
+msgid "Detach volume"
+msgstr "卸载磁盘"
+
+msgid "Detach Volume"
+msgstr "卸载磁盘"
+
+msgid "Please Check One"
+msgstr "请选择一项！"
+
+msgid "Flat"
+msgstr "平台"
+
+msgid "Classify"
+msgstr "分类"
+
+msgid "Software Name"
+msgstr "软件包名称"
+
+msgid "Software Upload"
+msgstr "上传软件包"
+
+msgid "Dowload"
+msgstr "下载"
+
+msgid "Created At"
+msgstr "创建时间"
+
+msgid "Content Type"
+msgstr "文件类型"
+
+msgid "Content Total"
+msgstr "文件大小"
+
+msgid "Content Name"
+msgstr "文件名"
+
+msgid "Check Sum"
+msgstr ""
+
+msgid "Software"
+msgstr "软件包"
+
+msgid "Collect Softwares"
+msgstr "软件收藏夹"
+
+msgid "Delete Software"
+msgstr "删除软件包"
+
+msgid "Create Time"
+msgstr "创建时间"
+
+msgid "Level"
+msgstr "优先级"
+
+msgid "Is Released"
+msgstr "已发布"
+
+msgid "No Released"
+msgstr "未发布"
+
+msgid "High Level"
+msgstr "高级"
+
+msgid "General"
+msgstr "一般"
+
+msgid "Notice Author"
+msgstr "作者"
+
+msgid "Log Module"
+msgstr "归属模块"
+
+msgid "Event"
+msgstr "事件"
+
+msgid "Begin Time"
+msgstr "开始时间"
+
+msgid "End Time"
+msgstr "结束时间"
+
+msgid "Clean All Logs"
+msgstr "清空日志"
+
+msgid "Export"
+msgstr "导出日志"
+
+msgid "Tenant Name"
+msgstr "机构名称"
+
+msgid "Is Primary"
+msgstr "是否关键事件"
+
+
+msgid "Address"
+msgstr "地址"
+
+msgid "System"
+msgstr "系统"
+
+msgid "ActiveAndStart"
+msgstr "创建并启动"
+
+msgid "Image File"
+msgstr "母盘文件"
+
+msgid "Min Disk (GB)"
+msgstr "最小硬盘 (GB)"
+
+msgid "Min Ram (MB)"
+msgstr "最小内存 (MB)"
+
+msgid "Start"
+msgstr "启动"
+
+msgid "Unpause Instance"
+msgstr "取消暂停"
+
+msgid "action"
+msgstr "操作"
+
+
+msgid "Use"
+msgstr "使用"
+
+msgid "Image Creating"
+msgstr "母盘创建中"
+
+msgid "Instance Task Sumbitting"
+msgstr "虚拟机创建申请提交中"
+
+msgid "Instance Task Submitted"
+msgstr "虚拟机创建申请提交成功"
+
+msgid "wait for Instance Creating"
+msgstr "等待虚拟机创建中"
+
+msgid "Instance Creating"
+msgstr "虚拟机创建中"
+
+msgid "Instance Created"
+msgstr "虚拟机创建成功"
+
+msgid "Image Created Failed"
+msgstr "母盘创建失败"
+
+msgid "Instance Create Failed"
+msgstr "虚拟机创建失败"
+
+msgid "Can not find the image"
+msgstr "找不到系统文件"
+
+msgid "Image Create Success"
+msgstr "母盘创建成功"
+
+msgid "Image Create Timeout"
+msgstr "母盘创建超时"
+
+msgid "Instance Create Timeout"
+msgstr "虚拟机创建超时"
+
+msgid "Image Created"
+msgstr "母盘创建成功"
+
+msgid "Image Path file depletion"
+msgstr "找不到母盘文件"
+
+msgid "Validate error when creating image"
+msgstr "创建母盘出错，请检查输入信息"
+
+msgid "News of floating IP"
+msgstr "浮动IP信息"
+
+msgid "Quota exceeded, too many security groups."
+msgstr "不能创建更多的安全组."
+
+msgid "no blank space allowed during the upload file name"
+msgstr "上传文件名中含有空格"
+
+msgid "Please choose upload file"
+msgstr "请选择要上传的软件包"
+
+msgid "Image Re-create and Start"
+msgstr "重新创建母盘并启动"
+
+msgid "user %(user)s %(create_at)s start instance"
+msgstr "用户 %(user)s %(create_at)s 创建母盘"
+
+msgid "Please select a flavor"
+msgstr "请选择硬件模板"
+
+msgid "Threshold name is repeat in the this threshold host. "
+msgstr "阈值名称在该主机下重名！"
+
+msgid "Start image Success"
+msgstr "开始母盘创建"
+
+msgid "Create_at Instance Name"
+msgstr "虚拟机名称："
+
+msgid "Quota exceeded, too many security group rules."
+msgstr "不能创建更多的安全规则."
+
+msgid "Available Networks"
+msgstr "可用网络"
+
+msgid "Include Groups :"
+msgstr "当前安全组："
+
+msgid "All Security Groups :"
+msgstr "剩余安全组："
+
+msgid "Restore Instance"
+msgstr "恢复虚拟机"
+
+msgid "The minimum disk size required to boot the image. If unspecified, this value defaults to 0 (no minimum)"
+msgstr "对母盘补充的硬盘大小，如果不是特别需要，默认值为0"
+
+msgid "The minimum ram size required to boot the image. If unspecified, this value defaults to 0 (no minimum)"
+msgstr "对母盘补充的内存大小，如果不是特别需要，默认值为0"
+
+msgid "Fail"
+msgstr "失败"
+
+msgid "CreateImages"
+msgstr "创建母盘"
+
+msgid "Aviable networks"
+msgstr "可用网络"
+
+msgid "Soft Reboot Instance"
+msgstr "软重启"
+
+msgid "Launch instance successfully!"
+msgstr "成功启动虚拟机"
+
+
+msgid "Pertain Tenant"
+msgstr "所属机构"
+
+msgid "Create Volume Type"
+msgstr "创建磁盘类型"
+
+
+msgid "Volume Type"
+msgstr "磁盘类型"
+
+
+msgid "Volume Type Name"
+msgstr "磁盘类型名称"
+
+
+msgid "Total Gigabytes"
+msgstr "总使用量"
+
+msgid "Available Gigabytes"
+msgstr "可使用量"
+
+msgid "Number of Volumes"
+msgstr "已创建磁盘"
+
+msgid "Available Volumes"
+msgstr "可创建磁盘"
+
+msgid "Are you sure to delete this volume type?"
+msgstr "你确定删除这个虚拟磁盘类型吗?"
+
+msgid "Volume type delete Failed!"
+msgstr "磁盘类型删除失败!"
+
+msgid "Volume type delete Successfully!"
+msgstr "磁盘类型删除成功！"
+
+msgid "Create volume type Successfully!"
+msgstr "创建磁盘类型成功！"
+
+msgid "Create volume type Failed!"
+msgstr "创建磁盘类型失败！"
+
+
+msgid "Volume uses the type,the type cannot be deleted!"
+msgstr "虚拟磁盘使用了此虚拟磁盘类型,此虚拟磁盘类型不能删除!"
+
+
+msgid "Please select one"
+msgstr "请选择一项"
+
+msgid "Create Volume Snapshot"
+msgstr "创建磁盘快照"
+
+msgid "Snapshot Manage"
+msgstr "磁盘快照管理"
+
+msgid "Snapshot Description"
+msgstr "快照描述"
+
+msgid "Snapshot Size"
+msgstr "快照大小"
+
+msgid "Snapshot Status"
+msgstr "快照状态"
+
+msgid "Delete Snapshots"
+msgstr "批量删除快照"
+
+msgid "Delete Snapshot"
+msgstr "删除快照"
+
+msgid "Are you sure to delete this volume snapshot?"
+msgstr "你确定删除这个虚拟磁盘快照吗?"
+
+
+msgid "Soft reboot successfully!"
+msgstr "软重启成功！"
+
+msgid "Just the active status can be soft reboot!"
+msgstr "虚拟机状态不为 active ，不能进行软重启！"
+
+msgid "Can not soft reboot instance"
+msgstr "虚拟机软重启失败"
+
+msgid "Are you sure for soft rebooting this instance?"
+msgstr "确定软重启虚拟机？"
+
+msgid "Can not use the parameter or parameter format wrong !"
+msgstr "无法使用参数或参数格式错误！"
+
+msgid "Use snapshot as a source"
+msgstr "磁盘快照来源"
+
+msgid "Delete Volume Snapshots Failed!"
+msgstr "删除磁盘快照失败!"
+
+msgid "Delete Volume Snapshots Successfully!"
+msgstr "删除磁盘快照成功!"
+
+msgid "Delete Volume Snapshot Failed!"
+msgstr "删除磁盘快照失败!"
+
+msgid "Delete Volume Snapshot Successfully!"
+msgstr "删除磁盘快照成功!"
+
+msgid "Create Volume Snapshot Successfully!"
+msgstr "创建磁盘快照成功!"
+
+msgid "Create Volume Snapshot Failed!"
+msgstr "创建磁盘快照失败!"
+
+msgid "Get Snapshot Detail"
+msgstr "详情"
+
+msgid "Get Snapshot detail failed"
+msgstr "获取磁盘快照详情失败!"
+
+msgid "Virtual Address Manage"
+msgstr "网络地址管理"
+
+msgid "Virtual Routers Manage"
+msgstr "虚拟路由管理"
+
+msgid "VCPUs"
+msgstr "虚拟CPU个数"
+
+msgid "Security Group Rules"
+msgstr "安全组规则"
+
+msgid "Fixed Ips"
+msgstr "内部IPs"
+
+msgid "fixed_ips should be larger than -2."
+msgstr "内部IPs数应该大于-2"
+
+msgid "security_groups should be larger than 0."
+msgstr "安全組数应该大于0"
+
+msgid "security_groups_rules should be larger than 0."
+msgstr "安全組规则数应该大于0"
+
+msgid "Resume Instance"
+msgstr "恢复虚拟机"
+
+msgid "Can not edit instance groups"
+msgstr "不能编辑虚拟机安全组"
+
+msgid "Update instance name successfully"
+msgstr "成功更新虚拟机名称!"
+
+
+msgid "Choose a snapshot"
+msgstr "选择一个快照"
+
+msgid "Exceed instances quotas of tenant,can not create instance!"
+msgstr "超过机构限额，不能创建虚拟机"
+
+msgid "can not create image"
+msgstr "有母盘正在创建中，不能创建母盘!"
+
+msgid "Enable Project"
+msgstr "激活机构"
+
+msgid "Enable Project Success"
+msgstr "激活机构成功"
+
+msgid "Delete Project"
+msgstr "删除机构"
+
+msgid "Delete Project User"
+msgstr "删除机构用户"
+
+msgid "Hide Button"
+msgstr "隐藏按钮"
+
+msgid "Show Button"
+msgstr "显示按钮"
+
+msgid "Are you sure for enabling this project?"
+msgstr "确定激活机构吗？"
+
+msgid "Success"
+msgstr "成功"
+
+msgid "Please delete Volume Snapshot corresponding to the Volume!"
+msgstr "请先删除虚拟磁盘对应的虚拟磁盘快照!"
+
+msgid "Live Migrate"
+msgstr "热迁移"
+
+msgid "Select a compute node"
+msgstr "选择计算节点"
+
+msgid "Host Name"
+msgstr "可迁移主机："
+
+msgid "Swap Disk MB"
+msgstr "交换磁盘 MB"
+
+msgid "Instance Flavor Resize Confirm"
+msgstr "确认虚拟硬件调整"
+
+msgid "Snapshot status must be available!"
+msgstr "磁盘快照必须为可用!"
+
+msgid "Select Tenant"
+msgstr "选择机构"
+
+msgid "Virtual NetWork Manage"
+msgstr "虚拟网络管理"
+
+msgid "Admin State"
+msgstr "管理状态"
+
+msgid "Shared"
+msgstr "共享"
+
+msgid "External Network"
+msgstr "外部网络"
+
+msgid "Provider Network"
+msgstr "网络提供"
+
+msgid "Network Type"
+msgstr "网络类型"
+
+msgid "Physical Network"
+msgstr "物理网络"
+
+msgid "Segmentation ID"
+msgstr "分段ID"
+
+msgid "Create Subnet"
+msgstr "添加子网"
+
+
+msgid "NetWork Info"
+msgstr "网络信息"
+
+
+msgid "Network Address"
+msgstr "网络地址"
+
+msgid "IP Version"
+msgstr "IP版本"
+
+msgid "Gateway IP"
+msgstr "网关IP"
+
+msgid "Edit Subnet"
+msgstr "编辑子网"
+
+msgid "Delete Subnet"
+msgstr "删除子网"
+
+msgid "Create Port"
+msgstr "新增端口"
+
+msgid "Fixed IPs"
+msgstr "固定IP"
+
+msgid "Attached Device"
+msgstr "附加设备"
+
+msgid "Attached Device:"
+msgstr "附加设备："
+
+msgid "Edit Port"
+msgstr "编辑端口"
+
+msgid "Delete Port"
+msgstr "删除端口"
+
+msgid "Subnet Name"
+msgstr "子网名称"
+
+msgid "Disable Gateway"
+msgstr "禁用网关"
+
+msgid "Subnet Detail"
+msgstr "子网详情"
+
+msgid "Enable DHCP"
+msgstr "启用DHCP"
+
+msgid "Allocation Pools"
+msgstr "分配池"
+
+msgid "DNS Name Servers"
+msgstr "DNS名称服务器"
+
+msgid "Host Routes"
+msgstr "主机路由"
+
+msgid "Are you sure for deleting this SubNet?"
+msgstr "您确定要删除此子网？"
+
+msgid "Network Name"
+msgstr "网络名称"
+
+msgid "Network ID"
+msgstr "网络ID"
+
+msgid "Device ID"
+msgstr "设备ID"
+
+msgid "Device Owner:"
+msgstr "设备拥有者："
+
+msgid "Port Info"
+msgstr "端口信息"
+
+msgid "Are you sure for deleting this Port?"
+msgstr "您确定要删除此端口？"
+
+msgid "IP address of Gateway (e.g. 192.168.0.254) "
+      "The default value is the first IP of the "
+      "network address (e.g. 192.168.0.1 for "
+      "192.168.0.0/24). "
+      "If you use the default, leave blank. "
+      "If you want to use no gateway, "
+      "check 'Disable Gateway' below."
+msgstr "网关的IP地址(e.g. 192.168.0.254)的默认值是网络地址中的第一个IP(e.g. 192.168.0.1 for 192.168.0.0/24).如果你使用默认值，保留空白。如果你不使用网关，下面选择禁用网关"
+
+msgid "IP address allocation pools. Each entry is "
+      "<start_ip_address>,<end_ip_address> "
+      "(e.g., 192.168.1.100,192.168.1.120) "
+      "and one entry per line."
+msgstr "IP地址分配池。每条是<start_ip_address>,<end_ip_address>的格式(e.g., 192.168.1.100,192.168.1.120) 并且一条占一行"
+
+msgid "IP address allocation pools. Each entry is "
+      "<start_ip_address>,<end_ip_address> "
+      "(e.g., 3ffe:cc4f:58e5:58e5:c8ff:fe4d:fd3d:2,3ffe:cc4f:58e5:58e5:c8ff:fe4d:fd3d:fd3d) "
+      "and one entry per line."
+msgstr "IP地址分配池。每条是<start_ip_address>,<end_ip_address>的格式(e.g., 3ffe:cc4f:58e5:58e5:c8ff:fe4d:fd3d:2,3ffe:cc4f:58e5:58e5:c8ff:fe4d:fd3d:fd3d) 并且一条占一行"
+
+msgid "IP address list of DNS name servers for this subnet. "
+      "One entry per line."
+msgstr "此子网的DNS名称服务器的IP地址列表。一条占一行。"
+
+msgid "Additional routes announced to the hosts. "
+      "Each entry is <destination_cidr>,<nexthop> "
+      "(e.g., 192.168.200.0/24,10.56.1.254)"
+      "and one entry per line."
+msgstr "主机分布的额外的路由。每条是<destination_cidr>,<nexthop>的格式(e.g., 192.168.200.0/24,10.56.1.254) 并且一条占一行"
+
+msgid "Specify 'Network Address'."
+msgstr "指定'网络地址'"
+
+msgid "Network address in CIDR format (e.g. 192.168.0.0/24)"
+msgstr "网络地址的格式(如：192.168.0.0/24)"
+
+msgid "Network address in CIDR format (e.g. 192.168.0.0/24),and the cidr suffix part should all be 0. (e.g. *.*.*.*/24, the last 8 bits should be '*.*.*.00000000')"
+msgstr "网络地址的格式(如：192.168.0.0/24),并且请保证网络地址后缀部分全部为零。（比如，*.*.*.*/24，它的后8位应该全为0，类似于'*.*.*.00000000'）"
+
+msgid "Network address in CIDR format (e.g. 3ffe:0:0:0:c8ff:fe4d:fd3d:0/112),and the cidr suffix part should all be 0. (e.g. *:*::*:*:*/112, the last 16 bits should be *:*::*:*:*:0000000000000000)"
+msgstr "网络地址的格式(如：3ffe:0:0:0:c8ff:fe4d:fd3d:0/112),并且请保证网络地址后缀部分全部为零。（比如，*:*::*:*:*/112，它的后16位应该全为0，类似于*:*::*:*:*:0000000000000000）"
+
+msgid "Network Address and IP version are inconsistent."
+msgstr "网络地址与IP的版本不一致"
+
+msgid "The subnet in the Network Address is too small."
+msgstr "子网的网络地址在网络地址中太少"
+
+msgid "Gateway IP and IP version are inconsistent."
+msgstr "网关IP与IP的版本不一致"
+
+msgid "Gateway IP is error."
+msgstr "网关IP有误"
+
+msgid"Specify IP address of gateway or check 'Disable Gateway'."
+msgstr "指定网关IP地址或选择'禁用网关'"
+
+msgid "%(field_name)s: Invalid IP address (value=%(ip)s)"
+msgstr "%(field_name)s: 无效的IP地址 (value=%(ip)s)"
+
+msgid "%(field_name)s: Invalid IP address (value=%(network)s)"
+msgstr "%(field_name)s: 无效的IP地址 (value=%(network)s)"
+
+msgid "Start and end addresses must be specified"
+msgstr "分配池必须指定开始和结束地址"
+
+msgid "Start address is larger than end address"
+msgstr "分配池开始地址要大于结束地址"
+
+msgid "Host Routes format error: Destination CIDR and nexthop must be specified (value=%s)"
+msgstr "主机路由格式错误：CIDR和nexthop必须被指定"
+
+msgid "Device ID attached to the port"
+msgstr "设备ID附着此端口"
+
+msgid "Device owner attached to the port"
+msgstr "设备拥有者附着此端口"
+
+msgid "Failed to create network"
+msgstr "创建网络失败"
+
+msgid "Create network successfully!"
+msgstr "创建网络成功！"
+
+msgid "Unable to delete network."
+msgstr "不能删除此网络。"
+
+msgid "delete network successfully!"
+msgstr "删除网络成功。"
+
+msgid "get network info error."
+msgstr "获取网络信息失败。"
+
+msgid "Failed to Update network"
+msgstr "修改网络信息失败。"
+
+msgid "get subnet info error."
+msgstr "获取子网信息失败。"
+
+msgid "Failed to create subnet"
+msgstr "创建子网失败"
+
+msgid "Create subnet successfully!"
+msgstr "创建子网成功！"
+
+msgid "Failed to edit subnet: %s"
+msgstr "编辑子网失败：%s"
+
+msgid "Edit subnet successfully!"
+msgstr "编辑子网成功!"
+
+msgid "Unable to delete subnet."
+msgstr "不能删除此子网。"
+
+msgid "delete subnet successfully!"
+msgstr "删除此子网成功！"
+
+msgid "get port info error."
+msgstr "修改端口信息失败。"
+
+msgid "Failed to create a port for network %s"
+msgstr "为网络 %s 创建一个端口失败"
+
+msgid "Create port successfully!"
+msgstr "创建端口成功。"
+
+msgid "Failed to edit port %s"
+msgstr "编辑端口 %s 失败"
+
+msgid "Edit port successfully!"
+msgstr "编辑端口成功"
+
+msgid "Unable to delete port."
+msgstr "不能删除此端口。"
+
+msgid "delete port successfully!"
+msgstr "删除端口成功！"
+
+msgid "Subnet Name. This field is optional."
+msgstr "子网名称。此字段为可选字段。"
+
+msgid "Subnet"
+msgstr "子网"
+
+msgid "Add interface"
+msgstr "增加接口"
+
+msgid "del interface"
+msgstr "删除接口"
+
+msgid "Router ID"
+msgstr "路由ID"
+
+msgid "delete router"
+msgstr "删除路由"
+
+msgid "Set GateWay"
+msgstr "添加网关"
+
+msgid "del GateWay"
+msgstr "删除网关"
+
+msgid "You can connect a specified external network to the router. The external network is regarded as a default route of the router and the router acts as a gateway for external connectivity."
+msgstr "您可以选择一个外部网络作为默认路由，使该路由成为连接外部网络的网关。"
+
+msgid "You can connect a specified subnet to the router"
+msgstr "您可以为路由指定一个子网"
+
+msgid "user %(user)s %(create_at)s created volume type"
+msgstr "用户 %(user)s %(create_at)s 创建虚拟磁盘类型"
+
+msgid "user %(user)s %(create_at)s deleted volume type"
+msgstr "用户 %(user)s %(create_at)s 删除虚拟磁盘类型"
+
+msgid "user %(user)s %(create_at)s created volume snapshot"
+msgstr "用户 %(user)s %(create_at)s 创建虚拟磁盘快照"
+
+msgid "user %(user)s %(create_at)s deleted volume snapshot"
+msgstr "用户 %(user)s %(create_at)s 删除单个虚拟磁盘快照"
+
+msgid "user %(user)s %(create_at)s deleted volume snapshots"
+msgstr "用户 %(user)s %(create_at)s 删除多个虚拟磁盘快照"
+
+msgid "Subnet Info"
+msgstr "子网信息"
+
+msgid "Add NetWork"
+msgstr "添加虚拟网络"
+
+msgid "Edit NetWork"
+msgstr "编辑网络"
+
+msgid "Delete NetWork"
+msgstr "删除网络"
+
+msgid "Update instance name successfully!"
+msgstr "成功更新虚拟机名称"
+
+
+msgid "Virtual Keypairs Manage"
+msgstr "网络密钥管理"
+
+msgid "Import Keypair"
+msgstr "导入密钥"
+
+msgid "Keypair Name"
+msgstr "密钥名称"
+
+msgid "Fingerprint"
+msgstr "指纹"
+
+msgid "Public Key"
+msgstr "公开密钥"
+
+msgid "Keypairs are ssh credentials which are injected into images when they are launched."
+"Creating a new key pair registers the public key and downloads the private key (a .pem file)."
+"Protect and use the key as you would any normal ssh private key."
+msgstr "密钥是母盘被推出时注入在其中的ssh的凭据。创建一个新密钥，注册公共密钥并且下载私钥(a .pem file)。任何ssh私钥将是你保护和使用的关键。"
+
+msgid "create keypair successfully!"
+msgstr "创建密钥成功"
+
+msgid "download keypair error"
+msgstr "下载密钥失败"
+
+msgid "Failed to import keypair"
+msgstr "导入密钥失败"
+
+msgid "Can not delete keypair %s"
+msgstr "删除密钥%s失败"
+
+msgid "delete keypair success"
+msgstr "删除密钥成功"
+
+msgid "Are you sure for deleting this keypair ?"
+msgstr "您确定要删除此密钥？"
+
+
+msgid "Create router"
+msgstr "添加路由"
+
+msgid "External Gateway Information"
+msgstr "外部网关信息"
+
+msgid "Unable to delete tenant.please remove it's volumes"
+msgstr "无法删除机构，请先移除机构中的卷"
+
+msgid "Unable to delete tenant.please remove its routers"
+msgstr "无法删除机构，请先移除机构中的路由"
+
+msgid "Unable to delete tenant.please remove its securitygroups"
+msgstr "无法删除机构，请先移除机构中的安全组"
+
+msgid "Unable to delete tenant.please remove its networks"
+msgstr "无法删除机构，请先移除机构中的网络"
+
+msgid "Unable to delete tenant.please remove its floating_ips"
+msgstr "无法删除机构，请先移除机构中的浮动IP"
+
+
+msgid "Download Keypair"
+msgstr "下载密钥"
+
+msgid "The keypair should download automatically. If not use the link below."
+msgstr "密钥应该已自动下载。如果没有请使用以下链接下载。"
+
+msgid "Router Name"
+msgstr "路由名称"
+
+msgid "Failed to retrieve the router."
+msgstr "获取路由失败"
+
+msgid "Unable to retrieve router list"
+msgstr "无法获取路由列表"
+
+msgid "Unable to delete router project:%s."
+msgstr "无法删除指定路由：%s。"
+
+msgid "Unable to retrieve the router :%s."
+msgstr "无法获取指定路由：%s。"
+
+msgid "Unable to retrieve an external network : %s."
+msgstr "无法获取指定外部网络：%s。"
+
+msgid "Port list can not be retrieved."
+msgstr "无法获取端口列表"
+
+msgid "Failed to delete interface"
+msgstr "无法删除接口"
+
+msgid "Failed to add_interface."
+msgstr "增加接口失败"
+
+msgid "Failed to add gateway."
+msgstr "添加网关失败"
+
+msgid "'Unable to clear gateway for router."
+msgstr "无法清除该路由的网关"
+
+msgid "Failed to create router :%s."
+msgstr "无法创建路由：%s"
+
+msgid "Are you sure for deleting the gateway of this router?"
+msgstr "确定要删除路由的网关吗?"
+
+
+msgid "delete gateway successfully!"
+msgstr "删除网关成功"
+
+msgid "Create gateway successfully!"
+msgstr "创建网关成功"
+
+msgid "add router successfully!"
+msgstr "添加路由成功"
+
+msgid "Create interface successfully!"
+msgstr "创建接口成功"
+
+msgid "delete router successfully!"
+msgstr "删除路由成功"
+
+msgid "delete interface successfully!"
+msgstr "删除接口成功"
+
+msgid "Are you sure for deleting the interface of this router?"
+msgstr "确定要删除路由的接口吗"
+
+msgid "invalid ip pool"
+msgstr "无效IP池"
+
+
+msgid "There is no enough spice to resize instance flavor"
+msgstr "服务器剩余空间不能进行硬件模板调整"
+
+msgid "uploading count is beyond max limit."
+msgstr "正在上传的软件个数超出了最大限制"
+
+msgid "Unable to obtain information to usage!"
+msgstr "无法获取机构配额信息!"
+
+msgid "Please select an organization!"
+msgstr "请选择一个机构!"
+
+msgid "Failed to get agency quotas!"
+msgstr "获取机构配额失败!"
+
+msgid "admin can't change password"
+msgstr "admin不可修改密码"
+
+msgid "Are you sure for deleting this NetWork?"
+msgstr "确定要删除此网络？"
+
+msgid "Ip Protocol"
+msgstr "IP协议"
+
+msgid "Open"
+msgstr "开放"
+
+msgid "From Port"
+msgstr "开始端口"
+
+msgid "To Port"
+msgstr "结束端口"
+
+msgid "Port"
+msgstr "端口"
+
+msgid "Code"
+msgstr "编码"
+
+msgid "Source"
+msgstr "来源"
+
+msgid "Source Group"
+msgstr "源组"
+
+msgid "Floating IP"
+msgstr "浮动 IP"
+
+msgid "Instance Num"
+msgstr "虚拟机个数"
+
+msgid "Instance status"
+msgstr "虚拟机状态"
+
+msgid "Local Disk"
+msgstr "本地磁盘"
+
+msgid "disk_gb_hours"
+msgstr "磁盘使用时间"
+
+msgid "vcpu_hours"
+msgstr "虚拟cpu使用时间"
+
+msgid "memory_mb"
+msgstr "内存使用量"
+
+msgid "instances"
+msgstr "虚拟机数"
+
+msgid "H*GB"
+msgstr "虚拟机数"
+
+msgid "H*Number"
+msgstr "时间数"
+
+msgid "Number"
+msgstr "个数"
+
+msgid "NUMBER"
+msgstr "个数"
+
+msgid "Used"
+msgstr "已用"
+
+msgid "Quota"
+msgstr "配额"
+
+msgid "The token maybe expired, please try to login again."
+msgstr "令牌可能已过期，请尝试重新登录"
+
+msgid "The task expired"
+msgstr "申请任务已过期"
+
+msgid "Port Range"
+msgstr "端口区间"
+
+msgid "Ip Range"
+msgstr "IP范围"
+
+msgid "online"
+msgstr "在线"
+
+msgid "offline"
+msgstr "下线"
+
+msgid "Primary Menu"
+msgstr "系统菜单"
+
+msgid "Not enough server resources,Volume %s has been created failed!"
+msgstr "服务器资源不够,创建磁盘%s失败!"
+
+msgid "Not enough server resources,Volume Snapshot %s has been created failed!"
+msgstr "服务器资源不够,创建磁盘快照%s失败!"
+
+msgid "Loading..."
+msgstr "数据加载中..."
+
+msgid "Email Name has chinese."
+msgstr "邮箱名称不能存在中文!"
+
+msgid "Enter a valid email address."
+msgstr "邮箱地址不正确!"
+
+msgid "Instance flavor disk less-than Image min disk!"
+msgstr "虚拟机硬件模板硬盘小于母盘允许最小硬盘大小"
+
+msgid "Instance resource is not enough"
+msgstr "虚拟资源不足"
+
+msgid "Can not live migrate the instance"
+msgstr "虚拟机热迁移失败！"
+
+msgid "Live migrate instance successfully!"
+msgstr "成功迁移虚拟机"
+
+msgid "Can not live migrate the instance,its status is not active or task is not None"
+msgstr "虚拟机状态或任务不对，不能进行热迁移（可以热迁移的虚拟机状态需为：ACTIVE，任务为：None 或 No Valid Host）"
+
+msgid "The form is wrong when live migration instance,check please!"
+msgstr "FORM表单填写有误，请检查你的输入"
+
+
+msgid "Action Instance"
+msgstr "操作虚拟机："
+
+msgid "Subnets Associated"
+msgstr "子网相关"
+
+msgid "Aviable networks should be check,please check again!"
+msgstr "可用网络没有选择，请选择后提交"
+
+msgid "Have a Image is created,can not create image"
+msgstr "有母盘正在创建中，不能创建母盘!"
+
+msgid "The to port number must be greater than or equal to the form port number."
+msgstr "结束端口要大于或者等于开始端口!"
+
+msgid "Please enter the correct values!"
+msgstr "请输入一个正确的值!"
+
+
+msgid "Image min_disk should greater-than or equal-to 0!"
+msgstr "母盘模版最小硬件大小应为正整数"
+
+msgid "Image min_ram should greater-than or equal-to 0!"
+msgstr "母盘模版最小内存大小应为正整数"
+
+msgid "Start with"
+msgstr "开始"
+
+msgid " - End"
+msgstr "结束"
+
+msgid "Additional routes"
+msgstr "附加路由"
+
+msgid "reboot failed:status is wrong"
+msgstr "虚拟机重启失败，状态错误！"
+
+
+msgid "Update network successfully!"
+msgstr "更新网络成功！"
+
+
+msgid "swap should be larger than 0."
+msgstr "交换磁盘大小不能小于0！"
+
+msgid "Instance name length is too short!"
+msgstr "虚拟机名称长度过短"
+
+msgid "Instance flavor value is zero!"
+msgstr "虚拟机硬件模版硬盘值为0"
+
+msgid "Instance flavor ram less-than Image min ram!"
+msgstr "虚拟机硬件模版内存小于母盘允许最小内存大小"
+
+msgid "Flavor Name has chinese."
+msgstr "硬件模板名不能含有中文！"
+
+msgid "this software not exited"
+msgstr "该软件包已不存在"
+
+msgid "software exists"
+msgstr "该软件包存在"
+
+msgid "the software maybe removed"
+msgstr "该软件可能已被移除"
+
+msgid "project name can not contain blank space"
+msgstr "机构名称不可包含空格"
+
+msgid "GigaBytes"
+msgstr "千兆字节数"
+
+msgid "network name  has exist."
+msgstr "网络名称已经存在。"
+
+msgid "subnet name  has exist."
+msgstr "子网名称已经存在。"
+
+msgid "floating ip number can not less than used"
+msgstr "浮动IP修改数不可小于已使用的个数"
+
+msgid "Please select an available network!"
+msgstr "选择可用网络"
+
+msgid "There is no network list!"
+msgstr "无可用网络"
+
+msgid "Image created failed,Image disk is not enough"
+msgstr "镜像创建失败,磁盘空间已满无法创建"
+
+msgid "Error! The SubNet is in use."
+msgstr "所选择的子网已被使用"
+
+msgid "Error! One or more ports have an IP allocation from this subnet."
+msgstr "删除失败，子网中的ip及端口被其他服务使用。"
+
+msgid "Error! The router still has active ports."
+msgstr "删除失败，该路由的端口被其他服务使用"
+
+msgid "Error! There are one or more ports still in use on the network."
+msgstr "删除失败，该网络的其他端口仍被使用"
+
+msgid "ram should be less than or equal to 2147483647."
+msgstr "内存值应小于等于 2147483647"
+
+msgid "ram and eph_gb should be less than or equal 2147483647."
+msgstr "内存与临时磁盘值应小于等于 2147483647"
+
+msgid "The cpu number should be larger than 0"
+msgstr "CPU个数为大于0的整数"
+
+msgid "Enter integer value between 1 and 2147483647"
+msgstr "内存大小为 1 到 2147483647"
+
+msgid "The min value of disk is 1."
+msgstr "根磁盘最小值为1"
+
+msgid "The eph_gb should be between 0 and 2147483647"
+msgstr "临时磁盘大小为 0 到 2147483647"
+
+msgid "The swap min value is 0"
+msgstr "交换磁盘大小应大于等于0"
+
+msgid "Please enter your instance name"
+msgstr "请输入虚拟机名称"
+
+msgid "Please select a tenant"
+msgstr "请选择一个机构"
+
+msgid "Image disk value is too big! not in (15~30)."
+msgstr "母盘最小硬盘值过大!(15~30)."
+
+msgid "Image disk value is too short! not in (15~30)."
+msgstr "母盘最小硬盘值过小!(15~30)."
+
+msgid "Image ram value is too short! not in (512~16384)."
+msgstr "母盘最小内存值太小!(512~16384)."
+
+msgid "Image ram value is too big! not in (512~16384)."
+msgstr "母盘最小内存值过大!(512~16384)."
+
+msgid "Image min_disk not between 15 and 30."
+msgstr "母盘最小硬盘不在15~30的范围内."
+
+msgid "Image min_ram not between 512 and 16384."
+msgstr "母盘最小内存不在512~16384的范围内."
+
+msgid "Submit the request of flavor resize,wait please!"
+msgstr "更改硬件配置请求已提交，请等待！"
+
+msgid "allocation pools is error."
+msgstr "分配池填写错误。"
+
+msgid "DNS is error."
+msgstr "DNS名称服务器填写错误。"
+
+msgid "routes is error."
+msgstr "主机路由填写错误。"
+
+msgid "False"
+msgstr "否"
+
+msgid "True"
+msgstr "是"
+
+msgid "None"
+msgstr "无"
+
+msgid "UP"
+msgstr "启动"
+
+msgid "DOWN"
+msgstr "停止"
+
+msgid "Subnet Overview"
+msgstr "子网详情"
+
+msgid "Port Overview"
+msgstr "端口详情"
+
+msgid "Network"
+msgstr "网络"
+
+msgid "Fixed IP:"
+msgstr "固定IP:"
+
+msgid "IP address:"
+msgstr "IP地址:"
+
+msgid "Subnet ID:"
+msgstr "子网ID:"
+
+msgid "Mac Address:"
+msgstr "Mac地址:"
+
+msgid "compute:None"
+msgstr "虚拟机"
+
+msgid "network:router_interface"
+msgstr "网络路由接口"
+
+msgid "network:dhcp"
+msgstr "网络dhcp"
+
+msgid "Device Owner"
+msgstr "设备拥有者"
+
+msgid "Unable to open csv file path"
+msgstr "无法打开生成文件路径"
+
+msgid "exports log is error,please reexport logs."
+msgstr "导出数据出现问题，请重新导出"
+
+msgid "no blank space allowed during security group name"
+msgstr "安全组规则名称中不允许有空格"
+
+msgid "no blank space allowed during network name"
+msgstr "网络名称中不允许有空格"
+
+msgid "no blank space allowed during subnet name"
+msgstr "子网名称中不允许有空格"
+
+msgid "Newwork Topology"
+msgstr "网络拓扑"
+
+msgid "Add Instance"
+msgstr "创建虚拟机"
+
+msgid "Existing volume is deleted,please wait..."
+msgstr "已有磁盘正在删除,请稍等..."
+
+msgid "Existing volume snapshot is deleted,please wait..."
+msgstr "已有磁盘快照正在删除,请稍等..."
+
+msgid "No Tenant"
+msgstr "无机构"
+
+msgid "Volume does not exist!"
+msgstr "虚拟磁盘不存在!"
+
+msgid "Virtual NetWork Topology"
+msgstr "虚拟网络拓扑"
+
+msgid "Can not find instance!"
+msgstr "找不到虚拟机"
+
+msgid "System Tenant"
+msgstr "系统机构"
+
+msgid "available"
+msgstr "可用"
+
+msgid "in-use"
+msgstr "使用中"
+
+msgid "error"
+msgstr "错误"
+
+msgid "deleting"
+msgstr "删除中"
+
+msgid "creating"
+msgstr "创建中"
+
+msgid "Creating"
+msgstr "创建中"
+
+msgid "Uploading"
+msgstr "上传中"
+
+msgid "attaching"
+msgstr "挂载中"
+
+msgid "detaching"
+msgstr "卸载中"
+
+msgid "Failed to get state"
+msgstr "获取状态失败"
+
+msgid "Add Notice"
+msgstr "创建公告"
+
+msgid "Delete Notice"
+msgstr "删除公告"
+
+msgid "Batch Delete Notices"
+msgstr "批量删除公告"
+
+msgid "Edit Notice"
+msgstr "编辑公告"
+
+msgid "Active"
+msgstr "激活"
+
+msgid "Queued"
+msgstr "队列中..."
+
+msgid "Saving"
+msgstr "状态更新..."
+
+msgid "Killed"
+msgstr "无效"
+
+msgid "Select a Image Data"
+msgstr "请选择一个母盘数据"
+
+msgid "active"
+msgstr "激活"
+
+msgid "queued"
+msgstr "队列中..."
+
+msgid "saving"
+msgstr "状态更新..."
+
+msgid "killed"
+msgstr "无效"
+
+msgid "Failed"
+msgstr "失败"
+
+msgid "The number of the instances exceed the quotas"
+msgstr "虚拟机数量超过机构配额"
+
+msgid "Add Flavor"
+msgstr "创建主机规格"
+
+msgid "unknown error"
+msgstr "未知错误"
+
+msgid "Can not export logs"
+msgstr "不能导出日志，没有需要导出的日志"
+
+msgid "Instance User"
+msgstr "虚拟机用户"
+
+msgid "Upload Software"
+msgstr "上传软件"
+
+msgid "email has exist."
+msgstr "邮箱已存在"
+
+msgid "no extra user to add to project. please add user first."
+msgstr "没有足够的用户增加到该机构，请先创建用户。"
+
+msgid "Delete Instances"
+msgstr "批量删除虚拟机"
+
+msgid "The volume of the storage disk will be shortage(%s|%s), handle please"
+msgstr "存储磁盘容量接近不足(%s|%s)，请处理"
+
+msgid "Please create your first tenant"
+msgstr "创建您的第一个机构"
+
+msgid "Please create your first net and add one sub for it"
+msgstr "创建您的第一个网络并为其添加一个子网"
+
+msgid "Please create your first router and organizing the first gateway"
+msgstr "创建您的第一个路由，并组织第一个网关"
+
+msgid "The resources of the server(%s) will be shortage(%s), handle please"
+msgstr "服务器(%s)设备资源(%s)已接近临界值，请处理"
+
+msgid "The quotas of the tenant(%s) will be shortage(%s), handle please"
+msgstr "机构(%s)配额不足(%s)，请处理"
+
+msgid "The number of the logs item is so large(%s), handle please"
+msgstr "日志数目过多(%s)，请处理"
+
+msgid "There is a system ISO file(%s), handle please"
+msgstr "检测到上传了系统级别的ISO(%s)，请处理"
+
+msgid "Please create your first instance"
+msgstr "创建您的第一个虚拟机"
+
+msgid "Image Template"
+msgstr "母盘数据"
+
+msgid "Remote Status"
+msgstr "远程桌面状态"
+
+msgid "Batch Delete Softwares"
+msgstr "批量删除软件包"
+
+msgid "Sequence Number"
+msgstr "序号"
+
+msgid "Instance Detail"
+msgstr "虚拟机详情"
+
+msgid "Select Securiity"
+msgstr "虚拟机安全"
+
+msgid "Select Network"
+msgstr "虚拟机网络"
+
+msgid "Flavor Detail:"
+msgstr "规格详情："
+
+msgid "Project Quotas"
+msgstr "机构配额："
+
+msgid "Instances Number"
+msgstr "虚拟机数量"
+
+
+msgid "Vcpus Number"
+msgstr "虚拟cpu数量"
+
+
+msgid "RAM Number"
+msgstr "内存数量"
+
+
+msgid "Fail to get project quotas!"
+msgstr "获取机构配额失败！"
+
+msgid "Security Group Help Text"
+msgstr "安全组选择说明"
+
+msgid "Please select one or more security group."
+msgstr "请选择至少一个安全组"
+
+msgid "Network Help Text"
+msgstr "网络说明"
+
+msgid "Selected Networks"
+msgstr "已选网络"
+
+msgid "Selected Security"
+msgstr "已选安全组"
+
+msgid "Next"
+msgstr "下一步"
+
+msgid "Previous"
+msgstr "上一步"
+
+msgid "Please select one or more network."
+msgstr "请选择至少一个网络"
+
+msgid "RESOURCE_IS_NOT_ENOUGH"
+msgstr "资源不足"
+
+msgid "resource_is_not_enough"
+msgstr "资源不足"
+
+msgid "Memory"
+msgstr "内存"
+
+msgid "Gigabytes format wrong!"
+msgstr "字节输入格式错误"
+
+msgid "Image mindisk format wrong!"
+msgstr "母盘输入硬盘格式错误"
+
+msgid "Image minram format wrong!"
+msgstr "母盘输入内存格式错误"
+
+msgid "Network name is null!"
+msgstr "网络名称为空!"
+
+msgid "DONE"
+msgstr "完成"
+
+msgid "NEW"
+msgstr "未开始"
+
+msgid "DOING"
+msgstr "进行中"
+
+msgid "CLOSED"
+msgstr "关闭"
+
+msgid "Please select an image"
+msgstr "请选择一个镜像"
+
+msgid "Please select an image!"
+msgstr "请选择一个镜像"
+
+msgid "Please select an available security group!"
+msgstr "请选择可用的安全组"
+
+msgid "Own Host"
+msgstr "当前主机："
+
+msgid "Migrate Instance Name"
+msgstr "虚拟机名称："
+
+
+msgid "Prompt"
+msgstr "提示"
+
+msgid "Tenant name format wrong!"
+msgstr "机构名称格式不正确"
+
+msgid "Tenant description format wrong!"
+msgstr "机构描述格式不正确"
+
+
+msgid "The number of the logs item is so large, handle please"
+msgstr "日志数目过多，请备份"
+
+
+msgid "There is a system ISO file, whether to create image?"
+msgstr "您上传了系统级别的ISO文件，是否进行母盘创建?"
+
+msgid "According to the demand to delete"
+msgstr "直接根据需求进行删除"
+
+msgid "Here to give two options"
+msgstr "此处给予两种选择方式"
+
+msgid "First, create image, and then create instance"
+msgstr "一.创建母盘,再启动虚拟机"
+
+msgid "Second, create image and create instance"
+msgstr "二.直接创建并启动虚拟机"
+
+msgid "The volume of the storage disk will be shortage(%s)"
+msgstr "当前机构(%s)的存储磁盘容量接近临界值"
+
+msgid "The length of the instance name must be in 2~10"
+msgstr "虚拟机名称长度应在2～10间"
+
+msgid "Image Name value between 2 and 10."
+msgstr "母盘名称长度介于2~10之间的字符."
+
+msgid "Server Name value between 2 and 10."
+msgstr "虚拟机名称长度介于2~10之间的字符."
+
+msgid "DELETD"
+msgstr "删除"
+
+msgid "Batch Delete Images"
+msgstr "批量删除母盘"
+
+# monitor_manage/detail/host.html:542
+msgid "CPU Usage(%)"
+msgstr "CPU使用率（%）"
+
+# monitor_manage/detail/host.html:424
+msgid "Memory Usage(%)"
+msgstr "内存使用率（%）"
+
+# monitor_manage/detail/host.html:444
+msgid "Disk Usage(%)"
+msgstr "硬盘空间使用率（%）"
+
+# monitor_manage/detail/host.html:457
+msgid "Disk IO(TPS)"
+msgstr "硬盘IO（TPS）"
+
+# monitor_manage/detail/host.html:532
+msgid "NetWork In (MB per second)"
+msgstr "网络上行速率（MB/S）"
+
+# monitor_manage/detail/host.html:566
+msgid "NetWork Out (MB per second)"
+msgstr "网络下行速率（MB/S）"
+
+# monitor_manage/detail/host.html:566
+msgid "Services status"
+msgstr "服务状态"
+
+msgid "No backups find"
+msgstr "虚拟机没有备份"
+
+msgid "Delete User"
+msgstr "删除用户"
+
+msgid "Total Resource"
+msgstr "总资源"
+
+msgid "And Launch Instance"
+msgstr "继续启动虚拟机"
+
+msgid "The number of the logs item is so large(%s),Whether to backup"
+msgstr "当前日志数目已达到 %s,是否进行"
+
+msgid "Finish"
+msgstr "完成"
+
+msgid "Create Network"
+msgstr "添加网络"
+
+msgid "Please select a IP Version"
+msgstr "请选择IP版本"
+
+msgid "Please select a Network Address"
+msgstr "请输入子网地址"
+
+msgid "Failed to create subnet,Please check your data"
+msgstr "创建子网失败,请检查您的数据"
+
+msgid "Subnet name format wrong"
+msgstr "子网名称格式不正确"
+
+msgid "no blank space allowed during router name"
+msgstr "路由名中不允许有空格"
+
+msgid "Router name format wrong"
+msgstr "路由名格式错误"
+
+msgid "Router name is null"
+msgstr "路由名为空"
+
+msgid "Set Gateway"
+msgstr "设置网关"
+
+msgid "Please select a Subnet"
+msgstr "请选择子网"
+
+msgid "Please select a External Network"
+msgstr "请选择外部网络"
+
+
+msgid "Metadata Items format wrong!"
+msgstr "元数组条目格式错误!"
+
+msgid "Schedule"
+msgstr "待办事项"
+
+
+msgid "Injected Files format wrong!"
+msgstr "注入文件格式错误!"
+
+msgid "Injected File Content Bytes format wrong!"
+msgstr "文件字节格式错误!"
+
+msgid "VCPUs format wrong!"
+msgstr "虚拟机CPU个数格式错误!"
+
+msgid "Instances format wrong!"
+msgstr "虚拟机格式错误!"
+
+msgid "RAM format wrong!"
+msgstr "内存格式错误!"
+
+msgid "Volumes format wrong!"
+msgstr "磁盘格式错误!"
+
+msgid "Floating IPs format wrong!"
+msgstr "浮动IPs格式错误!"
+
+msgid "Fixed Ips format wrong!"
+msgstr "内部IPs格式错误!"
+
+msgid "Security Groups format wrong!"
+msgstr "安全组格式错误!"
+
+msgid "Security Group Rules format wrong!"
+msgstr "安全组规则格式错误!"
+
+msgid "Project was successfully created"
+msgstr "成功创建机构"
+
+msgid "or continue to add your first network"
+msgstr "或继续添加您的第一网络"
+
+msgid "Click"
+msgstr "点击"
+
+msgid "add your SubNet "
+msgstr "为新增网络添加子网"
+
+msgid "or continue to add your first router"
+msgstr "或继续添加您的第一路由"
+
+msgid "Router was successfully created"
+msgstr "成功添加路由"
+
+msgid "You can add a gateway for your router"
+msgstr "您可以为路由器添加网关"
+
+msgid "continue to add subnet"
+msgstr "继续添加您的路由"
+
+msgid "Create Project Failed"
+msgstr "成功创建机构"
+
+msgid "Update Project Quotas Failed"
+msgstr "更新机构配额成功"
+
+msgid "Please select an user"
+msgstr "请选择一个用户"
+
+msgid "You can distribution the instance to one user if you select a user."
+msgstr "您可以将新创建的虚拟机分配当前机构下的用户。"
+
+msgid "User Help Text"
+msgstr "用户说明"
+
+msgid "Select User"
+msgstr "选择用户"
+
+msgid "Image Info"
+msgstr "输入母盘信息"
+
+msgid "Delete success"
+msgstr "删除成功"
+
+msgid "Desktop is in_use"
+msgstr "远程桌面使用中"
+
+msgid "Desktop is available"
+msgstr "远程桌面可用"
+
+msgid "Are you sure for update the instance umask?"
+msgstr "确认更新虚拟机驱动"
+
+msgid "update instance umask successfully!"
+msgstr "成功更新虚拟机驱动"
+
+msgid "USB Stop"
+msgstr "停止USB"
+
+msgid "USB Open"
+msgstr "开启USB"
+
+msgid "Audio Stop"
+msgstr "关闭音频"
+
+msgid "Audio Open"
+msgstr "开启音频"
+
+
+msgid "or continue to add node"
+msgstr "或继续添加节点"
+
+msgid "Live Migrate Success"
+msgstr "热迁移成功"
+
+msgid "environment set up document for details"
+msgstr "详情见环境搭建文档"
+
+msgid "Update Quotas Success"
+msgstr "更新配额成功"
+
+msgid "Add Servers"
+msgstr "增加服务器"
+
+msgid "The resource is not enough,you can buy a server to build environment"
+msgstr "当前环境资源不足，您可以通过购买服务器重新搭建环境"
+
+msgid "Choose to backup module"
+msgstr "选择要备份的模块"
+
+msgid "Choose to backup event"
+msgstr "选择要备份的事件"
+
+msgid "Choose to backup time"
+msgstr "选择要备份的时间"
+
+msgid "Update instance umask failed!"
+msgstr "更新虚拟机驱动失败!"
+
+msgid "RESIZE"
+msgstr "硬件调整"
+
+msgid "VERIFY_RESIZE"
+msgstr "确认硬件调整"
+
+msgid "DELETED"
+msgstr "删除"
+
+
+msgid "Create Node Failed"
+msgstr "添加节点失败"
+
+msgid "Please select a disk format"
+msgstr "请选择磁盘格式"
+
+msgid "Instance Create Success"
+msgstr "虚拟机创建成功"
+
+#homepage
+msgid "Organization"
+msgstr "组织机构"
+
+msgid "VMEMORY"
+msgstr "虚拟内存"
+
+msgid "VDISK"
+msgstr "虚拟硬盘"
+
+msgid "VIP"
+msgstr "虚拟IP"
+
+msgid "Log"
+msgstr "日志"
+
+msgid "Infrastructure Manage"
+msgstr "基础设施管理"
+
+msgid "Down"
+msgstr "离线"
+
+msgid "Hardware Resource"
+msgstr "硬件资源池"
+
+msgid "Jan"
+msgstr "一月"
+
+msgid "Feb"
+msgstr "二月"
+
+msgid "Mar"
+msgstr "三月"
+
+msgid "Apr"
+msgstr "四月"
+
+msgid "May"
+msgstr "五月"
+
+msgid "Jun"
+msgstr "六月"
+
+msgid "Jul"
+msgstr "七月"
+
+msgid "Aug"
+msgstr "八月"
+
+msgid "Sep"
+msgstr "九月"
+
+msgid "Oct"
+msgstr "十月"
+
+msgid "Nov"
+msgstr "十一月"
+
+msgid "Dec"
+msgstr "十二月"
+
+msgid "Mon"
+msgstr "周一"
+
+msgid "Mo"
+msgstr "星期一"
+
+msgid "Tue"
+msgstr "周二"
+
+msgid "Tu"
+msgstr "星期二"
+
+msgid "Wed"
+msgstr "周三"
+
+msgid "We"
+msgstr "星期三"
+
+msgid "Thu"
+msgstr "周四"
+
+msgid "Th"
+msgstr "星期四"
+
+msgid "Fri"
+msgstr "周五"
+
+msgid "Fr"
+msgstr "星期五"
+
+msgid "Sat"
+msgstr "周六"
+
+msgid "Sa"
+msgstr "星期六"
+
+msgid "Sun"
+msgstr "周日"
+
+msgid "Su"
+msgstr "星期日"
+
+msgid "Node Res"
+msgstr "节点资源"
+
+msgid "Project Res"
+msgstr "部门资源"
+
+msgid "Instance Res"
+msgstr "虚拟机状态"
+
+#: hard_template_manage/forms.py：88
+msgid "ram should be larger than 0 and less than 2147483647"
+msgstr "内存应该大于0且小于2147483647MB！"
+
+#: hard_template_manage/forms.py：96
+msgid "eph_gb should be larger than or equal to 0 and less than 2147483647."
+msgstr "临时磁盘应该大于等于0且小于2147483647GB！"
+
+
+msgid "You have to create a project"
+msgstr "您已经创建过机构"
+
+msgid "You have to create a network"
+msgstr "您已经创建过网络"
+
+msgid "You have to create a router"
+msgstr "您已经创建过路由"
+
+msgid "You have to create a instance"
+msgstr "您已经创建过虚拟机"
+
+msgid "ISO file"
+msgstr "ISO 文件"
+
+msgid "Not enough server resources"
+msgstr "服务器资源不够"
+
+msgid "The ram(min_ram) format or disk(min_disk) format wrong"
+msgstr "内存(min_ram)或者硬盘(min_disk)格式错误."
+
+
+msgid "No blank space allowed in snapshot name"
+msgstr "备份名称不允许含有空格"
+
+msgid "Please input instance count"
+msgstr "虚拟机个数不能为空"
+
+msgid "The instance count must be integer"
+msgstr "虚拟机个数必须为整数"
+
+msgid "No blank space allowed in classify name"
+msgstr "分类名称不允许含用空格"
+
+msgid "Disk Num"
+msgstr "磁盘个数"
+
+msgid "Disk Volume"
+msgstr "磁盘容量"
+
+msgid "Begintime should be less than Endtime."
+msgstr "开始时间应当小于结束时间"
+
+msgid "module"
+msgstr "归属模块"
+
+msgid "content"
+msgstr "内容"
+
+msgid "create_at"
+msgstr "创建时间"
+
+msgid "user_name"
+msgstr "用户名"
+
+msgid "tenant_name"
+msgstr "机构名称"
+
+msgid "Create router failed"
+msgstr "创建路由失败"
+
+msgid "If you don't create subnet,you will be on the left side menu(Virtual NetWork Manage) to add a subnet"
+msgstr "如果您不继续创建子网，您还可以在左边菜单(虚拟网络管理)里添加子网"
+
+msgid "If you don't create interface,you will be on the left side menu(Virtual Routers Manage) to add a interface"
+msgstr "如果您不继续创建接口，您还可以在左边菜单(虚拟路由管理)里添加接口"
+
+msgid "This field is required."
+msgstr "这个是必填项"
+
+msgid "Successful"
+msgstr "成功"
+
+msgid "The instance count must more than 0"
+msgstr "虚拟机个数必须大于0"
+
+msgid "The cidr's suffix part should all be 0. (e.g. *.*.*.*/24, the last 8 bits should be '00000000')"
+msgstr "请保证网络地址后缀部分全部为零。（比如，*.*.*.*/24，它的后8位应该全为0，类似于'*.*.*.00000000'）"
+
+msgid "Router already has a port on subnet."
+msgstr "路由器在该子网上已存在一个端口。"
+
+msgid "MIGRATING"
+msgstr "热迁移"
+
+
+msgid "Delete instance failed"
+msgstr "删除虚拟机失败"
+
+msgid "Instance is deleting"
+msgstr "虚拟机删除中"
+
+msgid "Failed! Overlaps with another subnet."
+msgstr "创建子网失败！该子网的网络地址块与另一个子网有重叠。"
+
+msgid "Choose a System,and launch instance"
+msgstr "选择一个系统，启动虚拟机"
+
+msgid "subnet_name"
+msgstr "子网名称"
+
+msgid "Create Interface"
+msgstr "添加接口"
+
+msgid "The tenant quota has been updated"
+msgstr "已经更新机构配额"
+
+msgid "The volume of the storage disk has been updated"
+msgstr "存储磁盘已经更新"
+
+msgid "CPU,Memory,Disk"
+msgstr "CPU,内存,硬盘"
+
+msgid "CPU,Disk"
+msgstr "CPU,硬盘"
+
+msgid "CPU,Memory"
+msgstr "CPU,内存"
+
+msgid "Memory,Disk"
+msgstr "内存,硬盘"
+
+msgid "Log has been dealing with"
+msgstr "日志已经处理"
+
+msgid "Role Manage"
+msgstr "角色管理"
+
+msgid "Resume Role"
+msgstr "恢复角色"
+
+msgid "Delete Role"
+msgstr "删除角色"
+
+msgid "Update Role"
+msgstr "更新角色"
+
+msgid "Role Name"
+msgstr "角色名称"
+
+msgid "Are you sure for resume this role?"
+msgstr "您确定要恢复这个角色?"
+
+msgid "Are you sure for deleting this role?"
+msgstr "您确定要删除这个角色?"
+
+msgid "user %(user)s %(create_at)s create role"
+msgstr "用户 %(user)s %(create_at)s 创建角色"
+
+msgid "user %(user)s %(create_at)s delete role"
+msgstr "用户 %(user)s %(create_at)s 删除角色"
+
+msgid "user %(user)s %(create_at)s resume role"
+msgstr "用户 %(user)s %(create_at)s 恢复角色"
+
+msgid "role name has exist."
+msgstr "角色名称已经存在."
+
+msgid "Unable to create role."
+msgstr "不能创建角色."
+
+msgid "Create Role"
+msgstr "创建角色"
+
+msgid "create role success"
+msgstr "创建角色成功"
+
+msgid "delete role success"
+msgstr "删除角色成功"
+
+msgid "resume role success"
+msgstr "恢复角色成功"
+
+msgid "role name can not contain blank space!"
+msgstr "角色名称包含空格!"
+
+msgid "resume role failed."
+msgstr "恢复角色失败."
+
+msgid "create role failed"
+msgstr "创建角色失败"
+
+msgid "delete role failed"
+msgstr "删除角色失败"
+
+msgid "update role success"
+msgstr "更新角色成功"
+
+msgid "update role failed"
+msgstr "更新角色失败"
+
+
+msgid "Extends role"
+msgstr "继承角色"
+
+msgid "Permission Denied."
+msgstr "权限不足"
+
+msgid "View User"
+msgstr "查看用户"
+
+msgid "View Role"
+msgstr "查看角色"
+
+msgid "View Software"
+msgstr "查看软件库"
+
+msgid "Download Software"
+msgstr "下载软件"
+
+# check permission
+# node manage
+msgid "View Node"
+msgstr "查看云设施"
+
+msgid "Add Node"
+msgstr "添加云设施"
+
+msgid "Delete Node"
+msgstr "删除云设施"
+
+# global monitor
+msgid "View Global Monitor"
+msgstr "查看云系统监控"
+
+msgid "Update Threshold Strategy"
+msgstr "调整监控策略"
+
+# image manage
+msgid "View Image"
+msgstr "查看云主机模板"
+
+msgid "Create Image"
+msgstr "创建云主机模板"
+
+msgid "Update Image"
+msgstr "更新云主机模板"
+
+msgid "Delete Image"
+msgstr "删除云主机模板"
+
+msgid "Permission"
+msgstr "权限"
+
+# logs manage
+msgid "View Own Logs"
+msgstr "查看所属日志"
+
+msgid "View All Logs"
+msgstr "查看所有日志"
+
+msgid "Export Log List"
+msgstr "导出日志列表"
+
+msgid "Delete Log"
+msgstr "删除日志"
+
+# project manage
+msgid "View Project"
+msgstr "查看机构"
+
+msgid "View Project Users"
+msgstr "获取机构中用户列表"
+
+msgid "Create Project"
+msgstr "新增机构"
+
+msgid "Create Project User"
+msgstr "添加机构用户"
+
+msgid "Update Project Quotas"
+msgstr "更新机构配额"
+
+msgid "Update Project User"
+msgstr "编辑机构用户"
+
+msgid "Router Interface"
+msgstr "路由器接口"
+
+msgid "View Network"
+msgstr "查看网络"
+
+msgid "View Router"
+msgstr "查看路由器"
+
+msgid "View Address"
+msgstr "查看网络地址"
+
+msgid "View SecurityGroup"
+msgstr "查看安全组"
+
+msgid "Delete Router Interface"
+msgstr "删除路由器接口"
+
+msgid "Create Rule"
+msgstr "创建安全规则"
+
+msgid "Delete Gateway"
+msgstr "删除网关"
+
+msgid "Distribution Instance"
+msgstr "分配虚拟机"
+
+msgid "Undistribution Instance"
+msgstr "取消分配"
+
+msgid "View Own Instance"
+msgstr "查看所属虚拟机"
+
+msgid "View All Instance"
+msgstr "查看所有虚拟机"
+
+msgid "View Flavor"
+msgstr "查看云主机规格"
+
+
+msgid "Whether Use"
+msgstr "是否可用"
+
+msgid "Update Classify"
+msgstr "更新分类"
+
+msgid "Delete Classify"
+msgstr "删除分类"
+
+msgid "Backup Instance"
+msgstr "虚拟机备份"
+
+msgid "Delete Falvor"
+msgstr "删除云主机规格"
+
+# notice manage
+msgid "View Notice"
+msgstr "查看公告"
+
+msgid "Create Notice"
+msgstr "创建公告"
+
+msgid "Update Notice"
+msgstr "编辑公告"
+
+msgid "Role Detail"
+msgstr "角色详情"
+
+msgid "View Volume"
+msgstr "查看云存储资源"
+
+msgid "Instance %s is already exists"
+msgstr "虚拟机名称 %s 已存在!"
+
+
+msgid "Found no license."
+msgstr "没有找到许可证。"
+
+
+msgid "License Not Valid!"
+msgstr "您的许可不合法！"
+
+msgid "License Load Error. Please try again later."
+msgstr "许可认证失败，请稍候再试！"
+#Permit.html
+msgid "Your ID is"
+msgstr "生成的ID号"
+
+msgid "License Text"
+msgstr "许可文本"
+
+msgid "Update License"
+msgstr "更新许可"
+
+msgid "License Expired"
+msgstr "许可过期"
+
+msgid "Dear customer.Your license has expired.Please click on the Update button to update your license."
+msgstr "尊敬的用户，您使用的许可已过期，请点击更新许可按钮更新您的许可。"
+
+msgid "Period Of Validity"
+msgstr "有效期"
+
+msgid "Origin License"
+msgstr "原有许可"
+
+msgid "Continue"
+msgstr "继续使用"
+
+msgid "License Forbidden. If you want to continue, please buy other License."
+msgstr "许可限制，如需继续使用，可购买其他许可！"
+
+msgid "Available"
+msgstr "可用"
+
+msgid "Unavailable"
+msgstr "不可用"
+
+msgid "Available Permission"
+msgstr "拥有权限"
+
+msgid "View Task"
+msgstr "查看审批任务"
+
+msgid "Check Task"
+msgstr "审批任务"
+
+msgid "Task Name"
+msgstr "任务名"
+
+msgid "Task Status"
+msgstr "任务状态"
+
+msgid "Delete Task"
+msgstr "删除任务"
+
+msgid "Resume number has touch the max number."
+msgstr "该任务重新提交次数已达到最大值"
+
+msgid "Failed to resubmit task."
+msgstr "重新提交任务失败"
+
+msgid "Resubmit Task"
+msgstr "重新提交任务"
+
+msgid "This task has been expired or rejected, are you sure to resubmit it?"
+msgstr "您的申请已过期或被拒绝，请确定要重新提交此申请。"
+
+msgid "Are you sure for deleting this task?"
+msgstr "您确定删除该任务么？"
+
+msgid "Resubmit task successfully."
+msgstr "重新提交成功。"
+
+msgid "Submit Time"
+msgstr "提交时间"
+
+msgid "Check Manage"
+msgstr "审批管理"
+
+msgid "Expire Time"
+msgstr "有效时间"
+
+msgid "Check Comment"
+msgstr "审批备注"
+
+msgid "VRV Cloud"
+msgstr "北信源智能云管理系统"
+
+msgid "Image has been already deleted."
+msgstr "母盘模版已经被删除。"
+
+msgid "Can not get instance list when create instance."
+msgstr "无法获取虚拟机列表，不能判断创建的虚拟机是否重名！"
+
+msgid "The server has either erred or is incapable of performing the requested operation."
+msgstr "服务器不能执行当前操作请求。"
+
+msgid "The task has submit to check"
+msgstr "任务已提交审批"
+
+msgid "Check Tasks"
+msgstr "批量审批"
+
+msgid "Check Result"
+msgstr "审批结果"
+
+msgid "Resume Num"
+msgstr "重新提交次数"
+
+msgid "pending"
+msgstr "待审批"
+
+msgid "approve"
+msgstr "已审批"
+
+msgid "expired"
+msgstr "过期"
+
+msgid "Check"
+msgstr "审批"
+
+msgid "Approve"
+msgstr "同意"
+
+msgid "Reject"
+msgstr "拒绝"
+
+msgid "Pending"
+msgstr "待审批"
+
+msgid "Expired"
+msgstr "过期"
+
+msgid "Create Instance"
+msgstr "创建虚拟机"
+
+msgid "Check task success"
+msgstr "审批成功"
+
+msgid "Check task failed"
+msgstr "审批失败"

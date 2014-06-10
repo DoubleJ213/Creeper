@@ -1,0 +1,22 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="pageContent">
+    <div class="pageFormContent" layouth="58">
+        <h2 class="contentTitle">{% trans "Title" %}：{{ notice.title }}</h2>
+        <div class="divider"></div>
+        <dl class="nowrap">
+            <dt style="width: auto;">{% trans "Notice Author" %}：</dt>
+            <dd style="width: auto;">
+                {{ notice.operater_name }}
+            </dd>
+        </dl>
+        <div class="divider"></div>
+        <dl class="nowrap">
+            <dt style="width: auto;">{% trans "Content" %}：</dt>
+            <dd style="width: auto; padding: 0 5px; padding-top: 5px; clear: both">
+                <pre style=" width: 760px; line-height: 20px; white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ notice.content }}</pre>
+            </dd>
+        </dl>
+    </div>
+</div>

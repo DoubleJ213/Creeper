@@ -1,0 +1,77 @@
+
+table {
+    font-size: 1em;
+    border: 0;
+}
+
+.demo-description {
+    clear: both;
+    padding: 12px;
+    font-size: 1.3em;
+    line-height: 1.4em;
+}
+
+.ui-draggable, .ui-droppable {
+    background-position: top;
+}
+
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-left,
+.ui-corner-tl {
+    border-top-left-radius: 0;
+}
+.ui-corner-all,
+.ui-corner-top,
+.ui-corner-right,
+.ui-corner-tr {
+    border-top-right-radius: 0;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-left,
+.ui-corner-bl {
+    border-bottom-left-radius: 0;
+}
+.ui-corner-all,
+.ui-corner-bottom,
+.ui-corner-right,
+.ui-corner-br {
+    border-bottom-right-radius: 0;
+}
+
+.ui-widget-header {
+    background: #eff4f5;
+    border: 0;
+}
+
+.ui-widget-header .ui-icon {
+    background-image: url(../../datepicker/themes/base/images/ui-icons_2e83ff_256x240.png);
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+    color: #565656;
+    font-size: 1.4em;
+    text-align: center;
+    background: none;
+    border: 0;
+}
+
+.ui-widget-content{
+    border: 1px solid #b8d0d6;
+    width: 99.7%;
+    /*height: 193px;*/
+    height: 210px;
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight{
+    color: #73C547;
+}
+
+.ui-datepicker{
+    padding: 0;
+}
+
+.ui-datepicker .ui-datepicker-header{
+    border-bottom: 1px solid #b8d0d6;
+}

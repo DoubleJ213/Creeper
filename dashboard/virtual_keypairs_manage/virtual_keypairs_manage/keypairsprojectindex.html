@@ -1,0 +1,297 @@
+{% load i18n %}
+{% load dashboard %}
+
+<link rel="stylesheet" href="{{ STATIC_URL }}ui/themes/css/ztree/zTreeStyle/zTreeStyle.css" type="text/css"
+      xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+
+<script type="text/javascript">
+function get_display_name(name) {
+    MAX_LONG = 20;
+    if (name.length >= MAX_LONG) {
+        return name.substring(0, MAX_LONG-1) + "...";
+    }
+    return name;
+}
+$(document).ready(function () {
+    $("#progressBar").css("display","block");
+    $("#background").css("display","block");
+    var treeHtml = "";
+    var userItem = [];
+    $.ajax({
+        type:"GET",
+        url:"{% url "get_project_keypairs_tree" %}",
+        dataType:"json",
+        global:false,
+        async:false,
+        success:function (data) {
+            $.each(data, function (i, item) {
+                        treeHtml = treeHtml + "<li>\n";
+                        treeHtml = treeHtml + "<a class=\"level1\">\n";
+                        if(item.project_enabled == true){
+                            treeHtml = treeHtml + "<lable class=\"tree_lable_common\"><img src=\"{{ STATIC_URL }}ui/images/icon/preso_icon_1.png\" class=\"tree_icon_img2\"></lable>\n";
+                            treeHtml = treeHtml + "<lable class=\"tree_lable_common\">";
+                            treeHtml = treeHtml + "<span title=\""+item.project_name+"\" onclick=\"gotoKeyUrl('/virtual_keypairs_manage/keypairs/"+item.project_id+"/keypairlist/','')\">";
+                            treeHtml = treeHtml + get_display_name(item.project_name);
+                            treeHtml = treeHtml + "</span>";
+                            treeHtml = treeHtml + "</lable>\n";
+                            treeHtml = treeHtml + "&nbsp;&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+                            treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/add.gif\" class=\"tree_icon_img\" title=\"{% trans 'Add keypair' %}\" onclick=\"gotoKeyUrl('/virtual_keypairs_manage/keypairs/"+item.project_id+"/createkeypair/','/virtual_keypairs_manage/keypairs/"+item.project_id+"/keypairlist/')\">";
+                            treeHtml = treeHtml + "</lable>\n";
+                            treeHtml = treeHtml + "&nbsp;&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+                            treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/edit_1.gif\" class=\"tree_icon_img\" title=\"{% trans 'Import keypair' %}\" onclick=\"gotoKeyUrl('/virtual_keypairs_manage/keypairs/"+item.project_id+"/importkeypair/','/virtual_keypairs_manage/keypairs/"+item.project_id+"/keypairlist/')\">";
+                            treeHtml = treeHtml + "</lable>\n";
+                        }else{
+                            treeHtml = treeHtml + "<lable class=\"tree_lable_common\"><img src=\"{{ STATIC_URL }}ui/images/icon/preso_icon2.png\" class=\"tree_icon_img2\"></lable>\n";
+                            treeHtml = treeHtml + "<lable class=\"tree_lable_common\">";
+                            treeHtml = treeHtml + "<span title=\""+item.project_name+"\">";
+                            treeHtml = treeHtml + get_display_name(item.project_name);
+                            treeHtml = treeHtml + "</span>";
+                            treeHtml = treeHtml + "</lable>\n";
+                        }
+                        treeHtml = treeHtml + "</a>\n";
+                        project_keypairItem = item.project_keypairs;
+                        var project_keypairItemLen = project_keypairItem.length;
+                        if(project_keypairItemLen > 0){
+                            treeHtml = treeHtml + "<ul>\n";
+                            for(var j=0; j<project_keypairItemLen; j++){
+                                treeHtml = treeHtml + "<li>\n";
+                                treeHtml = treeHtml + "<a class=\"level1\">\n"
+                                treeHtml = treeHtml + "<lable><img src=\"{{ STATIC_URL }}ui/images/icon/user_icon.png\" class=\"tree_icon_img2\"></lable>\n";
+                                treeHtml = treeHtml + "<lable class=\"tree_lable_common\">";
+                                treeHtml = treeHtml + "<span title=\""+project_keypairItem[j].keypair_name+"\" onclick=\"gotoKeyUrl('/virtual_keypairs_manage/keypairs/"+item.project_id+"/"+project_keypairItem[j].keypair_name+"/getkeypairinfo/','')\">";
+                                treeHtml = treeHtml + get_display_name(project_keypairItem[j].keypair_name);
+                                treeHtml = treeHtml + "</span>";
+                                treeHtml = treeHtml + "</lable>\n";
+                                treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+                                treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/delete.gif\" class=\"tree_icon_img\" title=\"{% trans 'Delete Keypair' %}\" onclick=\"delKeyUrl('/virtual_keypairs_manage/keypairs/"+project_keypairItem[j].keypair_name+"/deletekeypairaction/','/virtual_keypairs_manage/keypairs/"+item.project_id+"/keypairlist/',1)\">";
+                                treeHtml = treeHtml + "</lable>\n";
+                                treeHtml = treeHtml + "</a>\n";
+                                treeHtml = treeHtml + "</li>\n";
+                            }
+                            treeHtml = treeHtml + "</ul>\n</li>\n";
+                        }else{
+                            treeHtml = treeHtml + "</li>\n";
+                        }
+                    }
+            );
+            $("#ajax_keypairs_tree").html(treeHtml);
+            var btn_flag = $("#tree_keybtn_flag").val();
+            if(btn_flag == "1"){
+                $(".protree_lable_class").each(
+                        function(){
+                            $(this).show();
+                        }
+                );
+                $(".tree_icon_img").each(
+                        function(){
+                            $(this).show();
+                        }
+                );
+                $("#treekeyBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_next_icon.png");
+                $("#treekeyBtn_id img").attr("title","{% trans 'hide button' %}");
+            }
+            var target_url = $("#keypair_target_url").val();
+            if(target_url){
+                gotoKeyUrl(target_url,'');
+                $("#keypair_target_url").val('');
+                $("#progressBar").css("display","none");
+                $("#background").css("display","none");
+            }else{
+                $("#progressBar").css("display","none");
+                $("#background").css("display","none");
+            }
+        }
+    });
+});
+
+
+function gotoKeyUrl(url,next_url){
+    $("#progressBar").css("display","block");
+    $("#background").css("display","block");
+    $("#keypair_target_url").val(next_url);
+    if(url!=null && url!=''){
+        $.ajax({
+            url: url,
+            cache: false,
+            success: function(htmlData){
+                $("#keypair_rightDiv").html(htmlData).initUI();
+                $("#progressBar").css("display","none");
+                $("#background").css("display","none");
+            }
+        });
+    }else{
+        $("#progressBar").css("display","none");
+        $("#background").css("display","none");
+    }
+}
+
+function delKeyUrl(url,next_url,flag){
+    $("#progressBar").css("display","block");
+    $("#background").css("display","block");
+    $("#keypair_target_url").val(next_url);
+    if(url!=null && url!=''){
+        if(flag == 1){
+            var alertHtml ='{% trans "Are you sure for deleting this keypair?" %}';
+            $("#delkeyAlert_id").html(alertHtml);
+        }else{
+            var alertHtml = '{% trans "Are you sure for deleting this keypair?" %}';
+            $("#delkeyAlert_id").html(alertHtml);
+        }
+        $("#delkeyform_id").attr("action",url);
+        $("#del_keypair_Div").css("display","block");
+        $("#progressBar").css("display","none");
+        $("#background").css("display","none");
+    {#            $("#keypair_rightDiv").html("");#}
+    {#            $("#keypair_target_url").val("");#}
+    }else{
+        $("#progressBar").css("display","none");
+        $("#background").css("display","none");
+    }
+}
+
+function hideDelkeyDiv(){
+    $("#del_keypair_Div").css("display","none");
+}
+
+function showsgBackground(){
+    $("#progressBar").css("display","block");
+    $("#background").css("display","block");
+}
+
+function hidesgBackground(){
+    $("#progressBar").css("display","none");
+    $("#background").css("display","none");
+}
+
+function switchkeyBtn(){
+    if($("#prosgtree_id").css("display") == "none"){
+        $(".protree_lable_class").each(
+                function(){
+                    $(this).show();
+                }
+        );
+        $(".tree_icon_img").each(
+                function(){
+                    $(this).show();
+                }
+        );
+        $("#treekeyBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_next_icon.png");
+        $("#treekeyBtn_id img").attr("title","{% trans 'hide button' %}");
+        $("#tree_keybtn_flag").val('1');
+    }else{
+        $(".protree_lable_class").each(
+                function(){
+                    $(this).hide();
+                }
+        );
+        $(".tree_icon_img").each(
+                function(){
+                    $(this).hide();
+                }
+        );
+        $("#treekeyBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_prev_icon.png");
+        $("#treekeyBtn_id img").attr("title","{% trans 'show button' %}");
+        $("#tree_keybtn_flag").val('');
+    }
+
+}
+function sec_nextUrl(next_url){
+    if(next_url!=''){
+        $("#keypair_target_url").val(next_url);
+    }
+}
+
+</script>
+<style>
+    .protree_lable_class{
+        height: 14px;;
+        line-height: 14px;
+        display: none;
+    }
+    .tree_icon_img{
+        width: 12px;
+        height: 12px;
+        display: none;
+    }
+    .tree_icon_img2{
+        width: 12px;
+        height: 12px;
+    }
+    .tree_lable_common{
+        line-height: 12px;
+        font-size: 12px;
+    }
+</style>
+
+<form id="pagerForm" action="{% url "get_project_list" %}">
+    {% add_in_method 'get'%}
+    {% csrf_token %}
+</form>
+
+<div class="pageContent">
+    <div class="tabsContent">
+        <div id="keypair_tree" layoutH="12" style="float: left;margin: 5px 0px 5px 5px;display:
+                block;overflow: auto;width: 240px;border: 1px solid rgb(204, 204, 204);line-height: 21px;">
+            <h2 style="color: rgb(24, 49, 82); margin-left: 6px; margin-top: 5px; line-height: 14px;">
+                <lable>
+                    <div style="width:40px; float:left; cursor: pointer; height: 16px; line-height: 16px; font-size: 12px;">
+                        {% trans "Tenant" %}
+                    </div>
+                </lable>
+                &nbsp;&nbsp;&nbsp;
+                <lable id="prosgtree_id" style="cursor: pointer;" class="protree_lable_class">
+                </lable>
+                <lable>
+                    <div id="treeBtn_id" style="cursor: pointer; width:20px; float:right; line-height: 12px; font-size: 12px;">
+                        <img src="{{ STATIC_URL }}ui/images/icon/rnd_br_prev_icon.png" title="{% trans "show button" %}" style="margin-right: 10px;" class="tree_icon_img2" onclick="switchkeyBtn()">
+                    </div>
+                </lable>
+            </h2>
+            <ul id="ajax_keypairs_tree" class="tree">
+            </ul>
+        </div>
+        <div id="keypair_rightDiv" layoutH="12" style=" width:auto; height: auto; margin-left:250px; padding-top: 4px;">
+
+
+        </div>
+        <div id="del_keypair_Div" style="display: none">
+            <div style="top: 100px; left: 50%; z-index: 44; height: 150px; width: 250px; margin-left: -125px;" class="dialog">
+                <div oncut="return false;" onpaste="return false;" oncopy="return false;" onselectstart="return false;" class="dialogHeader">
+                    <div class="dialogHeader_r">
+                        <div class="dialogHeader_c">
+                            <a href="#close" class="close" onclick="hideDelkeyDiv()">close</a>
+                            <h1>{% trans "Delete" %}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="dialogContent layoutBox unitBox" style="height: 111px;">
+                    <table align="center" height="100%" width="100%" valign="middle">
+                        <tbody>
+                        <tr>
+                            <td id="delkeyAlert_id" align="center">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <form id="delkeyform_id" onsubmit="return validateCallback2(this,dialogAjaxDone);" method="post" action="">
+                                    {% add_in_method 'delete'%}
+                                    {% csrf_token %}
+                                    <input type="submit" value="{% trans "Submit" %}">
+                                    <input type="button" value="{% trans "Cancel" %}" onclick="hideDelkeyDiv()">
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody></table></div>
+                <div class="dialogFooter"><div class="dialogFooter_r"><div class="dialogFooter_c"></div></div></div>
+                <div tar="nw" class="resizable_h_l"></div>
+                <div tar="ne" class="resizable_h_r"></div>
+                <div tar="n" class="resizable_h_c"></div>
+                <div style="height: 300px;" tar="w" class="resizable_c_l"></div>
+                <div style="height: 300px;" tar="e" class="resizable_c_r"></div>
+                <div tar="sw" class="resizable_f_l"></div>
+                <div tar="se" class="resizable_f_r"></div>
+                <div tar="s" class="resizable_f_c"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,273 @@
+{% load i18n %}
+<script type="text/javascript">
+
+    function changeFromPort() {
+        ip_protocol = document.getElementById("ip_protocol").value;
+        if (ip_protocol == "icmp") {
+            document.getElementById("fromportdiv").style.display = "block"
+            document.getElementById("from_port").className = "required number";
+            document.getElementById("fromportlabel").style.display = "none"
+            document.getElementById("toportlabel").style.display = "none"
+            document.getElementById("typelabel").style.display = "block"
+            document.getElementById("codelabel").style.display = "block"
+            document.getElementById("Opendiv").style.display = "none"
+            document.getElementById("portlabel").style.display = "none"
+        }
+        else {
+            document.getElementById("fromportdiv").style.display = "none"
+            document.getElementById("from_port").className = "";
+            document.getElementById("toportlabel").style.display = "none"
+            document.getElementById("typelabel").style.display = "none"
+            document.getElementById("codelabel").style.display = "none"
+            document.getElementById("Opendiv").style.display = "block"
+            document.getElementById("portlabel").style.display = "block"
+            // add by lishiquan 20135.28
+            changeFromOpen();
+        }
+
+    }
+
+    function changeFromOpen() {
+        port_or_range = document.getElementById("port_or_range").value;
+        if (port_or_range == "port") {
+            document.getElementById("fromportdiv").style.display = "none"
+            document.getElementById("from_port").className = "required number";
+            document.getElementById("toportlabel").style.display = "none"
+            document.getElementById("typelabel").style.display = "none"
+            document.getElementById("codelabel").style.display = "none"
+            document.getElementById("portlabel").style.display = "block"
+            //add by lishiquan 2013.5.28
+            document.getElementById("from_port").value = 1
+        }
+        else {
+            document.getElementById("fromportdiv").style.display = "block"
+            document.getElementById("fromportlabel").style.display = "block"
+            document.getElementById("from_port").className = "required number";
+            document.getElementById("toportlabel").style.display = "block"
+            document.getElementById("typelabel").style.display = "none"
+            document.getElementById("codelabel").style.display = "none"
+            document.getElementById("portlabel").style.display = "none"
+            //add by lishiquan 2013.5.28
+            document.getElementById("from_port").value = ''
+        }
+    }
+
+    function changeFromSource() {
+        source = document.getElementById("source").value;
+        if (source == "sg") {
+            document.getElementById("cidrdiv").style.display = "none"
+            document.getElementById("cidr").value = "0.0.0.0/0"
+            document.getElementById("SourceGroupdiv").style.display = "block"
+            $("#source_group").addClass("required");
+        } else {
+            document.getElementById("cidrdiv").style.display = "block"
+            document.getElementById("cidr").value = "0.0.0.0/0"
+            document.getElementById("SourceGroupdiv").style.display = "none"
+            $("#source_group").removeClass("required");
+        }
+    }
+
+    function onfocusFromPort(a) {
+        document.getElementById("fromporthelp").style.display = "block"
+        document.getElementById("fromporthelp").style.left = a.offsetLeft + a.offsetWidth + 'px'
+        document.getElementById("fromporthelp").style.top = a.offsetTop + 'px'
+    }
+
+    function onblurFromPort() {
+        document.getElementById("fromporthelp").style.display = "none"
+    }
+
+    function onfocusToPort(a) {
+        document.getElementById("toporthelp").style.display = "block"
+        document.getElementById("toporthelp").style.left = a.offsetLeft + a.offsetWidth + 'px'
+        document.getElementById("toporthelp").style.top = a.offsetTop + 'px'
+    }
+
+    function onblurToPort() {
+        document.getElementById("toporthelp").style.display = "none"
+    }
+
+    function onfocusCidr(a) {
+        document.getElementById("cidrhelp").style.display = "block"
+        document.getElementById("cidrhelp").style.left = a.offsetLeft + a.offsetWidth + 'px'
+        document.getElementById("cidrhelp").style.top = a.offsetTop + 'px'
+    }
+    function onblurCidr() {
+        document.getElementById("cidrhelp").style.display = "none"
+    }
+
+
+    $(function () {
+        $("#security_rule").bind('click', function () {
+
+            var is_open = $("#port_or_range").val() == 'range' ? true : false;
+            var flag=false;
+            if ($("#ip_protocol").val() == 'icmp') {
+
+                if (is_open) {
+                    flag=true;
+                }
+                if ($("#from_port").val() < -1 || $("#from_port").val() > 255) {
+                    alertMsg.error('{% trans 'Please enter the correct values!' %}');
+                    return;
+                }
+
+                if ($("#to_port").val() < -1 || $("#to_port").val() > 255) {
+                    alertMsg.error('{% trans 'Please enter the correct values!' %}');
+                    return;
+                }
+
+{#                if(flag){#}
+{#                    if($("#from_port").val() > $("#to_port").val()){#}
+{#                        alertMsg.error("{% trans 'The to port number must be greater than or equal to the form port number.' %}")#}
+{#                        return;#}
+{#                    }#}
+{#                }#}
+
+            } else {
+                if (is_open) {
+                    flag=true;
+                    if ($("#from_port").val() < 1 || $("#from_port").val() > 65535) {
+                        alertMsg.error('{% trans 'Please enter the correct values!' %}');
+                        return;
+                    }
+                }
+
+                if ($("#to_port").val() < 1 || $("#to_port").val() > 65535) {
+                    alertMsg.error('{% trans 'Please enter the correct values!' %}');
+                    return;
+                }
+
+                if(flag){
+                    var pattern = /^\d+$/;
+                    if(!pattern.exec($("#from_port").val())){
+                        alertMsg.error('{% trans 'Please enter the correct values!' %}');
+                        return;
+                    }
+                    if(parseInt($("#from_port").val()) > parseInt($("#to_port").val())){
+                        alertMsg.error("{% trans 'The to port number must be greater than or equal to the form port number.' %}")
+                        return;
+                    }
+                }
+            }
+
+            validateCallback($("#security_group_form"),dialogAjaxDone);
+        })
+    })
+    function oninputchange(a, divid){
+        document.getElementById(divid).style.display="none"
+    }
+</script>
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post"
+          action="{% url "create_securitygrouprules_action" security_group_id %}"
+          class="pageForm required-validate" id="security_group_form">
+        <input type="hidden" name="security_group_id" id="security_group_id"
+               value="{{ security_group_id }}">
+        {% include 'securitygroup_manage/_createrule.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>{% trans 'Ip Protocol' %}：</label>
+                <select id="ip_protocol" name="ip_protocol"
+                        class="required select" onchange="changeFromPort();">
+                    {% for key,value in form.fields.ip_protocol.choices %}
+                        <option value={{ key }}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="Opendiv" class="unit">
+                <label>{% trans 'Open' %}：</label>
+                <select id="port_or_range" name="port_or_range"
+                        class="required select" onchange="changeFromOpen();">
+                    {% for key,value in form.fields.port_or_range.choices %}
+                        <option value={{ key }}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="fromportdiv" style="display:none" class="unit">
+
+                <div id="fromportlabel"><label>{% trans 'From Port' %}：</label>
+                </div>
+                <div id="typelabel" style="display:none">
+                    <label>{% trans 'Type' %}：</label></div>
+                <input type="text" id="from_port" name="from_port"
+                       onfocus="onfocusFromPort(this);"
+                       oninput="oninputchange(this,'fromporthelp');"
+                       onblur="onblurFromPort();" maxlength="5"/>
+
+                <div id="fromporthelp"
+                     style="color:#FFFFFF;overflow-y:auto;height:45px;width:240px;display:none;position: absolute;background: red">{{ form.fields.from_port.help_text }}</div>
+            </div>
+            <div class="unit">
+                <label id="toportlabel"
+                       style="display:none">{% trans 'To Port' %}：</label>
+                <label id="portlabel">{% trans 'Port' %}：</label>
+
+                <div id="codelabel" style="display:none">
+                    <label>{% trans 'Code' %}：</label></div>
+                <input type="text" id="to_port" name="to_port"
+                       onfocus="onfocusToPort(this);" onblur="onblurToPort();"
+                       oninput="oninputchange(this,'toporthelp');"
+                       class="required number" maxlength="5" />
+
+                <div id="toporthelp"
+                     style="color:#FFFFFF;overflow-y:auto;height:45px;width:240px;display:none;position: absolute;background: red">{{ form.fields.to_port.help_text }}</div>
+            </div>
+
+            <div id="sourcediv" class="unit">
+                <label>{% trans 'Source' %}：</label>
+                <select id="source" name="source" class="required select"
+                        onchange="changeFromSource();">
+                    {% for key,value in form.fields.source.choices %}
+                        <option value={{ key }}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <div id="SourceGroupdiv" style="display:none" class="unit">
+                <label>{% trans 'Source Group' %}：</label>
+                <select id="source_group" name="source_group" >
+                    {% for key,value in form.fields.source_group.choices %}
+                        <option value={{ key }}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div id="cidrdiv" class="unit">
+                <label>{% trans 'CIDR' %}：</label>
+                <input type="text" id="cidr" name="cidr" size="30" minlength="3"
+                       maxlength="20" onfocus="onfocusCidr(this);"
+                       onblur="onblurCidr();" value="0.0.0.0/0"/>
+
+                <div id="cidrhelp"
+                     style="color:#FFFFFF;overflow-y:auto;height:45px;width:170px;display:none;position: absolute;background: red">{{ form.fields.cidr.help_text }}</div>
+            </div>
+        </div>
+
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="button" value="submit"
+                                    id="security_rule">
+                                {% trans "Submit" %}</button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close"> {% trans "Cancel" %}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

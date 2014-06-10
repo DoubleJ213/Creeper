@@ -1,0 +1,33 @@
+{% load i18n %}
+
+<script type="text/javascript">
+    $(document).ready(function (){
+        if($("#project_tree_li_id_old")){
+            $("#project_tree_li_id_old").val('');
+        }
+    });
+</script>
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="panelBar">
+        <ul>
+            <li style="line-height: 23px;">{% trans 'Project User Info' %}</li>
+        </ul>
+    </div>
+    <div class="pageFormContent" layouth="58">
+        <div class="unit" style="line-height: 21px">
+            <label>{% trans "User Name" %}：</label>
+            {{ user.name }}
+        </div>
+        <div class="unit" style="line-height: 21px">
+            <label>{% trans "Email" %}：</label>
+            {{ user.email }}
+        </div>
+        <div class="unit" style="line-height: 21px">
+            <label>{% trans "Role" %}：</label>
+            {{ role_name }}
+        </div>
+    </div>
+</div>
+

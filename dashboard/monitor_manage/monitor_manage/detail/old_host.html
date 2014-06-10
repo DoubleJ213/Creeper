@@ -1,0 +1,587 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=7"/>
+<script type="text/javascript">
+var popup = $("#popup");
+var networkOutValue = 0;
+var networkInValue = 0;
+var _status_info = null;
+var node_name = "{{ host_name }}";
+var template = {
+    radius:"auto",
+    value:0,
+
+    max:100,
+    min:0,
+    startAngle:300,
+    sweepAngle:300,
+    labels:{
+        style:{
+            "font-size":15,
+            fill:"#000",
+            stroke:"none"
+        },
+        offset:42
+    },
+    pointer:{
+        length:0.8,
+        width:4,
+        style:{ fill:"180-rgb(255,255,255)", stroke:"rgb(255,255,255)", "stroke-width":1.5 }
+    },
+    cap:{
+        style:{
+            fill:"270-#777d8d-#555b6b",
+            stroke:"#555b6b"
+        }
+    },
+    tickMajor:{
+        factor:4,
+        offset:44,
+        position:"inside",
+        style:{ fill:"#555b6b", stroke:"#555b6b", "stroke-width":4 }
+    },
+    tickMinor:{
+        visible:true,
+        offset:44,
+        interval:2,
+        position:"inside",
+        style:{ fill:"#606779", stroke:"#606779", "stroke-width":1.5 }
+    },
+    face:{
+        style:{},
+        template:function (ui) {
+            var set = ui.canvas.set();
+            var circle = ui.canvas.circle(ui.origin.x, ui.origin.y, ui.r);
+            circle.attr({ "stroke":"#8f8f8f", "stroke-width":3, fill:"#e2e2e2" });
+            set.push(circle);
+            var circle2 = ui.canvas.circle(ui.origin.x, ui.origin.y, ui.r - 14);
+            circle2.attr({ "stroke":"#717171", "stroke-width":2, fill:"270-#a6a6a6-#efefef" });
+            set.push(circle2);
+            return set;
+        }
+    },
+    ranges:[
+        {
+            startWidth:10,
+            endWidth:10,
+            startValue:0,
+            endValue:100,
+            startDistance:0.64,
+            endDistance:0.64,
+            style:{
+                fill:"#555b6b", stroke:"none"
+            }
+        },
+        {
+            startWidth:10,
+            endWidth:10,
+            startValue:40,
+            endValue:60,
+            startDistance:0.58,
+            endDistance:0.58,
+            style:{
+                fill:"90-rgb(248,255,1)-rgb(248,255,39)", stroke:"rgb(249,255,73)", "stroke-width":1.5
+            }
+        },
+        {
+            startWidth:10,
+            endWidth:10,
+            startValue:60,
+            endValue:80,
+            startDistance:0.58,
+            endDistance:0.58,
+            style:{
+                fill:"90-rgb(255,158,1)-rgb(255,177,53)", stroke:"rgb(255,195,101)", "stroke-width":1.5
+            }
+        },
+        {
+            startWidth:10,
+            endWidth:10,
+            startValue:80,
+            endValue:100,
+            startDistance:0.58,
+            endDistance:0.58,
+            style:{
+                fill:"180-rgb(255,15,3)-rgb(212,10,0)", stroke:"rgb(255,15,3)", "stroke-width":1.5
+            }
+        }
+    ]
+};
+
+function drawCPU() {
+    template.origin = {x:0.5, y:0.5};
+    template.height = 330;
+    template.width = 330;
+    template.labels.offset = 40;
+    template.tickMajor.interval = 10;
+    template.tickMajor.factor = 4;
+    template.tickMinor.interval = 5;
+    template.tickMinor.factor = 1.5;
+    template.ranges[0].startDistance = 0.56;
+    template.ranges[0].endDistance = 0.56;
+    template.ranges[1].startDistance = 0.49;
+    template.ranges[1].endDistance = 0.49;
+    template.ranges[2].startDistance = 0.49;
+    template.ranges[2].endDistance = 0.49;
+    template.ranges[3].startDistance = 0.49;
+    template.ranges[3].endDistance = 0.49;
+    $("#cpu").wijradialgauge(template);
+}
+
+function drawNetworkIn() {
+    template.height = 250;
+    template.width = 250;
+    template.labels = {
+        style:{
+            "font-size":12,
+            fill:"#000",
+            stroke:"none"
+        },
+        offset:35
+    };
+    template.pointer.length = 0.7;
+    template.cap.radius = 10;
+    template.face.template = function (ui) {
+        var set = ui.canvas.set();
+        var circle = ui.canvas.circle(ui.origin.x, ui.origin.y, ui.r);
+        circle.attr({ "stroke":"#8f8f8f", "stroke-width":3, fill:"#e2e2e2" });
+        set.push(circle);
+        var circle2 = ui.canvas.circle(ui.origin.x, ui.origin.y, ui.r - 8);
+        circle2.attr({ "stroke":"#717171", "stroke-width":2, fill:"270-#a6a6a6-#efefef" });
+        set.push(circle2);
+        return set;
+    };
+    template.origin = {x:0.5, y:0.5};
+    var max = 4096;
+    template.max = 4096;
+    template.tickMajor.interval = 512;
+    template.tickMinor.interval = 256;
+    var step = template.tickMajor.interval;
+    //template.logarithmicBase = Math.e;
+    //template.islogarithmic = true;
+    template.ranges[0].endValue = max;
+    template.ranges[3].startValue = max - step;
+    template.ranges[3].endValue = max;
+    template.ranges[2].startValue = max - step * 2;
+    template.ranges[2].endValue = max - step;
+    template.ranges[1].startValue = max - step * 4;
+    template.ranges[1].endValue = max - step * 2;
+
+    template.labels.format = function (old) {
+        return old / 1024
+    };
+    template.tickMajor.factor = 2.5;
+    template.tickMajor.offset = 38;
+    template.tickMinor.factor = 1;
+    template.tickMinor.offset = 38;
+    template.ranges[0].startDistance = 0.53;
+    template.ranges[0].endDistance = 0.53;
+    template.ranges[0].startWidth = 7;
+    template.ranges[0].endWidth = 7;
+    template.ranges[1].startDistance = 0.47;
+    template.ranges[1].endDistance = 0.47;
+    template.ranges[1].startWidth = 7;
+    template.ranges[1].endWidth = 7;
+    template.ranges[2].startDistance = 0.47;
+    template.ranges[2].endDistance = 0.47;
+    template.ranges[2].startWidth = 7;
+    template.ranges[2].endWidth = 7;
+    template.ranges[3].startDistance = 0.47;
+    template.ranges[3].endDistance = 0.47;
+    template.ranges[3].startWidth = 7;
+    template.ranges[3].endWidth = 7;
+
+    $("#network_in").wijradialgauge(template);
+    $("#network_out").wijradialgauge(template);
+}
+
+
+function refreshIcon(flag) {
+    var target = $("#switch_info");
+    $.ajax({
+        type:"GET",
+        url:"{% url "get_node_monitor_info_item" node_uuid 'check_status' %}",
+        dataType:"json",
+        global:false,
+        success:function (data) {
+            if ("name" in data && !node_name) {
+                node_name = data["name"];
+            }
+            delete data["name"];
+            var status = null;
+            for (var id in data) {
+                status = data[id];
+            }
+            if (flag) {
+                _status_info = status;
+                target.addClass(status == "online" ? "on" : "off");
+            } else if (status != _status_info) {
+                _status_info = status;
+                target.removeClass(status == "online" ? "off" : "on");
+                target.removeClass(status == "online" ? "na" : "on");
+                target.addClass(status == "online" ? "on" : "na");
+            }
+        },
+        error:DWZ.ajaxError
+    });
+}
+
+function bobble(type, level) {
+    if (level == "OK" || level == "FINE") {
+        return;
+    }
+
+    var msg = null;
+    var header = null;
+    if (type == "CPU") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'CPU usage reached the warning threshold.' %}" :
+                "{% trans 'CPU usage reached the critical threshold.' %}");
+    } else if (type == "Memory") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'Memory usage reached the warning threshold.' %}" :
+                "{% trans 'Memory usage reached the critical threshold.' %}");
+    } else if (type == "DiskSpace") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'Disk left space reached the warning threshold.' %}" :
+                "{% trans 'Disk left space usage reached the critical threshold.' %}");
+    } else if (type == "DiskIO") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'Disk IO reached the warning threshold.' %}" :
+                "{% trans 'Disk IO  reached the critical threshold.' %}");
+    } else if (type == "Network") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'Network usage reached the warning threshold.' %}" :
+                "{% trans 'Network usage reached the critical threshold.' %}");
+    } else {
+        if (window.console) console.log("Error type!");
+    }
+
+    popup.jGrowl(node_name + msg, {
+        theme:'flora',
+        header:header,
+        sticky:true,
+        closer:false,
+        beforeOpen:function (e, m, o) {
+            var bobbles = $(".jGrowl-notification.ui-state-highlight.ui-corner-all.flora", popup);
+            var length = bobbles.length;
+            var bobble = null;
+            for (var i = 0; i < length; i++) {
+                if ($(".jGrowl-message", bobbles[i]).html() == m) {
+                    bobble = bobbles[i];
+                    break;
+                }
+            }
+
+            return bobble == null;
+        }
+    });
+}
+
+
+$(document).ready(function () {
+    performServiceDefault();
+    drawCPU();
+    drawNetworkIn();
+    loadAllServiceStatus();
+    $("#network_in").wijradialgauge("option", {max:4096});
+    $("#network_out").wijradialgauge("option", {max:4096});
+});
+
+
+function loadAllServiceStatus() {
+{#    $.ajax({#}
+{#        type:"GET",#}
+{#        url:"{% url "get_node_monitor_info_item" node_uuid host_id %}",#}
+{#        dataType:"json",#}
+{#        global:false,#}
+{#        success:function (data) {#}
+{#            console.log(data);#}
+{#            if ("name" in data && !node_name) {#}
+{#                node_name = data["name"];#}
+{#            }#}
+{#            delete data["name"];#}
+{#            for (var key in data) {#}
+{#                var data = data[key];#}
+{#                var cpu = data['CPU'];#}
+{#                var mem = data['MEM'];#}
+{#                var net = data['NET'];#}
+{#                var disk = data['DISK'];#}
+{#                var io = data['IO'];#}
+{#                var services = data['SERVICE'];#}
+{#                var hostStatus = data['HOST'];#}
+{##}
+{#                performCPU(cpu);#}
+{#                performMem(mem);#}
+{#                performDisk(disk);#}
+{#                performIO(io);#}
+{#                performNetWork(net);#}
+{#                performService(services);#}
+{#                performHOST(hostStatus);#}
+{#            }#}
+{#        }#}
+{#    }); #}
+    if (global_ws) {
+        global_ws.close();
+        global_ws = null;
+    }
+    var uri = "{{ websock_uri }}";
+    global_ws = new Websock();
+    global_ws.open(uri);
+    global_ws.on('open', function () {
+        global_ws.send_string("{{ host_id }}");
+    });
+    global_ws.on('message', function () {
+        global_ws.send_string("{{ host_id }}");
+        var data = eval("(" + global_ws.rQshiftStr() + ")");
+        var cpu = data['CPU'];
+        var mem = data['MEM'];
+        var net = data['NET'];
+        var disk = data['DISK'];
+        var io = data['IO'];
+        var services = data['SERVICE'];
+
+        var hostStatus = data['HOST'];
+        performCPU(cpu);
+        performMem(mem);
+        performDisk(disk);
+        performIO(io);
+        performNetWork(net);
+        performService(services);
+        performHOST(hostStatus);
+    });
+    global_ws.on('close', function () {
+        if (global_ws) {
+            global_ws.close();
+        }
+        global_ws = null;
+    });
+}
+
+function performHOST(data) {
+    var target = $("#switch_info");
+    if (!_status_info) {
+        _status_info = data;
+        target.addClass(data == "online" ? "on" : "off");
+    } else if (data != _status_info) {
+        _status_info = data;
+        target.removeClass(data == "online" ? "off" : "on");
+        target.removeClass(data == "online" ? "na" : "on");
+        target.addClass(data == "online" ? "on" : "na");
+    }
+}
+
+function performCPU(data) {
+    var value = data['cpu_usage'];
+    var cpu_status = data['status'];
+    if (!value) {
+        value = 0;
+    }
+    if (cpu_status) {
+        bobble("CPU", cpu_status);
+    }
+    $("#cpu").wijradialgauge("option", {value:value});
+}
+
+function performNetWork(data) {
+    var network_status = data['status'];
+    if (network_status) {
+        bobble("Network", network_status);
+    }
+    var inValue = 0;
+    var outValue = 0;
+    var tmp = 0;
+    for (var key in data) {
+        if (key == "status") continue;
+        tmp = data[key]['in'];
+        if (tmp.indexOf('Mb') > 0) {
+            inValue += (parseFloat(tmp) / 8) * 1024;
+        } else if (tmp.indexOf('Kb') > 0) {
+            inValue += parseFloat(tmp) / 8;
+        } else {
+            inValue += parseFloat(tmp) / (8 * 1024);
+        }
+        tmp = data[key]['out'];
+        if (tmp.indexOf('Mb') > 0) {
+            outValue += (parseFloat(tmp) / 8) * 1024;
+        } else if (tmp.indexOf('Kb') > 0) {
+            outValue += parseFloat(tmp) / 8;
+        } else {
+            outValue += parseFloat(tmp) / (8 * 1024);
+        }
+    }
+    console.log(data);
+    console.log(inValue);
+    console.log(outValue);
+    $("#network_in").wijradialgauge("option", {value:inValue});
+    $("#network_out").wijradialgauge("option", {value:outValue});
+}
+
+function performMem(data) {
+    var value_used = data['used'];
+    var value_total = data['total'];
+    var mem_status = data['status'];
+    var value = "{% trans 'Memory： ' %}" + value_used + " / " + value_total;
+    $("#memory_info").text(value);
+    if (mem_status) {
+        bobble("Memory", mem_status);
+    }
+}
+
+function performDisk(data) {
+    var value_used = 0;
+    var value_total = 0;
+    var disk_status = data['status'];
+    if (disk_status) {
+        bobble("DiskSpace", disk_status);
+    }
+    delete data['status'];
+    for (var d in data) {
+        var t = data[d];
+        value_total += parseInt(t['total']);
+        value_used += parseInt(t['used']);
+    }
+    $("#disk_info").html("{% trans 'Disk： ' %}" + (value_used / 1024 / 1024).toFixed(1) + " GB" + " / " + (value_total / 1024 / 1024).toFixed(1) + " GB");
+}
+
+function performIO(data) {
+    var disk = null;
+    var disk_status = data['status'];
+    if (disk_status) {
+        bobble("DiskIO", disk_status);
+    }
+    delete data['status'];
+    for (var d in data) {
+
+        var io_div = $("#io_info");
+        io_div.html("{% trans 'Disk IO: ' %}" + data[d]['tps']);
+
+    }
+}
+
+function performService(data) {
+    var content_left = "";
+    var content_right = "";
+    var count = 0;
+    for (var i in data) {
+        if (data[i].status == "OK") {
+            if (count < 4) {
+                content_left = content_left + "<div id=icon_" + count + " class='service_icon icon_" + count + "_" + data[i].is_active + "' title=" + i + "></div>";
+            }
+            else {
+                content_right = content_right + "<div id=icon_" + count + " class='service_icon icon_" + count + "_" + data[i].is_active + "' title=" + i + "></div>";
+            }
+        }
+        else {
+
+            if (count < 4) {
+                content_left = content_left + "<div class='service_icon icon_" + count + "_false' title=" + i + "></div>";
+            }
+            else {
+                content_right = content_right + "<div class='service_icon icon_" + count + "_false' title=" + i + "></div>";
+            }
+        }
+        count++;
+    }
+    $("#service_left").html(content_left);
+    $("#service_right").html(content_right);
+}
+
+function performServiceDefault() {
+    var content_left = "";
+    var content_right = "";
+    for (var count = 0; count < 8; count++) {
+
+        if (count < 4) {
+            content_left = content_left + "<div class='service_icon icon_" + count + "_false' title=''></div>";
+        }
+        else {
+            content_right = content_right + "<div class='service_icon icon_" + count + "_false' title=''></div>";
+        }
+        $("#service_left").find(" > div").remove();
+        $("#service_right").find(" > div").remove();
+        $("#service_left").append(content_left);
+        $("#service_right").append(content_right);
+    }
+}
+
+</script>
+
+<div class="pageContent">
+    <div layoutH="10" style="width:99%;margin: 5px;">
+
+
+        <!--全局监控 begin-->
+        <div id="content_subject" style="height: 100%;">
+
+
+            <!--仪表盘监控 begin-->
+            <div id="monitor_content" style="height: 80%;">
+
+
+                <div id="service"
+                     style="margin:0 auto;height:20%; text-align:center;width:100%; ">
+
+                </div>
+
+
+                <!--网络进口容器 begin-->
+                <div id="network_in_content">
+                    <div id="service_left"></div>
+                    <div id="network_in"></div>
+                    <div id="in_text">{% trans 'NetWork_In (MB per second)' %}</div>
+                </div>
+                <!--网络进口容器 end-->
+
+
+                <!--CPU容器 begin-->
+                <div id="cpu_content">
+                    <div id="cpu">
+                    </div>
+                    <div id="cpu_text">
+                        {% trans 'CPU_Usage' %}
+                    </div>
+                    <div id="monitor_info">
+                        <ul>
+                            <li id="disk_info"></li>
+                            <li id="io_info"></li>
+                            <li id="memory_info"></li>
+                            <li><a target="navTab" rel="使用量排行榜"
+                                   href="{% url "monitor_manage_top" %}"
+                                   tmask="true"
+                                   width="250"
+                                   height="150">{% trans 'Usage Ranking' %}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--CPU容器 end-->
+
+
+                <!--网络出口容器 begin-->
+                <div id="network_out_content">
+                    <div id="service_right">
+                    </div>
+                    <div id="network_out"></div>
+                    <div id="in_text">{% trans 'NetWork_Out (MB per second)' %}</div>
+                </div>
+
+                <!--网络出口容器 end-->
+
+            </div>
+            <!--仪表盘监控 end-->
+
+            <!--其他信息 begin-->
+            <div id="info">
+
+
+                <div class="switch" id="switch_info"></div>
+            </div>
+            <!--其他信息 end-->
+
+
+        </div>
+        <!--全局监控 end-->
+
+    </div>
+</div>

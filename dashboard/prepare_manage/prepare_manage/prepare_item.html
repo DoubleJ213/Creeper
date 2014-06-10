@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load dashboard %}
+
+{% for form in need_to_do %}
+{#    {% if form.status =='new' or form.status == 'doing' %}#}
+    <div style="width: 316px; line-height: 20px; font-size: 13px;height: auto; ">
+        <div class="tr">
+            <div style="width: 50px;float: left; text-align: center;">{{ form.id }}</div>
+            <div style="width: 200px; float: left;"><a target="dialog"
+                                                       style="white-space: nowrap; text-overflow: ellipsis;overflow: hidden;width: 300px;display: block;"
+                                                       title="{% trans form.a_title %}"
+
+                    {% if form.category == 'project_manage' or form.category == 'volume_manage' or form.category == 'log_manage' or form.category == 'software_manage' %}
+                              width="500" height="300"
+                    {% else %}
+                            width="700" height="500"
+                    {% endif %} href="{% url form.work_func form.need_uuid %}">
+                {% trans form.title %}
+            </a></div>
+        </div>
+    </div>
+{#    {% endif %}#}
+{% endfor %}

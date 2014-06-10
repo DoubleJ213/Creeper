@@ -1,0 +1,22 @@
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        {% if forloop.last %}
+        <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endif %}
+{% if request.errors %}
+    {% for error in request.errors %}
+        <span>{{ error }}</span>
+    {% endfor %}
+{% endif %}
+{% if next %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ next }}" />{% endif %}
+{% for hidden in form.hidden_fields %}
+    {{ hidden }}
+{% endfor %}
+{{ form.as_ul }}
+{% csrf_token %}
+
+

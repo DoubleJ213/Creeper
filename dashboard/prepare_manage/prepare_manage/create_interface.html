@@ -1,0 +1,231 @@
+{% load i18n %}
+
+<style type="text/css">
+    #router_name , #router_id  {
+        background: url("{{ STATIC_URL }}/ui/images/input_bg.png") no-repeat ;
+        border:0;
+        width: 240px;
+        height: 25px;
+    }
+
+    .divSelect_bg{
+        width: 237px;
+        height: 29px;
+        line-height: 29px;
+        border: 0px solid #add8e6;
+    }
+    .divSelect_bg .select_bg_img {
+        width: 237px;
+        line-height: 29px;
+        float: left;
+        overflow: hidden;
+        background-image: url("{{ STATIC_URL }}/ui/images/box_4.png");
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: block;
+    }
+    .divSelect_bg .select1right{
+        width: 237px;
+        height:29px;
+        line-height: 20px;
+        float: left;
+        text-align: right;
+        cursor: pointer;
+
+    }
+    .divSelect_select_bg{
+        width: 237px;
+        height: 100px;
+        line-height: 29px;
+        border: 1px solid #e2e2e2;
+        border-top: 0px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: none;
+        background: #ffffff;
+    {#        #background: white;#}
+        position: absolute;
+    {#        #position: relative;#}
+        z-index:1;
+    }
+    .divSelect_select_bg .selectSubNetOptionClass{
+        width: 237px;
+        height: 20px;
+        line-height: 20px;
+        text-align: left;
+        padding-left: 5px;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .divSelect_select_bg .selectSubNetOptionClass:hover {
+        background: #bc8f8f;
+
+    }
+
+    .ins_header1{
+        width: 141px;
+        float: left;
+        line-height: 24px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .header_pic1 {
+        clear:both;
+        width: 100%;
+        height:70px;
+        background:#d7dcde url('{{ STATIC_URL }}ui/images/instance/4_2.png') no-repeat ;
+        background-position: left center;
+        margin-bottom: 10px;
+    }
+</style>
+
+<script type="text/javascript">
+
+
+    function dialogAjaxDone_router_interface(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                var tenant_id = $("#tenant_id").val();
+                var router_id = json.router_id;
+                var virtual_router_obj_id = $("#virtual_router_obj_id").val();
+                $.get("prepare_manage/prepare/"+tenant_id+"/"+router_id+"/router_project_info/1/"+virtual_router_obj_id+"/",function(data){
+                    $("#create_interface_button").hide();
+                    $("#create_interface_from_id").html(data).initUI();
+                    $("#create_interface_from_id > div ").height($("#create_interface_from_id").height());
+                });
+            }
+        }
+    }
+
+    function prepare_create_router_list1(){
+        var subnet_id = $("#subnet_id").val();
+        if(subnet_id.length < 1){
+            alertMsg.error("{% trans "Please select a Subnet" %}");
+            return false;
+        }
+    }
+
+    $(document).ready(function(){
+        $(".selectSubNetOptionClass").click(function(){
+            $("#selectSubNetFormatText").html($(this).attr("name"));
+            $("#selectSubNetFormatText").val($(this).attr("value"));
+            $("#subnet_id").val($(this).attr("value"));
+
+        });
+        $(document).click(function(){
+            if($("#selectSubNetFormat").css("display") == "block"){
+                $("#selectSubNetFormat").hide();
+            }
+        });
+      
+    });
+    function selectSubNet(){
+        stopBubble();
+        if($("#selectSubNetFormat")){
+            if($("#selectSubNetFormat").css("display") == "none"){
+                $("#selectSubNetFormat").show();
+            }else{
+                $("#selectSubNetFormat").hide();
+            }
+        }
+    }
+
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <input type="hidden" name="tenant_id" id="tenant_id" value="{{ tenant_id }}" />
+    <input type="hidden" name="virtual_router_obj_id" id="virtual_router_obj_id" value="{{ virtual_router_obj_id }}" />
+    <input type="hidden" name="network_id" id="network_id" value="{{ network_id }}" />
+    <form method="post" action="{% url "create_interface_action_index" router_id virtual_router_obj_id %}" class="pageForm required-validate" id="interface_from_action_id" onsubmit="return validateCallback(this, dialogAjaxDone_router_interface)">
+        {#        <input type="hidden" name="router_id" id="router_id" value="{{router_id}}">#}
+        <div class="pageFormContent" layouth="58" id="create_interface_from_id">
+            <div class="header_pic1" >
+                <div class="ins_header1" style="margin-left: 40px;" >{% trans 'Create router' %}</div>
+                <div class="ins_header1" >{% trans 'Create Interface' %}</div>
+                <div class="ins_header1" >{% trans 'Set Gateway' %}</div>
+                <div class="ins_header1" >{% trans 'Finish' %}</div>
+            </div>
+            <div class="unit">
+{#                <label>{% trans "Subnet" %}：</label>#}
+{#                <select id="subnet_id" name="subnet_id" class="required select">#}
+{#                    {% for key,value in form.fields.subnet_id.choices %}#}
+{#                        <option value= {{ key }} >{{ value }}</option>#}
+{#                    {% endfor %}#}
+{#                </select>#}
+
+
+
+                <label style="float: left;">{% trans "Subnet" %}:</label>
+                <div style="width: 238px; float:left;">
+                    <div class="divSelect_bg">
+                        <div id="selectSubNetFormatText" onclick="selectSubNet();" class="select_bg_img">&nbsp;{% trans "Select Subnet" %}
+                            <input type="hidden" id="flavor_val" class="required"/>
+                        </div>
+                        {#                        <div class="select1right"></div>#}
+                    </div>
+
+                    <div id="selectSubNetFormat" class="divSelect_select_bg">
+                        {% for key,value in form.fields.subnet_id.choices %}
+                            <div class="selectSubNetOptionClass" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" >
+                                {% if value == "Select Subnet" %}
+                                    {% trans "Select Subnet" %}
+                                {% else %}
+                                    {{ value|truncatechars:59 }}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <input type="hidden" id="subnet_id"  name="subnet_id" >
+            </div>
+
+            <div id="routernameDiv" class="unit">
+                <label>{% trans 'Router Name' %}:</label>
+                <input type="text" id="router_name" name="router_name"  value="{{ form.fields.router_name.initial }}" readonly size="40" minlength="2" maxlength="10" class="required" />
+
+            </div>
+
+            <div id="routerIdDiv" class="unit" style="display:none;">
+                <label>{% trans 'Router ID' %}:</label>
+                <input type="text" id="router_id" name="router_id"  value="{{router_id}}" readonly size="40" minlength="6" maxlength="255" class="required" />
+
+            </div>
+
+            <div id="routerDesDiv" class="unit">
+                <label>{% trans 'Description' %}:</label>
+                <label style="display:inline-block;width:300px">{% trans 'You can connect a specified subnet to the router' %}</label>
+            </div>
+        </div>
+
+        {% csrf_token %}
+        <div class="formBar" id="create_interface_button">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close" onclick="">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

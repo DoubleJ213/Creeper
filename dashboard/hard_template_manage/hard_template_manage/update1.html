@@ -1,0 +1,6 @@
+{% load i18n%}
+
+<form action="{% url "update_flavor" flavor_id %}" method="post">
+    {{ form.as_p }}{% csrf_token %}
+    <input type="submit" value="{% trans "submit" %}">
+</form>

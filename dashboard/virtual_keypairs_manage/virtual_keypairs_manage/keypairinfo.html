@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% csrf_token %}
+    <div class="pageFormContent" layouth="58" >
+        <div class="panelBar">
+            <ul>
+                <li style="line-height: 23px;">{% trans "Keypair Info" %}</li>
+        	</ul>
+        </div>
+
+
+         <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+                {{ keypairinfo.name|default:"None" }}
+         </div>
+
+         <div class="unit">
+            <label>
+                {% trans 'Fingerprint' %}：</label>
+            {{ keypairinfo.fingerprint|default:"Unknown" }}
+         </div>
+    </div>
+</div>

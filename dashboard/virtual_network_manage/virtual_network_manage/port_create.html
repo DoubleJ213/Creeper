@@ -1,0 +1,93 @@
+{% load i18n %}
+<script type="text/javascript">
+    function onfocusViewHelp(a,divid)
+    {
+        document.getElementById(divid).style.display="block"
+        document.getElementById(divid).style.left = a.offsetLeft+ a.offsetWidth+'px'
+        document.getElementById(divid).style.top = a.offsetTop+'px'
+    }
+
+    function onblurViewHelp(divid)
+    {
+        document.getElementById(divid).style.display="none"
+    }
+</script>
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_port_action" network.id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDone);">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{network.tenant_id}}">
+        {% include 'securitygroup_manage/_create.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "Port Info" %}</li>
+                </ul>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Network Name' %}：</label>
+                <input type="text" id="id_network_name" name="network_name"  value="{{ network.name }}" readonly size="30" minlength="2" maxlength="10" class="required" />
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Network ID' %}：</label>
+                <input type="text" id="id_network_id" name="network_id" value="{{ network.id }}"  readonly size="40" minlength="6" maxlength="255" class="required" />
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+                <input type="text" id="id_name" name="name" size="30" minlength="6" maxlength="20" />
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Admin State' %}：</label>
+                <input  checked="checked" type="checkbox" name="admin_state" id="id_admin_state">
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Device ID' %}：</label>
+                <input type="text" id="device_id" name="device_id" onfocus="onfocusViewHelp(this,'portdeviceidhelp');" onblur="onblurViewHelp('portdeviceidhelp');" size="40"   class="required" />
+                <div id="portdeviceidhelp" style="color:#FFFFFF;overflow-y:auto;height:30px;width:200px;display:none;position: absolute;background: red" >{{ form.fields.device_id.help_text }}</div>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Device Owner' %}：</label>
+                <input type="text" id="device_owner" name="device_owner" onfocus="onfocusViewHelp(this,'portdeviceownerhelp');" onblur="onblurViewHelp('portdeviceownerhelp');" size="30" minlength="6" maxlength="20"  class="required" />
+                <div id="portdeviceownerhelp" style="color:#FFFFFF;overflow-y:auto;height:30px;width:200px;display:none;position: absolute;background: red" >{{ form.fields.device_owner.help_text }}</div>
+            </div>
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+{#                            <button type="button" class="close" onclick="gotonwUrl('/virtual_network_manage/network/{{ network.tenant_id }}/{{network.id }}/getnetworkinfo/','')">#}
+{#                                {% trans "Cancel" %}#}
+{#                            </button>#}
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

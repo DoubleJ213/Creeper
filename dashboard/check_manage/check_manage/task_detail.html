@@ -1,0 +1,125 @@
+
+{% load i18n %}
+{% load dashboard %}
+
+<style type="text/css">
+    .unit_div_1 {
+        width: 120px;
+        float: left;
+    }
+    .unit_div_2{
+        line-height: 25px;
+        float: left;
+    }
+</style>
+<div class="pageContent"  id="image_pageContent_id">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post"  class="pageForm required-validate">
+
+        <div class="pageFormContent" layouth="65">
+            {% if task %}
+            <div class="unit" style="line-height: 21px;">
+                <div class="unit_div_1">
+                    <label>
+                        {% trans "Task Name" %}：</label>
+                </div>
+                <div class="unit_div_2">
+                    {% trans task.name %}
+                </div>
+            </div>
+
+            <div class="unit" style="line-height: 21px;">
+                <div class="unit_div_1">
+                    <label>
+                        {% trans "User Name" %}：</label>
+                </div>
+                <div class="unit_div_2">
+                    {{ task.user_name }}
+                </div>
+            </div>
+
+            <div class="unit" style="line-height: 21px;">
+                <div class="unit_div_1">
+                    <label>
+                        {% trans "Submit Time" %}：</label>
+                </div>
+                <div class="unit_div_2">
+                    {{ task.submit_time | datetime_from_utctime }}
+                </div>
+            </div>
+
+            <div class="unit" style="line-height: 21px;">
+                <div class="unit_div_1">
+                    <label>
+                        {% trans "Status" %}：</label>
+                </div>
+                <div class="unit_div_2" style="width:50px;">
+{#                    {{task.status }}#}
+                    {% trans task.status %}
+                </div>
+{#                <div class="unit_div_2">#}
+{#                    {% if task.status == "Pending" %}#}
+{#                        <a target="dialog" title="{% trans 'Delete Task' %}"#}
+{#                           href="{% url 'delete_task_form' task.id  %}"#}
+{#                           tmask="true" width="250" height="150">#}
+{#                            <img src="{{ STATIC_URL }}ui/images/delete.png"#}
+{#                                 title="{% trans 'Delete Task' %}"/>#}
+{#                        </a>#}
+{#                    {% endif %}#}
+{#                    {% if task.status == "Reject" or task.status == "Expired" %}#}
+{#                        <a target="dialog" title="{% trans 'Resubmit Task' %}"#}
+{#                           href="{% url 'resubmit_task_form' task.id %}"#}
+{#                           tmask="true" width="500" height="300">#}
+{#                            <img src="{{ STATIC_URL }}ui/images/resume.png"#}
+{#                                 title="{% trans 'Resubmit Task' %}"/>#}
+{#                        </a>#}
+{#                    {% endif %}#}
+{#                </div>#}
+            </div>
+
+            <div class="unit" style="line-height: 21px;">
+                <div class="unit_div_1">
+                    <label>
+                        {% trans "Resume Num" %}：</label>
+                </div>
+                <div class="unit_div_2">
+                    {{ task.resume_num }}
+                </div>
+            </div>
+
+            <div class="unit" style="line-height: 21px;">
+                <div class="unit_div_1">
+                    <label>
+                        {% trans "Check Comment" %}：</label>
+                </div>
+                <div class="unit_div_2">
+                    {{ task.check_comment }}
+                </div>
+            </div>
+
+
+
+            {% endif %}
+        </div>
+        {% csrf_token %}
+{#        <div class="formBar">#}
+{#            <ul>#}
+{#                <li>#}
+{#                    <div class="buttonActive" id="btnActiveSubmit1">#}
+{#                        <div class="buttonContent">#}
+{#                            <button type="submit" value="submit">#}
+{#                                {% trans "Submit" %}</button></div>#}
+{#                    </div>#}
+{#                </li>#}
+{#                <li>#}
+{#                    <div class="button" id="btnActCancel">#}
+{#                        <div class="buttonContent">#}
+{#                            <button type="button" class="close">#}
+{#                                {% trans "Cancel" %}</button></div>#}
+{#                    </div>#}
+{#                </li>#}
+{#            </ul>#}
+{#        </div>#}
+    </form>
+</div>
+

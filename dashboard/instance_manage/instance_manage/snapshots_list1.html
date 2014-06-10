@@ -1,0 +1,9 @@
+{% load i18n %}
+
+<br/>
+{% for snap in page_obj.object_list %}
+    <form action="{% url "set_snapshot_public" snap.id instance_id %}" method="post">{% csrf_token %}
+        {{ snap.name }}&nbsp;&nbsp;{{ snap.is_public }}&nbsp;&nbsp;{{ snap.status }}
+        <input type="submit" value="快速创建母盘模板">
+    </form>
+{% endfor %}

@@ -1,0 +1,73 @@
+{% load i18n %}
+{% load dashboard %}
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "check_task" task.uuid %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <div class="pageFormContent" layouth="58">
+            <input type="hidden" name="task_id" class="required" value="{{ task.id }}" />
+	        <p style="text-align:left;"><span style="font-size:14px;font-weight:bold;font-style:normal;text-decoration:none;color:#333333;">{% trans "Info" %}</span></p>
+            <dl class="nowrap">
+			    <dt style="width: 110px;">{% trans "Task Name" %}：</dt>
+			    <dd style="width: auto;">{% trans task.name %}</dd>
+		    </dl>
+            <dl class="nowrap">
+			    <dt style="width: 110px;">{% trans "User Name" %}：</dt>
+			    <dd style="width: auto;">{{ task.user_name }}</dd>
+		    </dl>
+	        <dl class="nowrap">
+			    <dt style="width: 110px;">{% trans "Submit Time" %}：</dt>
+			    <dd style="width: auto;">{{ task.submit_time | datetime_from_utctime }}</dd>
+		    </dl>
+	        <dl class="nowrap">
+			    <dt style="width: 110px;">{% trans "Expire Time" %}：</dt>
+			    <dd style="width: auto;">{{ task.expire_time | datetime_from_utctime }}</dd>
+		    </dl>
+	        <dl class="nowrap">
+			    <dt style="width: 110px;">{% trans "Status" %}：</dt>
+			    <dd style="width: auto;">{% trans task.status %}</dd>
+		    </dl>
+            <dl class="nowrap">
+			    <dt style="width: 110px;">{% trans "Level" %}：</dt>
+			    <dd style="width: auto;">{{ task.level }}</dd>
+		    </dl>
+
+	        <p style="text-align:left;"><span style="font-size:14px;font-weight:bold;font-style:normal;text-decoration:none;color:#333333;">{% trans "Check Result" %}</span></p>
+            <dl class="nowrap">
+			    <dt style="width: 110px;">{% trans "Check" %}：</dt>
+			    <dd style="width: auto;">
+				    <input type="radio" name="check" value="Approve"/>{% trans "Approve" %}
+				    <input type="radio" name="check" value="Reject"/>{% trans "Reject" %}
+			    </dd>
+		    </dl>
+	        <dl class="nowrap">
+			    <dt style="width: 110px;">{% trans "Check Comment" %}：</dt>
+			    <dd style="width: auto;">
+				    <textarea name="check_comment" size="30" rows="4" style="resize: none" maxlength="200"></textarea>
+			    </dd>
+		    </dl>
+
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,421 @@
+﻿{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+{#<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"#}
+{#        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">#}
+<html>
+<head>
+    {% include "common/base.html" %}
+</head>
+<body scroll="no">
+<input type="hidden" id="project_target_url" value="">
+<input type="hidden" id="tree_btn_flag" value="1">
+<input type="hidden" id="project_tree_htmlVal" value="">
+<input type="hidden" id="project_tree_li_id" value="">
+<input type="hidden" id="project_tree_li_id_old" value="">
+<input type="hidden" id="securitygroup_target_url" value="">
+<input type="hidden" id="tree_sgbtn_flag" value="1">
+<input type="hidden" id="floating_ips_url" value="">
+<input type="hidden" id="tree_routerbtn_flag" value="1">
+<input type="hidden" id="routerproject_target_url" value="">
+<input type="hidden" id="tree_nwbtn_flag" value="1">
+<input type="hidden" id="network_target_url" value="">
+<input type="hidden" id="tree_keybtn_flag" value="">
+<input type="hidden" id="keypair_target_url" value="">
+<input type="hidden" id="tree_nwtbtn_flag" value="">
+<input type="hidden" id="networktopology_target_url" value="">
+
+
+<div id="layout">
+<div id="header">
+    <div class="headerNav">
+        <a class="logo">标志</a>
+        <ul class="nav">
+            {% if DEBUG %}
+                <li>PRODUCT VERSION:&nbsp;&nbsp;{{ PRODUCT_VERSION }} </li>
+                <li>JOINTLAB VERSION:&nbsp;&nbsp;{{ INTERNAL_VERSION }}</li>
+            {% endif %}
+            {% if role == 'admin' or role == 'ProjectAdmin' %}
+            <li><a href="{% url "get_permit_view" %}">{% trans "Update License" %}</a></li>
+            {% endif %}
+            <li>{% trans "UserName" %}：{{ username }}</li>
+            <li><a href="{% url "change_user_password_form" %}" target="dialog" width="600">{% trans "Password" %}</a></li>
+            <li><a href="{% url "authorize_logout" %}">{% trans "Logout" %}</a></li>
+        </ul>
+        <ul class="themeList" id="themeList">
+            <li theme="default">
+                <div class="selected">
+                    蓝色
+                </div>
+            </li>
+            <li theme="green">
+                <div>
+                    绿色
+                </div>
+            </li>
+            <li theme="purple">
+                <div>
+                    紫色
+                </div>
+            </li>
+            <li theme="silver">
+                <div>
+                    银色
+                </div>
+            </li>
+            <li theme="azure">
+                <div>
+                    天蓝
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div id="leftside">
+    <div id="sidebar_s">
+        <div class="collapse">
+            <div class="toggleCollapse">
+                <div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="sidebar">
+        <div class="toggleCollapse">
+            <h2>{% trans "Primary Menu" %}</h2>
+            <div>收缩</div>
+        </div>
+        <div id="result" class="accordion" fillspace="sidebar">
+            {% ui:menu %}
+        </div>
+    </div>
+</div>
+<div id="container">
+<div id="navTab" class="tabsPage">
+<div class="tabsPageHeader">
+    <div class="tabsPageHeaderContent">
+        <ul class="navTab-tab">
+            <li tabid="main" class="main">
+                <a href="javascript:;">
+                    <span>
+                        <span class="home_icon">
+                            {% trans "HomePage" %}
+                        </span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="tabsLeft">
+        left
+    </div>
+    <div class="tabsRight">
+        right
+    </div>
+    <div class="tabsMore">
+        more
+    </div>
+</div>
+<ul class="tabsMoreList">
+    <li><a href="javascript:;">{% trans "HomePage" %}</a></li>
+</ul>
+<div id="index_page" class="navTab-panel tabsPageContent layoutBox" style="overflow:hidden;">
+    <div class="page unitBox">
+        <div class="pageFormContent" layouth="20">
+            <div class="index_content" id="waterfall_box">
+                        {% permission 'Add Instance' %}
+                        <div class="waterfall" style="width: 372px; height: 173px; border: 1px solid #b8d0d6; margin-top: 5px;">
+                            <div class="title">
+                                <img src="{{ STATIC_URL }}ui/images/index/sy_07.png" style="width: 20px; height: 21px; margin-top: 4px;" class="titleImg">
+                                <div class="font">{% trans "Check Manage" %}</div>
+                                <a target="navTab" href="{% url "get_user_task_list_all" %}" class="more" rel="{% trans "Check Manage" %}" title="{% trans "Check Manage" %}" >{% trans "More" %}>></a>
+{#                                <a  href="#" class="more" rel="{% trans "Schedule" %}" title="{% trans "Schedule" %}" >{% trans "More" %}>></a>#}
+                            </div>
+                            <div class="list">
+                                <div class="table" id="task_list_id" style="padding-top: 5px;"></div>
+                            </div>
+                        </div>
+                        {% endpermission %}
+                        {% permission 'View Project' 'View User' 'View Network' 'View Instance'%}
+                        <div class="event waterfall" style="width: 372px; height: 173px; border: 1px solid #b8d0d6;background: #f5f5f5;margin-top: 5px">
+                            <div class="title">
+                                <img src="{{ STATIC_URL }}ui/images/index/sy_03.png" style="width: 21px; height: 21px; margin-top: 4px;" class="titleImg">
+                                <div class="font">{% trans "Organization" %}</div>
+                                <a target="navTab" href="{% url "get_project_list" %}" rel="{% trans "Authorization Manage" %}" title="{% trans "Authorization Manage" %}" class="more">{% trans "More" %}>></a>
+                            </div>
+                            <div class="list">
+                                <div id="index_project" class="table">
+                                    <div class="tr" style="background-color: #DADADA; font-size: 15px; font-family: '宋体'; color: #000000;">
+                                        <div class="td" style="width:18.4%;">{% trans "Project Name" %}</div>
+                                        <div class="td" style="width:10.7%;">{% trans "User" %}</div>
+                                        <div class="td" style="width:10.3%;">{% trans "Network" %}</div>
+                                        <div class="td" style="width:29.7%;">{% trans "Instances" %}（{% trans "Running" %}）</div>
+                                        <div class="td" style="width:30.9%;">{% trans "Instances" %}（{% trans "Down" %}）</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div id="project_info"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endpermission %}
+
+                    <div class="partDiv waterfall" style="height: auto; width: 372px; border: 1px solid #b8d0d6; margin-top: 5px" id="no_nav">
+
+                        <div style=" height: 40px" id="notice">
+                            <div class="index_button">
+                                {% trans "Notice" %}
+                            </div>
+
+                            <div id="scrollDiv">
+                                <ul id="index_notices_id">
+
+                                </ul>
+                            </div>
+                            {% permission 'View Notice' %}
+                            <div style="height: 40px; width:25%; float: left; margin-left: 15px;">
+                                <a target="navTab" href="{% url "get_notice_list" %}" rel="{% trans "Notice Manage" %}" title="{% trans "Notice Manage" %}" class="more_1" style="text-decoration: none;">{% trans "More" %}>></a>
+                            </div>
+                            {% endpermission %}
+                        </div>
+
+                        <div style="clear: both; height: 40px; margin-top: 11px;" id="navigation">
+                            <div class="index_button">
+                                {% trans "Navigation" %}
+                            </div>
+                            <div class="fastlink">
+                                <ul>
+{#                                    {% permission 'View Global Monitor' %}#}
+                                    {% permission 'View Node' %}
+                                        <li><a target="navTab" href="{% url "goto_static_resource" "instance" %}" title="{% trans "Instance Resource" %}">{% trans "Instance Res" %}</a></li>
+                                    {% endpermission %}
+                                    {% permission 'View Volume' 'View Global Monitor' 'View Address' %}
+                                        <li><a target="navTab" href="{% url "goto_static_resource" "project" %}" title="{% trans "Project Resource" %}">{% trans "Project Res" %}</a></li>
+                                    {% endpermission %}
+                                    {% permission 'View Global Monitor' %}
+                                        <li><a target="navTab" href="{% url "goto_static_resource" "node" %}" title="{% trans "Node Resource" %}">{% trans "Node Res" %}</a></li>
+                                    {% endpermission %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="date waterfall" style="width: 372px; height: 215px; border: none">
+                        <div id="datepicker" style="width: 100%; height: 210px;"></div>
+                    </div>
+                    {% permission 'View Node' %}
+                    <div class="hardware waterfall" style="width: 372px; height: 372px;background: #f5f5f5">
+                        <div class="title">
+                            <img src="{{ STATIC_URL }}ui/images/index/sy_09.png" style="width: 21px; height: 14px; margin-top: 7px;" class="titleImg">
+                            <div class="font">{% trans "Hardware Resource" %}</div>
+                            <a target="navTab" href="{% url "get_node_index" %}" class="more" rel="{% trans "Foundation Manage" %}" title="{% trans "Foundation Manage" %}">{% trans "More" %}>></a>
+                        </div>
+                        <div class="ringContent">
+                            <div class="ring">
+                                <div id="vcpus_per" class="percentage-light" data-percent="0">
+                                    &nbsp;<span></span>&nbsp;
+                                </div>
+                                <div class="info">{% trans "VCPU" %}</div>
+                            </div>
+                            <div class="ring">
+                                <div id="memory_mb_per" class="percentage-light" data-percent="0">
+                                    &nbsp;<span></span>&nbsp;
+                                </div>
+                                <div class="info">{% trans "VMEMORY" %}</div>
+                            </div>
+                            <div class="ring">
+                                <div id="local_gb_per" class="percentage-light" data-percent="0">
+                                    &nbsp;<span></span>&nbsp;
+                                </div>
+                                <div class="info">{% trans "VDISK" %}</div>
+                            </div>
+                            <div class="ring">
+                                <div id="ip_per" class="percentage-light" data-percent="0">
+                                    &nbsp;<span></span>&nbsp;
+                                </div>
+                                <div class="info">{% trans "VIP" %}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endpermission %}
+                    {% permission 'View Global Monitor' %}
+                    <div class="facility waterfall" style="width: 372px; height:auto;background: #f5f5f5">
+                        <div class="title">
+                            <img src="{{ STATIC_URL }}ui/images/index/sy_19.png" style="width: 20px; height: 19px; margin-top: 5px;" class="titleImg">
+                            <div class="font">{% trans "Infrastructure Manage" %}</div>
+                            <a target="navTab" href="{% url "monitor_manage_index" %}" title="{% trans "Global Monitor" %}" class="more" rel="{% trans "Global Monitor" %}">{% trans "More" %}></a>
+                        </div>
+                        <div>
+                            <div id="facility0" class="part">
+                                <div class="title">
+                                    <div class="font font2 instance_name" style="width:90px;"></div>
+                                    <div style="width:70px; float: right;">
+                                        <div class="font font2 instance_status" style="margin-right:3px; float: right;"></div>
+                                        <div style=" width: 21px; height:21px; margin-top: 5px; float: right;" id="titImg0" ></div>
+                                    </div>
+                                </div>
+                                <div class="attr" style="margin-top: 9px;">
+                                    <div class="attrLeft">CPU：</div>
+                                    <div class="attrRight cpu_line">
+                                        <div class="box_line">
+                                            <div class="inner_line" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="per">0%</div>
+                                    </div>
+                                </div>
+                                <div class="attr">
+                                    <div class="attrLeft">{% trans "RAM" %}：</div>
+                                    <div class="attrRight memory_line">
+                                        <div class="box_line">
+                                            <div class="inner_line" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="per">0%</div>
+                                    </div>
+                                </div>
+                                <div class="attr" style="font-size: 14px; color: #6b6b6b;">
+                                    {% trans "Instances" %}：
+                                </div>
+                                <div style=" width: auto; height: 48px; clear: both;">
+                                    <div class="instance instance_online"></div>
+                                    <div class="instance instance_offline" style="width: 90px; float: right; background: #FF8400; color: #7d4100;"></div>
+                                </div>
+                                <div class="controll_node">&nbsp;</div>
+                            </div>
+                            <div id="facility1" class="part">
+                                <div class="title">
+                                    <div class="font font2 instance_name" style="width:90px;"></div>
+                                    <div style="width:70px; float: right;">
+                                        <div class="font font2 instance_status" style="margin-right:3px; float: right;"></div>
+                                        <div style=" width: 21px; height:21px; margin-top: 5px; float: right;" id="titImg1" class="titleImg"></div>
+                                    </div>
+                                </div>
+                                <div class="attr" style="margin-top: 9px;">
+                                    <div class="attrLeft">CPU：</div>
+                                    <div class="attrRight cpu_line">
+                                        <div class="box_line">
+                                            <div class="inner_line" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="per">0%</div>
+                                    </div>
+                                </div>
+                                <div class="attr">
+                                    <div class="attrLeft">{% trans "RAM" %}：</div>
+                                    <div class="attrRight memory_line">
+                                        <div class="box_line">
+                                            <div class="inner_line" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="per">0%</div>
+                                    </div>
+                                </div>
+                                <div class="attr" style="font-size: 14px; color: #6b6b6b;">
+                                    {% trans "Instances" %}：
+                                </div>
+                                <div style=" width: auto; height: 48px; clear: both;">
+                                    <div class="instance instance_online"></div>
+                                    <div class="instance instance_offline" style="width: 90px; float: right; background: #FF8400; color: #7d4100;"></div>
+                                </div>
+                                <div class="controll_node">&nbsp;</div>
+                            </div>
+                            <div id="facility2" class="part">
+                                <div class="title">
+                                    <div class="font font2 instance_name" style="width:90px;"></div>
+                                    <div style="width:70px; float: right;">
+                                        <div class="font font2 instance_status" style="margin-right:3px; float: right;"></div>
+                                        <div style=" width: 21px; height:21px; margin-top: 5px; float: right;"  id="titImg2" class="titleImg"></div>
+                                    </div>
+                                </div>
+                                <div class="attr" style="margin-top: 9px;">
+                                    <div class="attrLeft">CPU：</div>
+                                    <div class="attrRight cpu_line">
+                                        <div class="box_line">
+                                            <div class="inner_line" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="per">0%</div>
+                                    </div>
+                                </div>
+                                <div class="attr">
+                                    <div class="attrLeft">{% trans "RAM" %}：</div>
+                                    <div class="attrRight memory_line">
+                                        <div class="box_line">
+                                            <div class="inner_line" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="per">0%</div>
+                                    </div>
+                                </div>
+                                <div class="attr" style="font-size: 14px; color: #6b6b6b;">
+                                    {% trans "Instances" %}：
+                                </div>
+                                <div style=" width: auto; height: 48px; clear: both;">
+                                    <div class="instance instance_online"></div>
+                                    <div class="instance instance_offline" style="width: 90px; float: right; background: #FF8400; color: #7d4100;"></div>
+                                </div>
+                                <div class="controll_node">&nbsp;</div>
+                            </div>
+                            <div id="facility3" class="part">
+                                <div class="title">
+                                    <div class="font font2 instance_name" style="width:90px;"></div>
+                                    <div style="width:70px; float: right;">
+                                        <div class="font font2 instance_status" style="margin-right:3px; float: right;"></div>
+                                        <div style=" width: 21px; height:21px; margin-top: 5px; float: right;" id="titImg3" class="titleImg"></div>
+                                    </div>
+                                </div>
+                                <div class="attr" style="margin-top: 9px;">
+                                    <div class="attrLeft">CPU：</div>
+                                    <div class="attrRight cpu_line">
+                                        <div class="box_line">
+                                            <div class="inner_line" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="per">0%</div>
+                                    </div>
+                                </div>
+                                <div class="attr">
+                                    <div class="attrLeft">{% trans "RAM" %}：</div>
+                                    <div class="attrRight memory_line">
+                                        <div class="box_line">
+                                            <div class="inner_line" style="width: 0%;"></div>
+                                        </div>
+                                        <div class="per">0%</div>
+                                    </div>
+                                </div>
+                                <div class="attr" style="font-size: 14px; color: #6b6b6b;">
+                                    {% trans "Instances" %}：
+                                </div>
+                                <div style=" width: auto; height: 48px; clear: both;">
+                                    <div class="instance instance_online"></div>
+                                    <div class="instance instance_offline" style="width: 90px; float: right; background: #FF8400; color: #7d4100;"></div>
+                                </div>
+                                <div class="controll_node">&nbsp;</div>
+                            </div>
+
+                        </div>
+                    </div>
+                    {% endpermission %}
+
+
+
+                    {% permission 'View Logs' %}
+                    <div class="log waterfall" style="width: 372px; height:334px;">
+                        <div class="title">
+                            <img src="{{ STATIC_URL }}ui/images/index/sy_26.png" style="width: 21px; height: 21px; margin-top: 4px;" class="titleImg">
+                            <div class="font">{% trans "Log" %}</div>
+                            <a target="navTab" href="{% url "log_query_index" %}" rel="{% trans "Log Query" %}" title="{% trans "Log Query" %}" class="more">{% trans "More" %}>></a>
+                        </div>
+                        <div class="list" style="height: 300px;">
+                            <div class="table" id="log_list_home"></div>
+                        </div>
+                    </div>
+                    {% endpermission %}
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+
+<div id="popup" class="bottom-right"></div>
+<div id="audioBox" style="display: none"></div>
+<div style="position: absolute; top: 98%; left: 40%;">
+    Copyright &copy; 2013 北京北信源软件股份有限公司 All Rights Reserved.
+</div>
+</body>
+</html>

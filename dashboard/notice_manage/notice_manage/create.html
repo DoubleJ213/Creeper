@@ -1,0 +1,68 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script lang="text/javascript">
+    function check_release(){
+        if(document.getElementById("release_id").checked == true){
+            document.getElementById("release_id").value = '1';
+        }else{
+            document.getElementById("release_id").value = '0';
+        }
+    }
+</script>
+        <div class="pageContent">
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+            <form method="post" action="{% url "create_notice_action" %}" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+                {% include 'notice_manage/_create.html' %}
+                <input type="hidden" name="release" value="0">
+                <div class="pageFormContent" layouth="58">
+                    <div class="unit">
+                        <label>
+                           {% trans "Title" %}：
+                        </label>
+                        <input type="text" name="title" size="30" minlength="2" maxlength="10" class="required" />
+                    </div>
+                    <div class="unit">
+                        <label>
+                            {% trans "Content" %}：
+                        </label>
+                        <textarea name="content" size="30" cols="28" rows="6" minlength="6" maxlength="600" class="required" style="overflow-y: hidden;"></textarea>
+                    </div>
+
+                    <div class="unit">
+                        <label>
+                            {% trans "Level" %}：</label>
+                        <select name="level">
+                            <option value = '1'>&nbsp;{% trans "High Level" %}&nbsp;</option>
+                            <option value = '0' selected="">&nbsp;{% trans "General" %}&nbsp;</option>
+                        </select>
+                    </div>
+                    <div class="unit">
+                        <label>
+                            {% trans "Whether Release" %}：
+                        </label>
+                        <input id="release_id" type="checkbox" name="release" value="0" onclick="check_release()" />
+                    </div>
+                </div>
+                <div class="formBar">
+                    <ul>
+                        <li>
+                            <div class="buttonActive">
+                                <div class="buttonContent">
+                                    <button type="submit" value="submit">{% trans "Submit" %}</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="button">
+                                <div class="buttonContent">
+                                    <button type="button" class="close">{% trans "Cancel" %}</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+
+

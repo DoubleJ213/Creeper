@@ -1,0 +1,76 @@
+{% load i18n%}
+<style>
+    .migrate{
+        background: url('{{ STATIC_URL }}ui/images/instance/migrate_bg1.png') no-repeat;
+        width: 100%;
+        height: 100%;
+    }
+    .word{
+        font-size: 14px;
+    }
+    .pageFormContent label{
+        font-size: 14px;
+    }
+    .pageFormContent div .unit{
+        margin-left: 20px;
+        margin-top: 10px;
+        padding: 0px;
+    }
+</style>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "handle_instance_live_migrate" instance_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <div class="pageFormContent" layouth="58">
+
+            <div class="migrate">
+                <div class="unit word">
+                    <label>{% trans "Migrate Instance Name" %}</label>
+                    {{ ins_name }}
+                </div>
+                <div class="unit word">
+                    <label>{% trans "Own Host" %}</label>
+                    {{ ins_host }}
+                </div>
+                <div class="unit">
+                    <label>
+                        {% trans 'Host Name' %}</label>
+    {#                {{ form.host }}#}
+    {#                <input type="text" name="host" size="30" class="required" />#}
+                    <select name="host" class="required">
+                        {% for key,value in form.fields.host.choices %}
+                            <option value= {{ key }} >{{ value }}</option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+                <div class="unit">
+                    <label>
+                    </label>
+                    {{ form.instance_id }}
+                </div>
+            </div>
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

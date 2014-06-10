@@ -1,0 +1,124 @@
+{% load i18n %}
+{% load permission %}
+<script type="text/javascript">
+    $(document).ready(function (){
+        if ($("#id_user_id > option").length == 0) {
+            alertMsg.warn("{% trans 'no extra user to add to project. please add user first.' %}");
+        }
+        setProTreeNodeId();
+    });
+
+    function setProTreeNodeId(){
+        if($("#project_tree_li_id")){
+            $("#tree_father_id").val($("#project_tree_li_id").val());
+        }
+        if($("#project_tree_htmlVal")){
+            $("#project_tree_hidden").html($("#project_tree_htmlVal").val());
+        }
+        if($("#project_tree_li_id_old")){
+            $("#project_tree_li_id_old").val('');
+        }
+    }
+
+    function add_tree_project_user(json){
+        var tree_father_id = $("#tree_father_id").val();
+        if($("#project_ajax_tree #" + tree_father_id)){
+            var childnum = $("#project_ajax_tree #" + tree_father_id + " ul li").length;
+            var c_id = tree_father_id + "_c0"
+            if(childnum > 0){
+                var id_num = ($("#project_ajax_tree #" + tree_father_id + " ul li").last().attr("id")).replace(tree_father_id + "_c" , "");
+                id_num = parseInt(id_num) + 1;
+                c_id = tree_father_id + "_c" + id_num;
+            }
+            var treeNodeObj = json.treeNodeObj;
+            var project_id = treeNodeObj.project_id;
+            var user_id = treeNodeObj.user_id;
+            var user_name = treeNodeObj.user_name;
+            var role_name = treeNodeObj.role_name;
+            var get_project_user_url_now = get_project_user_url.replace("#project_id#",project_id).replace("#user_id#",user_id);
+            var edit_project_user_url_now = edit_project_user_url.replace("#project_id#",project_id).replace("#user_id#",user_id);
+            var delete_project_user_url_now = delete_project_user_url.replace("#project_id#",project_id).replace("#user_id#",user_id);
+            treeHtml = "<li id='"+c_id+"'>\n";
+            treeHtml = treeHtml + "<a class=\"level1\">\n";
+{#            if (role_name == "ProjectAdmin") {#}
+{#                treeHtml = treeHtml + "<lable class=\"tree_lable_common\" style=\"margin-top:3px;\"><img src=\"{{ STATIC_URL }}ui/images/icon/admin_icon.png\" class=\"tree_icon_img2\"></lable>\n";#}
+{#            } else {#}
+                treeHtml = treeHtml + "<lable class=\"tree_lable_common\" style=\"margin-top:3px;\"><img src=\"{{ STATIC_URL }}ui/images/icon/user_icon.png\" class=\"tree_icon_img2\"></lable>\n";
+{#            }#}
+            treeHtml = treeHtml + "<lable>";
+            treeHtml = treeHtml + "<span title=\""+user_name+"\" class=\"protree_span_calss\" onclick=\"gotoUrl('#project_rightDiv','"+get_project_user_url_now+"','#project_target_url','','#project_tree_li_id','"+c_id+"')\">";
+            treeHtml = treeHtml + user_name;
+            treeHtml = treeHtml + "</span>";
+            treeHtml = treeHtml + "</lable>\n";
+            {% permission 'Update Project User' %}
+            treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+            treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/edit_1.png\" class=\"tree_icon_img\" title=\"{% trans 'Edit Project User' %}\" onclick=\"gotoUrl('#project_rightDiv','"+edit_project_user_url_now+"','#project_target_url','"+edit_project_user_url_now+"','#project_tree_li_id','"+c_id+"')\">";
+            treeHtml = treeHtml + "</lable>\n";
+            {% endpermission %}
+            {% permission 'Delete Project User' %}
+            treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+            treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/delete.gif\" class=\"tree_icon_img\" title=\"{% trans 'Delete Project User' %}\" onclick=\"openProDialog('"+delete_project_user_url_now+"', 'proTreeDialogId', '', 250, 150, '#project_target_url', '', '#project_tree_li_id', '"+c_id+"')\">";
+            treeHtml = treeHtml + "</lable>\n";
+            {% endpermission %}
+            treeHtml = treeHtml + "</a>\n";
+            treeHtml = treeHtml + "</li>\n";
+            if(childnum == 0){
+                treeHtml = "<ul>" + treeHtml + "</ul>";
+                $("#project_tree_hidden #" + tree_father_id).append(treeHtml);
+            }else{
+                $("#project_tree_hidden #" + tree_father_id + " ul").append(treeHtml);
+            }
+            if($("#project_tree_htmlVal")){
+                $("#project_tree_htmlVal").val($("#project_tree_hidden").html());
+            }
+            $("#project_tree_hidden").html('');
+        }
+    }
+
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="panelBar">
+        <ul>
+            <li style="line-height: 23px;">{% trans 'Add Project User' %}</li>
+        </ul>
+    </div>
+    <form method="post" action="{% url "add_project_users_action" tenant_id %}"
+          class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDoneForProject);">
+{#        {% include 'project_manage/_add_user.html' %}#}
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>
+                    {% trans "Available User" %}：</label>
+                {{ form.user_id }}
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans "Role" %}：</label>
+                {{ form.role_id }}
+            </div>
+            <div class="unit" style="display: none">
+                <label>
+                </label>
+                {{ form.tenant_id }}
+            </div>
+            <input type="hidden" id="tree_father_id" name="tree_father_id" value="">
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div id="project_tree_hidden" style="display: none"></div>

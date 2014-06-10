@@ -1,0 +1,8 @@
+#!/bin/bash
+
+CURRENT_PATH=`pwd`
+VENV=$CURRENT_PATH/.venv
+VENV_ACTIVE_FILE=${VENV_ACTIVE_FILE:-"$VENV/bin/activate"}
+sed -i "s:VIRTUAL_ENV=.*:VIRTUAL_ENV=${VENV}:g" $VENV_ACTIVE_FILE
+echo $@
+source  $VENV_ACTIVE_FILE && $CURRENT_PATH/$@

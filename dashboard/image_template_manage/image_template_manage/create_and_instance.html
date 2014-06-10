@@ -1,0 +1,87 @@
+{% load i18n %}
+{% load dashboard %}
+
+    <script type="text/javascript">
+        function cancelFullScreen(el) {
+            var requestMethod = el.cancelFullScreen || el.webkitCancelFullScreen || el.mozCancelFullScreen || el.exitFullscreen;
+            if (requestMethod) { // cancel full screen.
+                requestMethod.call(el);
+            } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+                var wscript = new ActiveXObject("WScript.Shell");
+                if (wscript !== null) {
+                    wscript.SendKeys("{F11}");
+                }
+            }
+        }
+
+        function requestFullScreen(el) {
+            // Supports most browsers and their versions.
+            var requestMethod = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
+
+            if (requestMethod) { // Native full screen.
+                requestMethod.call(el);
+            } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+                var wscript = new ActiveXObject("WScript.Shell");
+                if (wscript !== null) {
+                    wscript.SendKeys("{F11}");
+                }
+            }
+            return false
+        }
+
+        function toggleFull() {
+            var elem = document.getElementById("screen"); // Make the body go full screen.
+            var isInFullScreen = (document.fullScreenElement && document.fullScreenElement !== null) || (document.mozFullScreen || document.webkitIsFullScreen);
+
+            if (isInFullScreen) {
+                cancelFullScreen(document);
+                elem.contentWindow.focus();
+            } else {
+                requestFullScreen(elem);
+                elem.contentWindow.focus();
+            }
+            return false;
+        }
+
+        var vnc = { panel: {}, screen: {} };
+        $(document).ready(function(){
+            var panel = navTab.getCurrentPanel();
+            vnc.panel.width = $(panel).width();
+            vnc.panel.height = $.browser.mozilla ? $("div.layoutBox").height() : $(panel).height();
+            var target = $("#screen");
+            if ($.browser.mozilla) {
+                vnc.screen.width = window.screen.width;
+                vnc.screen.height = window.screen.height;
+            } else if ($.browser.webkit) {
+                vnc.screen.width = window.screen.availWidth;
+                vnc.screen.height = window.screen.availHeight;
+            }
+            function resize(height, width){
+                var url = "{{ vnc_url }}" + "&height=" + height + "&width=" + width;
+                target.attr('src', url);
+            }
+            function fullscreenHandler(){
+                fullscreen = !fullscreen;
+                if (fullscreen)
+                    resize(vnc.screen.height, vnc.screen.width);
+                else
+                    resize(vnc.panel.height, vnc.panel.width);
+            }
+            if ($.browser.mozilla) {
+                $(document).bind("mozfullscreenchange fullscreenchange", fullscreenHandler);
+            } else if ($.browser.webkit) {
+                target.bind("webkitfullscreenchange fullscreenchange", fullscreenHandler);
+            }
+            var fullscreen = false;
+            resize(vnc.panel.height, vnc.panel.width);
+            target[0].contentWindow.focus();
+        });
+
+    </script>
+    <div>
+        {% if vnc_url %}
+            <div style="position: absolute; width:107px;height:21px;top:2px;left:5px; "><input type=button value="Full Screen" id="sendCtrlAltDelButton" onclick="toggleFull()" style="width: 107px" >
+            </div>
+            <iframe id="screen" frameborder="0" src="#" width="100%" height="100%" scrolling="no"></iframe>
+        {% endif %}
+    </div>

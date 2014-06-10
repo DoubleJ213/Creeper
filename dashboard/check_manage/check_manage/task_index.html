@@ -1,0 +1,74 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+<form id="pagerForm" action="{% url "get_task_list" %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{ page_obj.paginator.per_page }}" />
+</form>
+
+<div class="pageContent listContent">
+    <div class="panelBar">
+    </div>
+    <table class="table" width="100%" layoutH="75">
+        <thead>
+        <tr>
+            <th>{% trans 'Sequence Number' %}</th>
+            <th>{% trans 'Task Name' %}</th>
+            <th>{% trans 'Submit Time' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for task in page_obj.object_list %}
+
+            <tr id="{{ task.uuid }}"  align="center">
+                <td>{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                <td><a target="dialog"
+                   style="white-space: nowrap; text-overflow: ellipsis;overflow: hidden;width: 100px;display: block;"
+                   title="{% trans task.name %}" width="600" height="400"
+                   href="{% url 'get_task_detail' task.id %}">
+                    {% trans task.name %}
+                </a></td>
+                <td>{{ task.submit_time | datetime_from_utctime}}</td>
+                <td>{% trans task.status %}</td>
+                <td>
+                    {% if task.status == "Pending" %}
+                        <a target="dialog" title="{% trans 'Delete Task' %}"
+                           href="{% url 'delete_task_form' task.id  %}"
+                           tmask="true" width="250" height="150">
+                            <img src="{{ STATIC_URL }}ui/images/delete.png"
+                                 title="{% trans 'Delete Task' %}"/>
+                        </a>
+                    {% endif %}
+                    {% if task.status == "Reject" or task.status == "Expired" %}
+                        <a target="dialog" title="{% trans 'Resubmit Task' %}"
+                           href="{% url 'resubmit_task_form' task.id %}"
+                           tmask="true" width="500" height="300">
+                            <img src="{{ STATIC_URL }}ui/images/resume.png"
+                                 title="{% trans 'Resubmit Task' %}"/>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>{% trans 'Display' %}</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+            </select>
+            <span> {% trans 'Records' %}，{% trans 'Total' %}  {{page_obj.paginator.count}}  {% trans 'Records' %}</span>
+        </div>
+        <div class="pagination" targetType="navTab" totalCount="{{page_obj.paginator.count}}" numPerPage="  {{page_obj.paginator.per_page}}" pageNumShown="{{ page_obj.paginator.num_pages }}" currentPage="{{ page_obj.number }}"></div>
+    </div>
+</div>

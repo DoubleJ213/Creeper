@@ -1,0 +1,95 @@
+{% load i18n %}
+
+<script type="text/javascript">
+    $(document).ready(function (){
+        setProTreeNodeId();
+    });
+
+    function setProTreeNodeId(){
+        if($("#project_tree_li_id")){
+            $("#tree_father_id").val($("#project_tree_li_id").val());
+        }
+        if($("#project_tree_htmlVal")){
+            $("#project_tree_hidden").html($("#project_tree_htmlVal").val());
+        }
+        if($("#project_tree_li_id_old")){
+            $("#project_tree_li_id_old").val('');
+        }
+    }
+
+    function edit_tree_project_user(json) {
+        var treeNodeObj = json.treeNodeObj;
+        var tree_father_id = $("#tree_father_id").val();
+{#        if (treeNodeObj.role_name == 'ProjectAdmin') {#}
+{#            $("#"+tree_father_id+" img")[0].setAttribute("src", "{{ STATIC_URL }}ui/images/icon/admin_icon.png");#}
+{#            $("#project_tree_hidden #" + tree_father_id + " img")[0].setAttribute("src", "{{ STATIC_URL }}ui/images/icon/admin_icon.png");#}
+{#        } else {#}
+        $("#"+tree_father_id+" img")[0].setAttribute("src", "{{ STATIC_URL }}ui/images/icon/user_icon.png");
+        $("#project_tree_hidden #" + tree_father_id + " img")[0].setAttribute("src", "{{ STATIC_URL }}ui/images/icon/user_icon.png");
+{#        }#}
+
+        // for cache
+        if ($("#project_tree_htmlVal")) {
+            $("#project_tree_htmlVal").val($("#project_tree_hidden").html());
+        }
+        $("#project_tree_hidden").html('');
+    }
+</script>
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="panelBar">
+        <ul>
+            <li style="line-height: 23px;">{% trans 'Edit Project User' %}</li>
+        </ul>
+    </div>
+    <form method="post" action="{% url "edit_project_users_action" tenant_id user_id %}"
+          class="pageForm required-validate"
+          onsubmit="return validateCallback2(this, dialogAjaxDoneForProject);">
+        {% include 'project_manage/_edit_user_role.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>{% trans "User Name" %}：</label>
+                {{ user.name }}
+            </div>
+            <div class="unit">
+                <label>{% trans 'Role' %}：</label>
+                <select name="role_id" class="required select">
+                    {% for key, value in form.fields.role_id.choices %}
+                        {% if value == role %}
+                            <option value= {{ key }} selected>{{ value }}</option>
+                        {% else %}
+                            <option value= {{ key }} >{{ value }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="unit" style="display: none">
+                <label>
+                </label>
+                {{ form.tenant_id }}
+            </div>
+            <div class="unit" style="display: none">
+                <label>
+                </label>
+                {{ form.user_id }}
+            </div>
+            <input type="hidden" id="tree_father_id" name="tree_father_id" value="">
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div id="project_tree_hidden" style="display: none"></div>

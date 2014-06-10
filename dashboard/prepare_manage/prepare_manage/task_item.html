@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load dashboard %}
+
+{% for task in task_list %}
+    <div style="width: 316px; line-height: 20px; font-size: 13px;height: auto; ">
+        <div class="tr">
+            <div style="width: 30px;float: left; text-align: center;">{{ forloop.counter }}</div>
+            <div style="width: 100px; float: left;">
+                <a target="dialog"
+                style="white-space: nowrap; text-overflow: ellipsis;overflow: hidden;width: 100px;display: block;"
+                title="{% trans task.name %}" width="600" height="400" href="{% url 'task_action' task.id 'edit' %}">
+                {% trans task.name %}
+                </a>
+            </div>
+            <div style="width: 80px; float: left;">
+                    {% trans task.status %}
+            </div>
+            <div style="width: 100px; float: left;">
+                {{  task.submit_time  }}
+            </div>
+        </div>
+    </div>
+{% endfor %}

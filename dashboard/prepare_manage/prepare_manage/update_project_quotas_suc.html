@@ -1,0 +1,28 @@
+{% load i18n %}
+{% load dashboard %}
+<div class="pageContent" layouth="65">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="pageFormContent" layouth="58" >
+        <table style="background-color: #ffffff; width:auto;height: 60%;margin-left: 10%;margin-top: 5px;">
+            <tr>
+                <td colspan="2"><img src="{{ STATIC_URL }}ui/images/sun.png" width="30" height="30" />{% trans "Image Create Success" %}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Are you sure for deleting all the logs?" %}</td>
+                <td>
+
+                    <div class="unit">
+                        <div class="button" id="btnActCancel">
+                            <div class="buttonContent">
+                                <button type="button" onclick="$.pdialog.closeCurrent()" class="close">
+                                    {% trans "Success" %}</button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>

@@ -1,0 +1,242 @@
+{% load i18n %}
+{% load dashboard %}
+
+<style type="text/css">
+    .searchLeft{
+        width: 60px;
+        line-height: 24px;
+        float: left;
+        text-align: left;
+        margin-left: 20px;;
+    }
+    .searchRight{
+        width: 160px;
+        height: 23px;
+    {#        padding-top: 2px;#}
+        float: left;
+    }
+    .div_delete_log{
+        height:90%;
+    }
+</style>
+
+<script lang="text/javascript">
+
+    function dialogAjaxDone_log_delete(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                $.pdialog.closeCurrent();
+            }
+        }
+    }
+    function submitFormPrepare() {
+        alertMsg.confirm("{% trans "Are you sure for deleting these logs?" %}" , {
+            okCall:function () {
+                $.ajax({
+                           url:'{% url "delete_logs_query_in_prepare" log_id %}',
+                           type:'GET',
+                           data:$("#cleanLogs").serializeArray(),
+                           global:false,
+                           success:function (response) {
+                               var _data = eval("(" + response + ")");
+                               if (_data["statusCode"] == 200){
+                                   search_log();
+                                   alertMsg.correct(_data['message']);
+
+                               }else{
+                                   alertMsg.error(_data['message']);
+                               }
+                           }
+                       });
+            }
+        });
+    }
+
+    function search_log(){
+        $.ajax({
+                   url:'{% url "log_query_prepare_index" log_id %}',
+                   type:'GET',
+{#                   data:$("#queryLog").serializeArray(),#}
+                   global:false,
+                   success:function (data) {
+                       $("#page_export").css("border","0");
+                       $("#page_export").html(data).initUI();
+                   }
+               });
+    }
+    function dmodule_onchange(){
+        $("#dmodule").val($("#module").val());
+    }
+    function devent_onchange(){
+        $("#devent").val($("#event").val());
+    }
+    function dbegintime_onchange(){
+        $("#dbegintime").val($("#begintime").val());
+    }
+    function dendtime_onchange(){
+        $("#dendtime").val($("#endtime").val());
+    }
+</script>
+<div id="page_export">
+
+    <form id="cleanLogs" action="{% url "delete_logs_query_in_prepare" log_id %}" method="post" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone_log_delete)">
+{#        {% add_in_method 'delete'%}#}
+        {% csrf_token %}
+        <input type="hidden" id="dmodule" name="module" value="{{module}}" />
+        <input type="hidden" id="devent" name="event" value="{{event}}" />
+        <input type="hidden" id="dbegintime" name="begintime" value="{{begintime}}" />
+        <input type="hidden" id="dendtime" name="endtime" value="{{endtime}}" />
+        <input type="hidden" id="d_log_id" name="d_log_id" value="{{ log_id }}"/>
+    </form>
+
+
+    <div class="pageHeader">
+
+        <form id="queryLog" name="queryLog" action="{% url "delete_logs_query_in_prepare" log_id %}" method="post" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone_log_delete)">
+            {% csrf_token %}
+            <div class="searchBar">
+                <div class="searchContent">
+                    <ul>
+                        <li style="width: auto;float: left;">
+                            <div class="searchLeft">{% trans "Log Module" %}:</div>
+                            <div class="searchRight">
+                                <select id = "module" name="module" style="width: 160px;" onchange="dmodule_onchange();">
+                                    <option value="">{% trans "---select---" %}</option>
+                                    {% for key,value in module_choices %}
+                                        <option value="{{ key }}" {% if key == module %}selected{% endif %}>{{ value }}</option>
+                                    {% endfor %}`
+                                </select>
+                            </div>
+                        </li><li style="width: auto;float: left;">
+                        <div class="searchLeft">{% trans "Begin Time" %}:</div>
+                        <div class="searchRight">
+                            <input id="begintime" type="text" name="begintime"  onchange="dbegintime_onchange();" class="date" value="{{ begintime }}" readonly="" style="width: 160px;"/>
+                        </div>
+                    </li>
+                        <li style="width: auto;clear: both;">
+                            <div class="searchLeft">{% trans "Event" %}:</div>
+                            <div class="searchRight">
+                                <select id="event" name="event" style="width: 160px;"  onchange="devent_onchange();">
+                                    <option value="">{% trans "---select---" %}</option>
+                                    {% for key,value in event_choices %}
+                                        <option value="{{ key }}" {% if key == event %}selected{% endif %}>{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </li><li style="width: auto;float: left;">
+                        <div class="searchLeft">{% trans "End Time" %}:</div>
+                        <div class="searchRight">
+                            <input id="endtime"  type="text" name="endtime" class="date"   onchange="dendtime_onchange();" value="{{ endtime }}" readonly="" style="width: 160px;"/>
+                        </div>
+                    </li><li style="width: auto;float: right;">
+                        <div class="subBar">
+                            <ul>
+
+                                <li>
+                                    <div class="buttonActive">
+
+
+                                        <div class="buttonContent">
+                                            <button type="submit" value="submit">
+                                                {% trans "Clean All Logs" %}</button></div>
+
+{#                                        <a  width="650" height="330" onclick="submitFormPrepare()" id="delete_a" tmask="true">#}
+{#                                            <span>{% trans "Clean All Logs" %}</span>#}
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="pageContent listContent">
+        <table class="table" width="100%" layoutH="130">
+            <thead>
+            <tr>
+                <th>{% trans 'Log Module' %}</th>
+                <th>{% trans 'Event' %}</th>
+                <th>{% trans 'Created' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Action' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for log in page_obj.object_list %}
+                {% if 'true' == log.is_primary  %}
+                    <tr  style="background: #BFB8B8">
+                        <td>{% if  log.module == '' %}{{ log.module }}{% else %}{% trans log.module %}{% endif %} </td>
+                        <td>{% if  log.module == '' %}{{ log.event }}{% else %}{% trans log.event %}{% endif %}</td>
+                        <td>{{ log.create_at }}</td>
+                        <td {% if log.status != '200' and log.status != '302' %}style="color: #ff0000"{% endif %}>{% if log.status == '200' or log.status == '302' %}{% trans 'Success' %}{% else %}{% trans 'Fail' %}{% endif %}</td>
+                        <td>
+                            {% if log.uuid %}
+                                <a target="dialog" href="{% url "delete_log_form_in_prepare" log.uuid %}" tmask="true" width="250" height="150">{% trans 'Del' %}</a>
+                                <a target="dialog" href="{% url "get_log_detail_in_prepare" log.uuid %}">{% trans 'Detail' %}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td>{% if  log.module == '' %}{{ log.module }}{% else %}{% trans log.module %}{% endif %} </td>
+                        <td>{% if  log.module == '' %}{{ log.event }}{% else %}{% trans log.event %}{% endif %}</td>
+                        <td>{{ log.create_at }}</td>
+                        <td {% if log.status != '200' and log.status != '302' %}style="color: #ff0000"{% endif %}>{% if log.status == '200' or log.status == '302' %}{% trans 'Success' %}{% else %}{% trans 'Fail' %}{% endif %}</td>
+                        <td>
+                            {% if log.uuid %}
+                                <a target="dialog"   href="{% url "delete_log_form_in_prepare" log.uuid %}" tmask="true" width="250" height="150">{% trans 'Del' %}</a>
+                                <a target="dialog" href="{% url "get_log_detail_in_prepare" log.uuid %}">{% trans 'Detail' %}</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+
+
+        </table>
+        <div class="panelBar">
+            <div class="pages">
+                <span>{% trans 'Display' %}  </span>
+                <select class="combox" name="numPerPage" onchange="dialogPageBreak({numPerPage:this.value})">
+                    <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                    <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                    <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                    <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                    <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+                </select>
+                <span> {% trans 'records' %}，{% trans 'total' %}  {{page_obj.paginator.count}}  {% trans 'records' %}</span>
+            </div>
+            <div class="pagination" targetType="dialog" totalCount="{{page_obj.paginator.count}}" numPerPage="{{page_obj.paginator.per_page}}" pageNumShown="{{ page_obj.paginator.num_pages }}" currentPage="{{ page_obj.number }}"></div>
+        </div>
+        {#    <div class="panelBar">#}
+        {#        <div class="pages">#}
+        {#            <span>{% trans 'Display' %}  </span>#}
+        {#            <select class="combox" name="numPerPage" onchange="dialogPageBreak({numPerPage:this.value})">#}
+        {#                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>#}
+        {#                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>#}
+        {#                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>#}
+        {#                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>#}
+        {#                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>#}
+        {#            </select>#}
+        {#            <span> {% trans 'Records' %}，{% trans 'Total' %}  {{ page_obj.paginator.count }}  {% trans 'Records' %}</span>#}
+        {#        </div>#}
+        {#        <div class="pagination" targetType="dialog" totalCount="{{ page_obj.paginator.count }}"#}
+        {#             numPerPage="  {{ page_obj.paginator.per_page }}" pageNumShown="{{ page_obj.paginator.num_pages }}"#}
+        {#             currentPage="{{ page_obj.number }}"></div>#}
+        {##}
+        {##}
+        {#    </div>#}
+    </div>
+</div>

@@ -1,0 +1,77 @@
+{% load i18n %}
+{% load dashboard %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript">
+    var image=window.setTimeout("image_ajax_value()", 5000);
+
+    function image_ajax_value() {
+        $.ajax({
+            url:'{% url "create_image_status" uuid  %}',
+            type:'GET',
+            data:'json',
+            global:false,
+            success:function (response) {
+                var _data = eval("(" + response + ")");
+                var status = _data["status"];
+                var image_checkSum = _data["image_checkSum"];
+                var instance_checkSum = _data["instance_checkSum"];
+                var html_refresh = "<div class='status_loading'></div>";
+                var html_1 = "<label style='width: 500px'>"+image_checkSum+"</label>";
+                var html_2 = "<label style='width: 500px'>"+instance_checkSum+"</label>";
+                $("#image_status_id").html(html_1);
+                $("#launch_status_id").html(html_2);
+                if (status == '4') {
+                    var instance_id=_data['instance_id'];
+                    $("#image_instance_id").val(instance_id);
+                    $.get("image_template_manage/images/instance/"+instance_id+"/search_status/",function(data){
+                       $("#launch_image_remote_id").html(data).initUI();
+                        $("#launch_image_remote_id > div ").height($("#launch_image_remote_id").height());
+                    });
+
+                    window.clearTimeout(image);
+
+                }
+                else {
+                    if(status == '1'){
+                        $("#image_status_id").html(html_refresh+html_1);
+                        $("#launch_status_id").html(html_2);
+                    }
+
+                    if(status == '3'){
+                        $("#image_status_id").html(html_1);
+                        $("#launch_status_id").html(html_refresh+html_2);
+                    }
+
+                    if(status == '2' || status == '3' || status == '1'){
+                        image=window.setTimeout("image_ajax_value()", 5000);
+                    }
+
+                    if ( status != '1' && status != '2' && status != '3'){
+                        window.clearTimeout(image);
+                    }
+
+                }
+            }
+        });
+    }
+
+</script>
+
+<div class="pageFormContent" id="launch_image_remote_id" layouth="0">
+    <div style="padding-left: 30px; height: 100%; width: 100%" id="launch_img_ins_status">
+
+        <div class="unit" id="image_status_id">
+            <div class='status_loading'></div>
+            <label style="width: 180px"></label>
+        </div>
+        <br/>
+
+        <div class="unit" id="launch_status_id">
+            <div class='status_loading'></div>
+            <label style="width: 180px"></label>
+        </div>
+    </div>
+    <input type="hidden" name="instance_id"  id="image_instance_id"/>
+</div>
+
+

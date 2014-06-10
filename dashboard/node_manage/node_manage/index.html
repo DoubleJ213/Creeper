@@ -1,0 +1,127 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+<form id="pagerForm" action="{% url "get_node_index" %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{page_obj.paginator.per_page}}" />
+</form>
+
+<div class="pageContent listContent">
+    <script lang="text/javascript">
+        var node_manage_cache = {};
+
+        function loadCache() {
+            $.each($("#node_table").find("tbody > tr"), function (i, row) {
+                var id = $(row).attr("id").substring(5);
+                node_manage_cache[id] = $(row).find("td:eq(2)").text();
+            });
+            $.ajax({
+                url: '{% url "get_host_metadata" %}',
+                global:false,
+                dataType:'json',
+                success:function (response) {
+                    var temp = response;
+                    for (var key in node_manage_cache) {
+                        var ip = node_manage_cache[key];
+                        if (response[ip]) {
+                            var id = response[ip]['id'];
+                            node_manage_cache[id] = key;
+                        }
+                    }
+                    initialize();
+                },
+                error:DWZ.ajaxError
+            });
+        }
+
+        function initialize() {
+            var _url = '{% url "get_all_hosts_status" %}';
+            $.ajax({
+                url:_url,
+                global:false,
+                dataType:'json',
+                success:function (response) {
+                    for (var key in response) {
+                        var uuid = node_manage_cache[parseInt(key)];
+                        if (!uuid) { continue; }
+                        var text = null;
+                        if (response[key] == 'online') {
+                            text = "{% trans 'online' %}"
+                        } else {
+                            text = "{% trans 'offline' %}"
+                        }
+                        $("#node_" + uuid + " > td:eq(5)").text(text);
+                    }
+                },
+                error: DWZ.ajaxError
+            });
+        }
+
+        $(document).ready(function () {
+            loadCache();
+            var navTabId = "{% trans 'Foundation Manage' %}";
+            Timer.submit(navTabId, initialize);
+        });
+
+    </script>
+    <div class="panelBar">
+        <ul class="toolBar">
+            {% permission 'Add Node' %}
+            <li><a class="add" target="dialog"  href="{% url "create_node" %}" tmask="true"><span>{% trans "Add Node" %}</span></a></li>
+            {% endpermission %}
+        </ul>
+    </div>
+    <table class="table" width="100%" layoutH="75" id="node_table">
+        <thead>
+        <tr>
+            <th>{% trans "Sequence Number" %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'IP' %}</th>
+            <th>{% trans 'Node type' %}</th>
+            <th>{% trans 'Created_at' %}</th>
+            <th>{% trans 'State' %}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+                    {% for node in page_obj.object_list %}
+                        <tr id="node_{{ node.uuid }}">
+                            <td align="center">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                            <td>{{ node.name }}</td>
+                            <td>{{ node.ip }}</td>
+                            <td>{% trans node.type %}</td>
+                            <td>{{ node.created_at | datetime_from_utctime }}</td>
+                            <td><div class="status_loading"></div> {{ node.is_staff }}</td>
+                            <td>
+                                {% permission 'Delete Node' %}
+                                {% if node.type != 'control_node' %}
+                                <a target="dialog" title="{% trans 'Delete' %}" href="{% url "delete_node_form" node.uuid %}" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/delete.png" title="{% trans 'Delete' %}"/>
+                                </a>
+                                {% endif %}
+                                {% endpermission %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+        </tbody>
+    </table>
+    <div class="panelBar">
+        <div class="pages">
+            <span>{% trans 'Display' %}  </span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+            </select>
+            <span> {% trans 'records' %}，{% trans 'total' %}  {{page_obj.paginator.count}}  {% trans 'records' %}</span>
+        </div>
+        <div class="pagination" targetType="navTab" totalCount="{{page_obj.paginator.count}}" numPerPage="  {{page_obj.paginator.per_page}}" pageNumShown="{{ page_obj.paginator.num_pages }}" currentPage="{{ page_obj.number }}"></div>
+
+
+
+    </div>
+</div>

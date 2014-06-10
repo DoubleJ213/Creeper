@@ -1,0 +1,19 @@
+{% load i18n %}
+<h1><a href="{% url "authorize_logout" %}">登出</a></h1>
+<h1><a href="{% url "get_login_view" %}">返回功能列表</a></h1>
+{% trans 'image_template manage' %}
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+        {% endfor %}
+    </ul>
+{% endif %}
+<br/>
+<br/>
+<a href="{% url "create_flavor_form" %}">创建虚拟硬件模板</a><br/><br/>
+{% for flavor in flavors %}
+    <a href="{% url "get_flavor_detail" flavor.id %}">{{ flavor.name }}</a><br/><br/>
+{% endfor %}
+

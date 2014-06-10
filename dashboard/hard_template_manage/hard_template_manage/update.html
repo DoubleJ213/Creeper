@@ -1,0 +1,63 @@
+{% load i18n %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "update_flavor" flavor_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+
+        <div class="pageFormContent" layouth="58">
+
+            <div class="unit">
+                <label>
+                    ID：</label>
+                <input readonly="readonly" type="text" name="flavor_id" size="30"  value ={{ form.fields.flavor_id.initial}} />
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+                <input type="text" name="name" size="30" minlength="4" maxlength="20" class="required" value ={{ form.fields.name.initial}} />
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'VCPUs' %}：</label>
+                <input type="text" name="vcpus" size="30" minlength="1" maxlength="10" class="required number" value ={{ form.fields.vcpus.initial}} />
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Memory MB' %}：</label>
+                <input type="text" name="memory_mb" size="30" minlength="1" maxlength="10" class="required number" value ={{ form.fields.memory_mb.initial}} />
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Root Disk GB' %}：</label>
+                <input type="text" name="disk_gb" size="30" minlength="1" maxlength="10" class="required number" value ={{ form.fields.disk_gb.initial}} />
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Ephemeral Disk GB' %}：</label>
+                <input type="text" name="eph_gb" size="30" minlength="1" maxlength="10" class="required number" value ={{ form.fields.eph_gb.initial}} />
+            </div>
+
+
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

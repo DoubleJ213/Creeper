@@ -1,0 +1,126 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=7"/>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //ajax
+        var item_name = ['cores','ram','instances','gigabytes','volumes','floating_ips'];
+        var div_name = ['cores_id','ram_id','instances_id','gigabytes_id','volumes_id','floating_ips_id'];
+        var unit_name = ['{% trans "NUMBER" %}','MB','{% trans "NUMBER" %}','GB','{% trans "NUMBER" %}','{% trans "NUMBER" %}'];
+        var item_data = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+        ];
+        var item_data_used = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+        ];
+        var node_name = [];
+        var title_name = ['{% trans "VCPU" %}','{% trans "MEM" %}','{% trans "Instance Num" %}','{% trans "Disk Volume" %}','{% trans "Disk Num" %}','{% trans "Floating IP" %}'];
+        $.ajax({
+            type:"GET",
+            url:"{% url "get_static_resource" "project" %}",
+            dataType:"json",
+            global:false,
+            async:false,
+            success:function (data) {
+                $.each(
+                        data, function (i, item) {
+                            node_name.push(item['project_name']);
+                            for (var j = 0, len = item_name.length; j < len; j++) {
+                                item_data[j].push(item[item_name[j]]);
+                                item_data_used[j].push(item[item_name[j]+'_used']);
+                            }
+
+                        }
+                );
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                DWZ.ajaxError(xhr, ajaxOptions, thrownError);
+            }
+        });
+
+        function set_chart(node_name, div_name, unit_name, title, item_data, item_data_used) {
+
+            var chart;
+            chart = new Highcharts.Chart({
+                chart:{
+                    renderTo:div_name,
+                    defaultSeriesType:'column',
+                    margin:[ 50, 50, 100, 80]
+                },
+
+                title:{
+                    text:title
+                },
+                xAxis:{
+                    categories:node_name,
+                    labels:{
+                        rotation:-45,
+                        align:'right',
+                        style:{
+                            font:'normal 13px Verdana, sans-serif'
+                        }
+                    }
+                },
+                yAxis:{
+                    min:0,
+                    minPadding: 1,
+                    maxPadding: 1,
+                    title:{
+                        text:unit_name
+                    }
+                },
+                legend:{
+                    layout: 'vertical',
+                    backgroundColor: '#FFFFFF',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    x: 90,
+                    y: 15
+                },
+                tooltip:{
+                    formatter:function () {
+                        return '<b>' + this.x + '</b><br/>' +
+                                '{% trans "Data" %}: ' + Highcharts.numberFormat(this.y, 1);
+                    }
+                },
+                series:[
+                    {
+                        name:'{% trans "Quota" %}',
+                        data:item_data
+                    },
+                    {
+                        name: '{% trans "Used" %}',
+                        data: item_data_used
+
+                    }
+                ]
+            });
+
+
+        }
+
+        for (var j = 0, len = item_data.length; j < len; j++) {
+            set_chart(node_name, div_name[j], unit_name[j], title_name[j], item_data[j], item_data_used[j]);
+        }
+    });
+</script>
+
+<div class="pageContent"  layoutH="10">
+    <div id="cores_id" class="chart_view"></div>
+    <div id="ram_id"  class="chart_view"></div>
+    <div id="instances_id"  class="chart_view"></div>
+    <div id="gigabytes_id"  class="chart_view"></div>
+    <div id="volumes_id" class="chart_view"></div>
+    <div id="floating_ips_id"  class="chart_view"></div>
+</div>

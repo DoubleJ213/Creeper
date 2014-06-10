@@ -1,0 +1,385 @@
+{% load i18n %}
+{% load dashboard %}
+
+<style>
+    .quota-dynamic {
+    {#            margin-top: 80px;#}
+        position: absolute;
+{#        top: 70px;#}
+        right: 10px;
+    }
+
+    .right {
+        float: left;
+        width: 44%;
+    }
+    .quota_title {
+        color: rgb(153, 153, 153);
+        padding-bottom: 0px;
+        margin-bottom: 8px;
+    }
+    .clearfix {
+    }
+    .quota_bar {
+        height: 15px;
+        margin: 11px 0 0 8px;
+    }
+    .progress_bar {
+        height: 100%;
+        width: 100%;
+        border: 1px solid #CCC;
+        background-color: #CCC;
+    }
+    .progress {
+        overflow: hidden;
+        height: 18px;
+        margin-bottom: 18px;
+        background-color: rgb(247, 247, 247);
+        background-image: -moz-linear-gradient(center top , rgb(245, 245, 245), rgb(249, 249, 249));
+        background-repeat: repeat-x;
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1) inset;
+        border-radius: 4px 4px 4px 4px;
+    }
+    .progress-success.bar {
+        background-color: rgb(94, 185, 94);
+        background-image: -moz-linear-gradient(center top , rgb(98, 196, 98), rgb(87, 169, 87));
+        background-repeat: repeat-x;
+    }
+    .progress .bar {
+        width: 0%;
+        height: 18px;
+        color: rgb(255, 255, 255);
+        font-size: 12px;
+        text-align: center;
+        text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+        background-color: rgb(14, 144, 210);
+        background-image: -moz-linear-gradient(center top , rgb(20, 155, 223), rgb(4, 128, 190));
+        background-repeat: repeat-x;
+        box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+        -moz-box-sizing: border-box;
+        transition: width 0.6s ease 0s;
+    }
+    .progress_bar_selected {
+        background-color: rgb(71, 144, 174);
+        width: 0px;
+    }
+    .progress_bar_fill, .progress_bar_selected {
+        height: 100%;
+        float: left;
+    }
+    .progress_bar_fill.progress-warning.bar {
+        background-color: rgb(137, 137, 137);
+        background-image: -moz-linear-gradient(center top , rgb(153, 153, 153), rgb(51, 51, 51));
+        background-repeat: repeat-x;
+    }
+    .progress .bar {
+        width: 0%;
+        height: 18px;
+        color: rgb(255, 255, 255);
+        font-size: 12px;
+        text-align: center;
+        text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+        background-color: rgb(14, 144, 210);
+        background-image: -moz-linear-gradient(center top , rgb(20, 155, 223), rgb(4, 128, 190));
+        background-repeat: repeat-x;
+        box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+        -moz-box-sizing: border-box;
+        transition: width 0.6s ease 0s;
+    }
+    .progress_bar_fill {
+        background-color: rgb(102, 102, 102);
+    }
+    .progress_bar_fill, .progress_bar_selected {
+        height: 100%;
+        float: left;
+    }
+
+    .cp{
+        width:auto;
+        float:right;
+        position: relative;
+        margin: 0px;
+    }
+    .unit {
+        width: 90%;
+    }
+    .unit input{
+        width: 60px;
+    }
+
+    span{
+        margin-left:-200px;z-index:2;margin-top:20px;
+    }
+
+
+</style>
+<script type="text/javascript">
+    $(document).ready(function(){
+        var form = $("#project_quotas_action_id");
+        form.attr("action","{% url "update_project_quotas_action_index" tenant_id tenant_obj_id %}");
+        form.unbind("submit");
+        form.bind("submit", function(){
+
+            var quotas_check =  quotas_action_submit();
+            if (quotas_check){
+                return validateCallback(this, dialogAjaxDone_quotas);
+            }else{
+                return false;
+            }
+
+        });
+    });
+    function dialogAjaxDone_quotas(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                $.pdialog.closeCurrent();
+            }
+        }
+    }
+    function quotas_action_submit(){
+        var metadata_items = $("#metadata_items").val();
+        var injected_files = $("#injected_files").val();
+        var injected_file_content_bytes = $("#injected_file_content_bytes").val();
+        var cores = $("#cores").val();
+        var instances = $("#instances").val();
+        var volumes = $("#volumes").val();
+        var gigabytes = $("#gigabytes").val();
+        var ram = $("#ram").val();
+        var floating_ips = $("#floating_ips").val();
+        var fixed_ips = $("#fixed_ips").val();
+        var security_groups = $("#security_groups").val();
+        var security_group_rules = $("#security_group_rules").val();
+
+        if(isNaN(metadata_items)){
+            alertMsg.error('{% trans 'Metadata Items format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(injected_files)){
+            alertMsg.error('{% trans 'Injected Files format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(injected_file_content_bytes)){
+            alertMsg.error('{% trans 'Injected File Content Bytes format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(cores)){
+            alertMsg.error('{% trans 'VCPUs format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(instances)){
+            alertMsg.error('{% trans 'Instances format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(gigabytes)){
+            alertMsg.error('{% trans 'Gigabytes format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(ram)){
+            alertMsg.error('{% trans 'RAM format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(volumes)){
+            alertMsg.error('{% trans 'Volumes format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(floating_ips)){
+            alertMsg.error('{% trans 'Floating IPs format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(fixed_ips)){
+            alertMsg.error('{% trans 'Fixed Ips format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(security_groups)){
+            alertMsg.error('{% trans 'Security Groups format wrong!' %}');
+            return false;
+        }
+
+        if(isNaN(security_group_rules)){
+            alertMsg.error('{% trans 'Security Group Rules format wrong!' %}');
+            return false;
+        }
+        return true;
+
+    }
+
+    function input_onBlur(obj,name){
+        if(isNaN($(obj).val())){
+            $(obj).focus();
+            alertMsg.error('{% trans 'Gigabytes format wrong!' %}');
+            return false;
+        }
+
+    }
+</script>
+
+<div class="pageContent" id="quotas_pageContent_id">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" id="project_quotas_action_id" class="pageForm required-validate" style="width: 100%;float: left;" >
+        <input id="tenant_id" name="tenant_id" type="hidden" value="{{ form.fields.tenant_id.initial}}" >
+        <input type="hidden" name="tenant_name" value="{{ form.fields.tenant_name.initial }}" />
+        <div class="pageFormContent" layouth="58">
+            <div style="width:54%;float: left" id="validate_text_id">
+                <div class="unit" style="text-align: center">
+                    <strong style="font-size: 15px">{% trans "Tenant" %}：{{ form.fields.tenant_name.initial}}</strong>
+
+                </div>
+                <div class="unit">
+                    <label>{% trans "Metadata Items" %}：</label>
+                    <input type="text" name="metadata_items" id="metadata_items"  class="required digits" size="30" minlength="1" maxlength="10" value ="{{ form.fields.metadata_items.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "Injected Files" %}：</label>
+                        <input type="text" name="injected_files" id="injected_files" class="required digits" size="30" minlength="1" maxlength="10" value ="{{ form.fields.injected_files.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "Injected File Bytes" %}：</label>
+                    <input type="text" name="injected_file_content_bytes" id="injected_file_content_bytes" class="required digits" size="30" minlength="1" maxlength="10" value ="{{ form.fields.injected_file_content_bytes.initial}}" />&nbsp&nbsp&nbsp({% trans "Bytes" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "VCPUs" %}：</label>
+                    <input type="text" name="cores" class="required digits" size="30" id="cores" minlength="1" maxlength="10" value ="{{ form.fields.cores.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "Instances" %}：</label>
+                    <input type="text" name="instances" class="required digits" size="30" id="instances" minlength="1" maxlength="10" value ="{{ form.fields.instances.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "Volumes" %}：</label>
+                    <input type="text" name="volumes" class="required digits" size="30" id="volumes" minlength="1" maxlength="10" value ="{{ form.fields.volumes.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "Disk Volume" %}：</label>
+                    <input type="text" name="gigabytes" id="gigabytes" class="required digits" size="30" minlength="1" maxlength="10" onkeydown="if (event.keyCode == 13) alert(/^-?\d+\.?\d*$/.test(this.value))" value ="{{ form.fields.gigabytes.initial}}" />&nbsp&nbsp&nbsp({% trans "GB" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "RAM" %}：</label>
+                    <input type="text" name="ram" id="ram" class="required digits" size="30" minlength="1" maxlength="10" value ="{{ form.fields.ram.initial}}" />&nbsp&nbsp&nbsp({% trans "MB" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "Floating IPs" %}：</label>
+                    <input type="text" name="floating_ips" id="floating_ips" size="30" class="required digits" minlength="1" maxlength="10" value ="{{ form.fields.floating_ips.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "Fixed Ips" %}：</label>
+                    <input type="text" name="fixed_ips" id="fixed_ips" class="required digits" size="30" minlength="1" maxlength="10" value ="{{ form.fields.fixed_ips.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "Security Groups" %}：</label>
+                    <input type="text" name="security_groups" id="security_groups" class="required digits" size="30" minlength="1" maxlength="10" value ="{{ form.fields.security_groups.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+                </div>
+                <div class="unit">
+                    <label>{% trans "Security Group Rules" %}：</label>
+                    <input type="text" name="security_group_rules" id="security_group_rules" class="required digits" size="30" minlength="1" maxlength="10" value ="{{ form.fields.security_group_rules.initial}}" />&nbsp&nbsp&nbsp({% trans "number" %})
+                </div>
+            </div>
+            <div class="right quota-dynamic" id="progress_bar_refresh">
+                {% if usages != None %}
+
+                        <div id="quota_metadata_items" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.metadata_items.quota }}"
+                             data-quota-used="{{ usages.metadata_items.used }}" style="height:15px;margin: 33px 0 0 8px">
+                            {% creeper_progress_bar usages.metadata_items.used usages.metadata_items.quota %}
+                        </div>
+
+                        <div id="quota_injected_files" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.injected_files.quota }}"
+                             data-quota-used="{{ usages.injected_files.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.injected_files.used usages.injected_files.quota %}
+                        </div>
+
+                        <div id="quota_injected_file_content_bytes" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.injected_file_content_bytes.quota }}"
+                             data-quota-used="{{ usages.injected_file_content_bytes.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.injected_file_content_bytes.used usages.injected_file_content_bytes.quota %}
+                        </div>
+
+                        <div id="quota_cores" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.cores.quota }}"
+                             data-quota-used="{{ usages.cores.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.cores.used usages.cores.quota %}
+                        </div>
+                    <input type="hidden" name="cores" id="cores_used" value ="{{ usages.cores.used }}" />
+                        <div id="quota_instances" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.instances.quota }}"
+                             data-quota-used="{{ usages.instances.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.instances.used usages.instances.quota %}
+                        </div>
+                    <input type="hidden" name="instances" id="instances_used" value ="{{ usages.instances.used }}" />
+                        <div id="quota_volumes" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.volumes.quota }}"
+                             data-quota-used="{{ usages.volumes.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.volumes.used usages.volumes.quota %}
+                        </div>
+                    <input type="hidden" name="volumes" id="volumes_used" value ="{{ usages.volumes.used }}" />
+                        <div id="quota_gigabytes" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.gigabytes.quota }}"
+                             data-quota-used="{{ usages.gigabytes.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.gigabytes.used usages.gigabytes.quota %}
+                        </div>
+                    <input type="hidden" name="gigabytes" id="gigabytes"  value ="{{ usages.gigabytes.used }}" />
+                        <div id="quota_ram" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.ram.quota }}"
+                             data-quota-used="{{ usages.ram.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.ram.used usages.ram.quota %}
+                        </div>
+                    <input type="hidden" name="ram" id="ram_used" value ="{{ usages.ram.used }}" />
+                        <div id="quota_floating_ips" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.floating_ips.quota }}"
+                             data-quota-used="{{ usages.floating_ips.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.floating_ips.used usages.floating_ips.quota %}
+                        </div>
+                    <input type="hidden" name="floating_ips" id="floating_ips_used" value ="{{ usages.floating_ips.used }}" />
+                        <div id="quota_fixed_ips" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.fixed_ips.quota }}"
+                             data-quota-used="{{ usages.fixed_ips.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.fixed_ips.used usages.fixed_ips.quota %}
+                        </div>
+{#                    <input type="hidden" name="fixed_ips" id="fixed_ips_used" value ="{{ usages.fixed_ips.used }}" />#}
+                        <div id="quota_security_groups" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.security_groups.quota }}"
+                             data-quota-used="{{ usages.security_groups.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.security_groups.used usages.security_groups.quota %}
+                        </div>
+                    <input type="hidden" name="security_groups" id="security_groups_used" value ="{{ usages.security_groups.used }}" />
+                        <div id="quota_security_group_rules" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.security_group_rules.quota }}"
+                             data-quota-used="{{ usages.security_group_rules.used }}" class="quota_bar">
+                            {% creeper_progress_bar usages.security_group_rules.used usages.security_group_rules.quota %}
+                        </div>
+                    <input type="hidden" name="security_group_rules" id="security_group_rules_used" value ="{{ usages.security_group_rules.used }}" />
+
+                    <script type="text/javascript" charset="utf-8">
+                        if(typeof horizon.Quota !== 'undefined') {
+                            horizon.Quota.init();
+                        } else {
+                            addHorizonLoadEvent(function() {
+                                horizon.Quota.init();
+                            });
+                        }
+                    </script>
+                {% else %}
+                    {% trans 'Failed to get agency quotas!' %}
+                {% endif %}
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                <div class="buttonActive">
+                    <div class="buttonContent">
+                        <button type="submit" >{% trans "Submit" %}</button>
+                    </div>
+                </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,303 @@
+{% load i18n %}
+
+<style type="text/css">
+    #id_subnet_name , #id_cidr ,#gateway_ip {
+        background: url("{{ STATIC_URL }}/ui/images/input_bg.png") no-repeat ;
+        border:0;
+        width: 240px;
+        height: 25px;
+    }
+    .divSelect_bg{
+        width: 237px;
+        height: 29px;
+        line-height: 29px;
+        border: 0px solid #add8e6;
+    }
+    .divSelect_bg .select_bg_img {
+        width: 237px;
+        line-height: 29px;
+        float: left;
+        overflow: hidden;
+        background-image: url("{{ STATIC_URL }}/ui/images/box_4.png");
+    }
+
+    .divSelect_select_bg{
+        width: 237px;
+        height: 100px;
+        line-height: 29px;
+        border: 1px solid #e2e2e2;
+        border-top: 0px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: none;
+        background: #ffffff;
+    {#        #background: white;#}
+        position: absolute;
+    {#        #position: relative;#}
+        z-index:1;
+    }
+    .divSelect_select_bg .selectIPVersionOptionClass {
+        width: 237px;
+        height: 20px;
+        line-height: 20px;
+        text-align: left;
+        padding-left: 5px;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .divSelect_select_bg .selectIPVersionOptionClass:hover {
+        background: #bc8f8f;
+
+    }
+
+    .project_description {
+        background: url("{{ STATIC_URL }}/ui/images/box_5.png") no-repeat;
+        width:237px;
+        height: 106px;
+        border: 0;
+    }
+
+    .ins_header1 {
+        width: 215px;
+        float: left;
+        line-height: 24px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .header_pic2 {
+        clear:both;
+        width: 100%;
+        height:70px;
+        background:#d7dcde url('{{ STATIC_URL }}ui/images/instance/3_2.png') no-repeat ;
+        background-position: left center;
+
+    }
+
+</style>
+
+<script type="text/javascript">
+    function onfocusViewHelp(a,divid)
+    {
+        document.getElementById(divid).style.display="block"
+        document.getElementById(divid).style.left = a.offsetLeft+ a.offsetWidth+'px'
+        document.getElementById(divid).style.top = a.offsetTop+'px'
+    }
+
+    function onblurViewHelp(divid)
+    {
+        document.getElementById(divid).style.display="none"
+    }
+
+    function changeGatewayIpEnble(qateway)
+    {
+        o = document.getElementById("gateway_ip");
+        if(qateway.checked == true)
+        {
+
+            if(o.getAttribute("disabled") != "disabled")
+            {
+                o.setAttribute("disabled","disabled");
+            }
+        }
+        else
+        {
+
+            if(o.getAttribute("disabled") == "disabled")
+            {
+                o.removeAttribute("disabled");
+            }
+        }
+    }
+
+    function dialogAjaxDone_sub_net(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                $.get("prepare_manage/prepare/{{ network.tenant_id }}/{{ network.id }}/network_info_list/{{ network_obj_id }}/",function(data){
+                    $("#pageContent_sub_list").html(data).initUI();
+                    {#                               $("#create_sub_net_from_id > div ").height($("#create_sub_net_from_id").height());#}
+                });
+            }
+        }
+    }
+
+    function prepare_create_sub_net(){
+
+        var id_subnet_name = $("#id_subnet_name").val();
+        if (id_subnet_name.length < 2 || id_subnet_name.length > 20){
+            alertMsg.error("{% trans "Subnet name format wrong" %}");
+            return false;
+        }
+
+        var id_cidr = $("#id_cidr").val();
+        if (id_cidr.length.length < 10){
+            alertMsg.error("{% trans "Please select a Network Address" %}");
+            return false;
+        }
+        var ip_version = $("#ip_version").val();
+        if (ip_version.length < 1){
+            alertMsg.error("{% trans "Please select a IP Version" %}");
+            return false;
+        }
+
+    }
+
+    function selectIPVersion(){
+        stopBubble();
+        if($("#selectIPVersionFormat")){
+            if($("#selectIPVersionFormat").css("display") == "none"){
+                $("#selectIPVersionFormat").show();
+            }else{
+                $("#selectIPVersionFormat").hide();
+            }
+        }
+    }
+
+
+    $(document).ready(function(){
+        $(".selectIPVersionOptionClass").click(function(){
+            $("#selectIPVersionFormatText").html($(this).attr("name"));
+            $("#selectIPVersionFormatText").val($(this).attr("value"));
+            $("#ip_version").val($(this).attr("value"));
+
+        });
+        $(document).click(function(){
+            if($("#selectIPVersionFormat").css("display") == "block"){
+                $("#selectIPVersionFormat").hide();
+            }
+        });
+        
+    });
+</script>
+
+<div class="pageContent" id="pageContent_sub_list">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_sub_net_action" network.id network_obj_id %}" id="create_sub_net_from_id" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone_sub_net)">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{network.tenant_id}}">
+        <input type="hidden" name="network_id" id="network_id" value="{{network.id}}">
+        <input type="hidden" name="network_obj_id" id="network_obj_id" value="{{ network_obj_id }}" />
+        {% include 'securitygroup_manage/_create.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div class="header_pic2">
+                <div class="ins_header1" >{% trans 'Create Network' %}</div>
+                <div class="ins_header1" >{% trans 'Create Subnet' %}</div>
+                <div class="ins_header1" >{% trans 'Finish' %}</div>
+            </div>
+            <div style="margin-top: 15px; ">
+                <ul>
+                    <li style="line-height: 23px;font-size:13px;">{% trans "Subnet Info" %}</li>
+                </ul>
+            </div>
+
+            <div class="unit" style="margin-left: 5px;">
+                <label>
+                    {% trans 'Subnet Name' %}：</label>
+                <input type="text" id="id_subnet_name" name="subnet_name"  size="30" minlength="2" maxlength="10" /><span style="color: red; margin-left: -10px;">*</span>
+                <div id="subnetnamehelp" style="color:#FFFFFF;overflow-y:auto;height:25px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.subnet_name.help_text }}</div>
+            </div>
+
+            <div class="unit" style="margin-left: 5px;">
+                <label>
+                    {% trans 'Network Address' %}(CIDR)：</label>
+                <input type="text" id="id_cidr" name="cidr" onfocus="onfocusViewHelp(this,'subnetcidrhelp');" onblur="onblurViewHelp('subnetcidrhelp');" size="40" minlength="2" maxlength="20"  class="required" /><span style="color: red; margin-left: -10px;">*</span>
+                <div id="subnetcidrhelp" style="color:#FFFFFF;overflow-y:auto;height:60px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.cidr.help_text }}</div>
+            </div>
+
+            <div class="unit" style="margin-left: 5px;">
+                <label>{% trans 'IP Version' %}:</label>
+                <div style="width: 238px; float:left;">
+                    <div class="divSelect_bg">
+                        <div id="selectIPVersionFormatText" onclick="selectIPVersion();" class="select_bg_img">&nbsp;{% trans "Please select a IP Version" %}
+                            <input type="hidden" id="flavor_val" class="required"/>
+                        </div>
+                        {#                        <div class="select1right"></div>#}
+                    </div>
+
+                    <div id="selectIPVersionFormat" class="divSelect_select_bg">
+                        {% for key,value in form.fields.ip_version.choices %}
+                            <div class="selectIPVersionOptionClass" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" > {{ value|truncatechars:59 }} </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <input type="hidden" id="ip_version"  name="ip_version" >
+            </div>
+
+            <div class="unit" style="margin-left: 5px;">
+                <label>
+                    {% trans 'Gateway IP' %}(optional)：</label>
+                <input type="text" id="gateway_ip" name="gateway_ip" onfocus="onfocusViewHelp(this,'subnetgatewayiphelp');" onblur="onblurViewHelp('subnetgatewayiphelp');" size="40" minlength="6" maxlength="20"/>
+                <div id="subnetgatewayiphelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.gateway_ip.help_text }}</div>
+            </div>
+
+
+            <div class="unit" style="margin-left: 5px;">
+                <label>
+                    {% trans 'Disable Gateway' %}：</label>
+                <input type="checkbox" name="no_gateway" id="no_gateway" onclick="changeGatewayIpEnble(this)" />
+
+            </div>
+            <span class="error" id="create_project_span" style="display: none"></span>
+            <div>
+                <ul>
+                    <li style="line-height: 23px;font-size: 13px;">{% trans "Subnet Detail" %}</li>
+                </ul>
+            </div>
+            <div class="unit" style="margin-left: 5px;">
+                <label>
+                    {% trans 'Enable DHCP' %}：</label>
+                <input type="checkbox" checked="checked" name="enable_dhcp" id="enable_dhcp">
+            </div>
+
+            <div class="unit" style="margin-left: 5px;">
+                <label>
+                    {% trans 'Allocation Pools' %}：</label>
+                <textarea id="id_allocation_pools" class="project_description" onfocus="onfocusViewHelp(this,'subnetallocationpoolshelp');" onblur="onblurViewHelp('subnetallocationpoolshelp');"  rows="5" cols="30" name="allocation_pools"></textarea>
+                <div id="subnetallocationpoolshelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.allocation_pools.help_text }}</div>
+            </div>
+
+            <div class="unit" style="margin-left: 5px;">
+                <label>
+                    {% trans 'DNS Name Servers' %}：</label>
+                <textarea id="id_dns_nameservers" class="project_description" onfocus="onfocusViewHelp(this,'subnetdnsnameservershelp');" onblur="onblurViewHelp('subnetdnsnameservershelp');"  rows="5" cols="30" name="dns_nameservers"></textarea>
+                <div id="subnetdnsnameservershelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.dns_nameservers.help_text }}</div>
+            </div>
+
+            <div class="unit" style="margin-left: 5px;">
+                <label>
+                    {% trans 'Host Routes' %}：</label>
+                <textarea id="id_host_routes" class="project_description" onfocus="onfocusViewHelp(this,'subnethostroutesshelp');" onblur="onblurViewHelp('subnethostroutesshelp');" rows="5" cols="30" name="host_routes"></textarea>
+                <div id="subnethostroutesshelp" style="color:#FFFFFF;overflow-y:auto;height:75px;width:240px;display:none;position: absolute;background: red" >{{ form.fields.host_routes.help_text }}</div>
+            </div>
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close" onclick="">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

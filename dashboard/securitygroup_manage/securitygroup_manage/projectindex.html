@@ -1,0 +1,326 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#progressBar").css("display","block");
+        $("#background").css("display","block");
+        var treeHtml = "";
+        var userItem = [];
+        $.ajax({
+            type:"GET",
+            url:"{% url "get_securitygroup_projects_menu" %}",
+            dataType:"json",
+            global:false,
+            async:false,
+            success:function (data) {
+                $.each(data, function (i, item) {
+                    treeHtml = treeHtml + "<li>\n";
+                    treeHtml = treeHtml + "<a class=\"level1\">\n";
+                    if(item.project_enabled == true){
+                        treeHtml = treeHtml + "<lable class=\"securitygroup_tree_lable_common\"><img src=\"{{ STATIC_URL }}ui/images/icon/preso_icon_1.png\" class=\"securitygroup_tree_icon_img2\"></lable>\n";
+                        treeHtml = treeHtml + "<lable>";
+                        treeHtml = treeHtml + "<span title=\""+item.project_name+"\" class=\"securitygroup_tree_span_calss\" onclick=\"gotosgUrl('/securitygroup_manage/securitygroup/tenants/"+item.project_id+"/groups/','')\">";
+                        treeHtml = treeHtml + item.project_name;
+                        treeHtml = treeHtml + "</span>";
+                        treeHtml = treeHtml + "</lable>\n";
+                        {% permission 'Add SecurityGroup' %}
+                        treeHtml = treeHtml + "&nbsp;&nbsp;&nbsp;<lable class=\"securitygroup_tree_lable_class\">";
+                        treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/add.gif\" class=\"securitygroup_tree_icon_img\" title=\"{% trans 'Add SecurityGroup' %}\" onclick=\"gotosgUrl('/securitygroup_manage/securitygroup/tenants/"+item.project_id+"/creategroup/','/securitygroup_manage/securitygroup/tenants/"+item.project_id+"/groups/')\">";
+                        treeHtml = treeHtml + "</lable>\n";
+                        {% endpermission %}
+                    }else{
+                        treeHtml = treeHtml + "<lable class=\"securitygroup_tree_lable_common\"><img src=\"{{ STATIC_URL }}ui/images/icon/preso_icon2.png\" class=\"securitygroup_tree_icon_img2\"></lable>\n";
+                        treeHtml = treeHtml + "<lable>";
+                        treeHtml = treeHtml + "<span title=\""+item.project_name+"\" class=\"securitygroup_tree_span_calss\">";
+                        treeHtml = treeHtml + item.project_name;
+                        treeHtml = treeHtml + "</span>";
+                        treeHtml = treeHtml + "</lable>\n";
+                    }
+
+                    treeHtml = treeHtml + "</a>\n";
+                    securitygroupItem = item.project_securitygroup;
+                    var securitygroupItemLen = securitygroupItem.length;
+                    if(securitygroupItemLen > 0){
+                        treeHtml = treeHtml + "<ul>\n";
+                        for(var j=0; j<securitygroupItemLen; j++){
+                            treeHtml = treeHtml + "<li>\n";
+                            treeHtml = treeHtml + "<a class=\"level1\">\n"
+                            treeHtml = treeHtml + "<lable class=\"securitygroup_tree_lable_common\" style=\"margin-top:3px;\"><img src=\"{{ STATIC_URL }}ui/images/icon/security_icon.png\" class=\"securitygroup_tree_icon_img2\"></lable>\n";
+                            treeHtml = treeHtml + "<lable>";
+                            treeHtml = treeHtml + "<span title=\""+securitygroupItem[j].securitygroup_name+"\" class=\"securitygroup_tree_span_calss\" style=\"_width: 140px; max-width: 140px;\" onclick=\"gotosgUrl('/securitygroup_manage/securitygroup/" + securitygroupItem[j].securitygroup_id + "/tenants/" + item.project_id + "/getsecuritygroupinfo/','')\">";
+                            treeHtml = treeHtml + securitygroupItem[j].securitygroup_name;
+                            treeHtml = treeHtml + "</span>";
+                            treeHtml = treeHtml + "</lable>\n";
+                            if(securitygroupItem[j].securitygroup_name !='default')
+                            {
+                                {% permission 'Delete SecurityGroup' %}
+                                treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"securitygroup_tree_lable_class\">";
+                                treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/delete.gif\" class=\"securitygroup_tree_icon_img\" title=\"{% trans 'Delete SecurityGroup' %}\" onclick=\"delsgUrl('/securitygroup_manage/securitygroup/" + securitygroupItem[j].securitygroup_id+"/deletegroupaction/','/securitygroup_manage/securitygroup/tenants/"+item.project_id+"/groups/',1)\">";
+                                treeHtml = treeHtml + "</lable>\n";
+                                {% endpermission %}
+                            }
+                            treeHtml = treeHtml + "</a>\n";
+                            treeHtml = treeHtml + "</li>\n";
+                        }
+                        treeHtml = treeHtml + "</ul>\n</li>\n";
+                    }else{
+                        treeHtml = treeHtml + "</li>\n";
+                    }
+                });
+                $("#ajax_securitygroup_tree").html(treeHtml);
+                var btn_flag = $("#tree_sgbtn_flag").val();
+                if(btn_flag == "1"){
+                    $(".securitygroup_tree_lable_class").each(
+                            function(){
+                                $(this).show();
+                            }
+                    );
+                    $(".securitygroup_tree_icon_img").each(
+                            function(){
+                                $(this).show();
+                            }
+                    );
+                    $("#securitygroup_treeBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_next_icon.png");
+                    $("#securitygroup_treeBtn_id img").attr("title","{% trans 'hide button' %}");
+                }
+                var target_url = $("#securitygroup_target_url").val();
+                if(target_url){
+                    gotosgUrl(target_url,'');
+                    $("#securitygroup_target_url").val('');
+                    $("#progressBar").css("display","none");
+                    $("#background").css("display","none");
+                }else{
+                    $("#progressBar").css("display","none");
+                    $("#background").css("display","none");
+                }
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                $("#securitygroup_tree").parent().parent().html('');
+                DWZ.ajaxError(xhr, ajaxOptions, thrownError);
+            }
+        });
+    });
+
+
+    function gotosgUrl(url,next_url){
+        $("#progressBar").css("display","block");
+        $("#background").css("display","block");
+        $("#securitygroup_target_url").val(next_url);
+        if(url!=null && url!=''){
+            setTimeout(function(){
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    dataType: 'html',
+                    cache: false,
+                    success: function(htmlData){
+                        try{
+                            var obj = JSON.parse(htmlData);
+                            $("#securitygroup_rightDiv").html('').initUI();
+                            if(obj['statusCode'] && obj['statusCode'] == '300'){
+                                var msg = obj['message'];
+                                alertMsg.error(msg);
+                            }
+                        }catch(e){
+                            $("#securitygroup_rightDiv").html(htmlData).initUI();
+                            $("#securitygroup_rightDiv").find('[layoutH]').layoutH();
+                        }
+                        $("#progressBar").css("display","none");
+                        $("#background").css("display","none");
+                    },
+                    error: DWZ.ajaxError
+                });
+            },2000);
+        }else{
+            $("#progressBar").css("display","none");
+            $("#background").css("display","none");
+        }
+    }
+
+    function delsgUrl(url,next_url,flag){
+        $("#progressBar").css("display","block");
+        $("#background").css("display","block");
+        $("#securitygroup_target_url").val(next_url);
+        if(url!=null && url!=''){
+            if(flag == 1){
+                var alertHtml ='{% trans "Are you sure for deleting this security group?" %}';
+                $("#delsgAlert_id").html(alertHtml);
+            }else{
+                var alertHtml = '{% trans "Are you sure for deleting this security group rule?" %}';
+                $("#delsgAlert_id").html(alertHtml);
+            }
+            $("#delsgform_id").attr("action",url);
+            $("#del_securitygroup_Div").css("display","block");
+            $("#progressBar").css("display","none");
+            $("#background").css("display","none");
+{#            $("#securitygroup_rightDiv").html("");#}
+{#            $("#securitygroup_target_url").val("");#}
+        }else{
+            $("#progressBar").css("display","none");
+            $("#background").css("display","none");
+        }
+    }
+
+    function hideDelsgDiv(){
+        $("#del_securitygroup_Div").css("display","none");
+    }
+
+    function showsgBackground(){
+        $("#progressBar").css("display","block");
+        $("#background").css("display","block");
+    }
+
+    function hidesgBackground(){
+        $("#progressBar").css("display","none");
+        $("#background").css("display","none");
+    }
+
+    function securitygroup_switchBtn(){
+        if($("#securitygroup_tree_id").css("display") == "none"){
+            $(".securitygroup_tree_lable_class").each(
+                    function(){
+                        $(this).show();
+                    }
+            );
+            $(".securitygroup_tree_icon_img").each(
+                    function(){
+                        $(this).show();
+                    }
+            );
+            $("#securitygroup_treeBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_next_icon.png");
+            $("#securitygroup_treeBtn_id img").attr("title","{% trans 'hide button' %}");
+            $("#tree_sgbtn_flag").val('1');
+        }else{
+            $(".securitygroup_tree_lable_class").each(
+                    function(){
+                        $(this).hide();
+                    }
+            );
+            $(".securitygroup_tree_icon_img").each(
+                    function(){
+                        $(this).hide();
+                    }
+            );
+            $("#securitygroup_treeBtn_id img").attr("src","{{ STATIC_URL }}ui/images/icon/rnd_br_prev_icon.png");
+            $("#securitygroup_treeBtn_id img").attr("title","{% trans 'show button' %}");
+            $("#tree_sgbtn_flag").val('');
+        }
+
+    }
+    function sec_nextUrl(next_url){
+        if(next_url!=''){
+            $("#securitygroup_target_url").val(next_url);
+        }
+    }
+
+</script>
+<style>
+    .securitygroup_tree_lable_class{
+        width: auto;
+        height: 12px;
+        line-height: 12px;
+        display: none;
+    }
+    .securitygroup_tree_icon_img{
+        width: 12px;
+        height: 12px;
+        display: none;
+        margin-top: 4px;
+    }
+    .securitygroup_tree_icon_img2{
+        width: 12px;
+        height: 12px;
+    }
+    .securitygroup_tree_lable_common{
+        line-height: 12px;
+        font-size: 12px;
+        float:left;
+        margin-top: 5px;
+        margin-right: 5px;
+    }
+    .securitygroup_tree_span_calss{
+        float:left;
+        width: auto;
+        _width: 160px;
+        max-width: 160px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+</style>
+
+<form id="pagerForm" action="{% url "get_project_list" %}">
+    {% add_in_method 'get'%}
+    {% csrf_token %}
+</form>
+
+<div class="pageContent">
+    <div class="tabsContent">
+        <div id="securitygroup_tree" layoutH="12" style="float: left;margin: 5px 0px 5px 5px;display:
+                block;overflow: auto;width: 240px;border: 1px solid rgb(204, 204, 204);line-height: 21px;">
+            <h2 style="width:230px; color: rgb(24, 49, 82); margin-left: 6px; margin-top: 5px; line-height: 14px;">
+                <lable style="float: left;">
+                    <div style="height: 16px; line-height: 16px; font-size: 12px;">
+                        {% trans "Security Groups" %}
+                    </div>
+                </lable>
+                <lable id="securitygroup_tree_id" style="float: left;" class="securitygroup_tree_lable_class">
+                </lable>
+                <lable style="float:right;">
+                    <div id="securitygroup_treeBtn_id" style="cursor: pointer; width:20px; line-height: 12px; font-size: 12px;">
+                        <img src="{{ STATIC_URL }}ui/images/icon/rnd_br_next_icon.png" title="{% trans "show button" %}" style="margin-top: -2px;" class="securitygroup_tree_icon_img2" onclick="securitygroup_switchBtn()">
+                    </div>
+                </lable>
+            </h2>
+
+            <ul id="ajax_securitygroup_tree" class="tree">
+            </ul>
+        </div>
+        <div id="securitygroup_rightDiv"  style=" width:auto; height: 100%; margin-left:250px; padding-top: 4px;">
+
+
+        </div>
+        <div id="del_securitygroup_Div" style="display: none">
+            <div style="top: 100px; left: 50%; z-index: 44; height: 150px; width: 250px; margin-left: -125px;" class="dialog">
+                <div oncut="return false;" onpaste="return false;" oncopy="return false;" onselectstart="return false;" class="dialogHeader">
+                    <div class="dialogHeader_r">
+                        <div class="dialogHeader_c">
+                            <a href="#close" class="close" onclick="hideDelsgDiv()">close</a>
+                            <h1>{% trans "Delete" %}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="dialogContent layoutBox unitBox" style="height: 111px;">
+                    <table align="center" height="100%" width="100%" valign="middle">
+                        <tbody>
+                        <tr>
+                            <td id="delsgAlert_id" align="center">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <form id="delsgform_id" onsubmit="return validateCallback2(this,dialogAjaxDone);" method="post" action="">
+                                    {% add_in_method 'delete'%}
+                                    {% csrf_token %}
+                                    <input type="submit" value="{% trans "Submit" %}">
+                                    <input type="button" value="{% trans "Cancel" %}" onclick="hideDelsgDiv()">
+                                </form>
+                            </td>
+                        </tr>
+                        </tbody></table></div>
+                <div class="dialogFooter"><div class="dialogFooter_r"><div class="dialogFooter_c"></div></div></div>
+                <div tar="nw" class="resizable_h_l"></div>
+                <div tar="ne" class="resizable_h_r"></div>
+                <div tar="n" class="resizable_h_c"></div>
+                <div style="height: 300px;" tar="w" class="resizable_c_l"></div>
+                <div style="height: 300px;" tar="e" class="resizable_c_r"></div>
+                <div tar="sw" class="resizable_f_l"></div>
+                <div tar="se" class="resizable_f_r"></div>
+                <div tar="s" class="resizable_f_c"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+{% load i18n %}
+{% load dashboard %}
+
+
+<script type="text/javascript">
+    function volume_delete(volume_type_id,volume_type_name){
+        $("input[name=volume_type_id]").val(volume_type_id);
+        $("input[name=volume_type_name]").val(volume_type_name);
+        alertMsg.confirm("{% trans "Are you sure to delete this volume type?" %}",{
+            okCall:function () {
+                $("#volume_type_form").submit();
+            }
+        });
+    }
+
+
+    function volume_type_dialogAjaxDone(json){
+        dialogAjaxDone(json);
+        if(json.statusCode == DWZ.statusCode.ok){
+            $("#volume_type_"+$("input[name=volume_type_id]").val()).remove();
+        }
+    }
+</script>
+
+
+<form action="{% url "volume_type_delete_action" %}" method="post" id="volume_type_form" onsubmit="return iframeCallback(this,volume_type_dialogAjaxDone)">
+    {% add_in_method "delete" %}
+    {% csrf_token %}
+    <input type="hidden" name="volume_type_id" value="">
+    <input type="hidden" name="volume_type_name" value="">
+</form>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="panelBar">
+        <ul class="toolBar">
+
+            <li><a class="add" target="dialog" width="500" height="330" href="{% url "create_volume_type_form" %}"
+                   tmask="true"><span>{% trans "add" %}</span></a>
+            </li>
+        </ul>
+    </div>
+        <div class="pageFormContent" layoutH="77">
+            <table class="table" width="100%">
+                <thead>
+                <tr>
+                    <th>{% trans "Volume Type Name" %}</th>
+                    <th>{% trans "Action" %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for volume_type in volume_type_list %}
+                    <tr id="volume_type_{{ volume_type.id }}">
+                        <td>{{ volume_type.name|truncatechars:30  }}</td>
+                        <td>
+                            <a  href="javascript:void(0)"
+                               tmask="true" width="300" height="200" onclick="volume_delete('{{ volume_type.id }}','{{ volume_type.name }}')">{% trans "delete" %}</a></td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+</div>

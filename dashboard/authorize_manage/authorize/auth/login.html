@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>北信源云智能管理系统</title>
+<link href="themes/css/login.css" rel="stylesheet" type="text/css" />
+
+
+</head>
+<body>
+<form action="{% url "login" %}" method="POST">
+<div id="login_wrap">
+<div id="logo_wrap">
+    <div id="logo_pic" style="padding-top:170px; margin-right:200px;">
+    <!--<img src="/images/logo.png" />-->
+    </div>
+</div>
+
+<div id="login_submit">
+<div class="submit">
+<span style="color:#666; margin-rgiht:15px;">帐号&nbsp;&nbsp;</span><input id="Text2" class="input_style" type="text" />
+</div>
+<div class="submit">
+<span style="color:#666;margin-rgiht:15px;">登录&nbsp;&nbsp;</span><input id="Text1" class="input_style" type="text" />
+</div>
+<div class="submit">
+    {% include 'authorize/auth/_login.html' %}
+<a href="index.html">
+<div >
+    <input class="green_btn" style="height:15px; float:left; line-height:15px; margin-left:35px; width:30px;" type="submit" value="登录" />
+</div>
+</a>
+</div>
+</div>
+</div>
+<div id="footer">
+
+Copyright © 2013 北京北信源软件股份有限公司 All Rights Reserved.
+</div>
+
+</form>
+</body>
+</html>

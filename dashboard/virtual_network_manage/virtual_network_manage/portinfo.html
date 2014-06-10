@@ -1,0 +1,143 @@
+{% load i18n %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% csrf_token %}
+    <div class="pageFormContent" layouth="58" >
+        <div class="panelBar">
+            <ul>
+                <li style="line-height: 23px;">{% trans "Port Overview" %}</li>
+        	</ul>
+        </div>
+
+
+         <div class="unit">
+            <label>{% trans 'Name' %}:</label>
+            <label style="width: 130px;">
+                 {% if port.name %}
+                     {{ port.name}}
+                 {% else %}
+                     {% trans 'None' %}
+                 {% endif %}
+            </label>
+         </div>
+         <div class="unit">
+              <label>{% trans 'Network' %}:</label>
+              <label style="width: 130px;">
+{#                  <a  href="#" style="line-height: 21px;">#}
+{#                      onclick="gotonwUrl('/virtual_network_manage/network/{{port.network_id }}/tenants/{{ network.tenant_id }}/getnetworkinfo/','')">#}
+                     {% if network.name == 'None'%}
+                         {% trans 'None' %}
+                     {% else %}
+                         {{ network.name}}
+                     {% endif %}
+{#                  </a>#}
+              </label>
+         </div>
+         <div class="unit">
+            <label>{% trans 'Tenant' %}:</label>
+            <label style="width: 130px;">
+                 {% for id,name in tenants %}
+                     {% if port.tenant_id == id  %}
+                         {{ name }}
+                     {% endif %}
+                 {% endfor %}
+            </label>
+         </div>
+
+         <div class="unit">
+            <label>{% trans "Fixed IP:" %}</label>
+            <label  style="display:inline-block;width:550px">
+                 {% if port.fixed_ips.items|length > 1 %}
+                     {% for ip in port.fixed_ips %}
+                         <span style="width: 150px;"><b>{% trans "IP address:" %}</b> {{ ip.ip_address }},</span>
+                         <b>{% trans "Subnet ID:" %}</b> {{ ip.subnet_id }}<br>
+                     {% endfor %}
+                 {% else %}
+                     "None"
+                 {% endif %}
+            </label>
+         </div>
+
+         <div class="unit">
+            <label>
+                {% trans "Mac Address:" %}</label>
+            <label>
+                 {% if port.mac_address == 'None'%}
+                     {% trans 'None' %}
+                 {% else %}
+                     {{ port.mac_address}}
+                 {% endif %}
+            </label>
+         </div>
+
+         <div class="unit">
+            <label>{% trans "Status" %}:</label>
+             <label>
+                 {% if port.status == 'ACTIVE'%}
+                     {% trans 'ACTIVE' %}
+                 {% else %}
+                     {% trans 'PAUSED' %}
+                 {% endif %}
+             </label>
+         </div>
+
+         <div class="unit">
+            <label>{% trans "Admin State" %}:</label>
+             <label>
+                 {% if port.admin_state == 'UP'%}
+                     {% trans 'UP' %}
+                 {% else %}
+                     {% trans 'DOWN' %}
+                 {% endif %}
+             </label>
+         </div>
+         <div class="unit">
+             <div class="panelBar">
+                 <ul>
+                     <li style="line-height: 23px;">{% trans "Attached Device" %}</li>
+                 </ul>
+             </div>
+         </div>
+             {% if port.device_id|length > 1 or port.device_owner %}
+                 <div class="unit">
+                 <label>{% trans "Device Owner:" %}</label>
+                 <label style="display:inline-block;width:400px">
+
+                     {% if port.device_owner == 'compute:None'%}
+                         {% trans 'compute:None' %}
+                     {% elif  port.device_owner == 'network:dhcp'%}
+                         {% trans 'network:dhcp' %}
+                     {% elif  port.device_owner == 'network:router_interface'%}
+                         {% trans 'network:router_interface' %}
+                     {% else %}
+                         {{ port.device_owner }}
+                     {% endif %}
+
+                 </label>
+                 </div>
+                 <div class="unit">
+                 <label>{% trans "Device ID" %}:</label>
+                 <label style="width: 500px;">{{ port.device_id|default:"-" }}</label>
+                 </div>
+             {% else %}
+                 <label><b>No attached device</b></label>
+             {% endif %}
+         </div>
+    </div>
+    <div class="formBar">
+        <ul>
+            <li>
+                <div class="button">
+                    <div class="buttonContent">
+{#                        <button type="button" class="close" onclick="gotonwUrl('/virtual_network_manage/network/{{ network.tenant_id }}/{{port.network_id }}/getnetworkinfo/','')">#}
+{#                            {% trans "Cancel" %}#}
+{#                        </button>#}
+                        <button type="button" class="close">
+                            {% trans "Cancel" %}
+                        </button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,382 @@
+{% load i18n%}
+{% load permission %}
+
+<div class="pageContent"  id="image_pageContent_id">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<form method="post" id="form_create_id" action="{% url "create_image" %}" class="pageForm required-validate">
+<input name="u_uid" type="hidden" value="{{ uuid }}">
+<div class="pageFormContent" layouth="65">
+    <div class="unit">
+        <label>
+            {% trans "Image Name" %}：</label>
+        <input type="text" name="name" size="30" minlength="2" maxlength="10" class="required" id="image_name"/>
+    </div>
+
+    <div class="unit">
+        <label>
+            {% trans "Disk Format" %}：</label>
+        <select name="disk_format">
+            {% for key,value in form.fields.disk_format.choices %}
+                <option value= {{ key }} >{{ value }}</option>
+            {% endfor %}
+
+        </select>
+    </div>
+
+    <div class="unit">
+        <label>
+            {% trans "Image Data" %}：</label>
+        <select name="image_data"  class="required select">
+            {% for key,value in form.fields.image_data.choices %}
+                {% if value == software_name %}
+                <option value= {{ key }} selected>{{ value }}</option>
+                {% else %}
+                <option value= {{ key }} >{{ value }}</option>
+                {% endif %}
+            {% endfor %}
+
+        </select>
+        {% if form.fields.image_data.choices|length == 1  %}
+            <div id="image_datahelp" style="left:240px; color:#FFFFFF;overflow-y:auto;height:25px;width:240px;position: absolute;background: red" >{% trans "if image date is null,please add software" %}</div>
+        {% endif %}
+    </div>
+    <div class="unit" id="img_tenant_unit">
+        <label>
+            {% trans 'Tenant' %}：</label>
+        <select id="img_tenant_id" name="img_tenant_id" class="required select">
+            {% for key,value in form.fields.img_tenant_id.choices %}
+                {% if key == old_tenant_id %}
+                    <option value={{ key }} selected>{{ value }}</option>
+                {% else %}
+                    <option value={{ key }}>{{ value }}</option>
+                {% endif %}
+            {% endfor %}
+
+        </select>
+    </div>
+
+    {#        Minimum Disk (GB)#}
+    <div class="unit">
+        <label>
+            {% trans "Min Disk (GB)" %}：</label>
+        <input type="text" name="min_disk" id="min_disk" size="30" value ="15" maxlength="2" minlength='2' class="required digits"/>
+    </div>
+    {#        Minimum Ram (MB)#}
+    <div class="unit">
+        <label>
+            {% trans "Min Ram (MB)" %}：</label>
+        <input type="text" name="min_ram" id="min_ram" size="30" value ="512" minlength="3"  maxlength="5" class="required digits"/>
+    </div>
+
+    {# public #}
+    <div class="unit">
+        <label>
+            {% trans "Public" %}：</label>
+        <input type="checkbox"  name="is_public" />
+    </div>
+    <div id="launch_image_pageForm" style="display: none"></div>
+
+</div>
+{% csrf_token %}
+<div class="formBar">
+    <ul>
+        <li>
+            <div class="buttonActive" id="btnActiveSubmit1">
+                <div class="buttonContent">
+                    <button type="submit" value="submit">
+                        {% trans "Submit" %}</button></div>
+            </div>
+        </li>
+        <li>
+
+            <div class="buttonActive" style="display:none" id="btn_a_img">
+                <div class="buttonContent">
+                    <button type="submit" value="submit" id="btnImageStatus" >
+                        {% trans "Submit" %}</button></div>
+            </div>
+        </li>
+
+        <li>
+            <div class="button" id="btnActCancel">
+                <div class="buttonContent">
+                    <button type="button" class="close">
+                        {% trans "Cancel" %}</button></div>
+            </div>
+        </li>
+        {% permission "ActiveAndStart" %}
+        <li id="btnActiveStart">
+            <div class="button">
+                <div class="buttonContent">
+                    <button type="button"  onclick="instance_news()">
+                        {% trans "ActiveAndStart" %}</button></div>
+            </div>
+        </li>
+        {% endpermission %}
+        <li id="btnActiveStartCancel"  style="display: none">
+            <div class="button">
+                <a target="dialog"  href="{% url "create_image_form" %}" tmask="true" style="text-decoration: none" >
+                <div class="buttonContent">
+                        {% trans "CreateImages" %}</div>
+                </a>
+            </div>
+        </li>
+    </ul>
+</div>
+</form>
+</div>
+
+<script type="text/javascript">
+$(function(){
+    $("select[id=img_tenant_id]").bind("change",function(){
+        var img_tenant_id=$("select[id=img_tenant_id]").val();
+        $.ajax({
+                   url:'{% url 'img_fresh_progress' %}',
+                   method:'get',
+                   cache:false,
+                   data:{img_tenant_id:img_tenant_id},
+                   success:function(response){
+                       console.log('1');
+                   },
+                    error:function(response){
+                        console.log('2');
+                    }
+               })
+    });
+})
+    function ajax_flavor(){
+        var _min_disk = $("#min_disk").val();
+        var _min_ram  = $("#min_ram").val();
+        var _flavor_id = $("#flavor_id").val();
+        var _f_disk_value = $('#task_'+_flavor_id+"disk").val();
+        var _f_ram_value = $('#task_'+_flavor_id+"ram").val();
+
+        if(_min_disk > 30){
+            return 3;
+        }
+
+        if(_min_disk < 15){
+            return 6;
+        }
+
+        if(_min_ram < 512){
+            return 4;
+        }
+        if(_min_ram > 16384){
+            return 5;
+        }
+
+        if (_min_disk > _f_disk_value){
+            return 1;
+        }
+
+        if(_min_ram - _f_ram_value > 0){
+            return 2;
+        }
+
+
+        return 0;
+    }
+
+    function ajax_disk_ram(){
+        var _min_disk = $("#min_disk").val();
+        var _min_ram  = $("#min_ram").val();
+
+        if(_min_disk > 30){
+            return 3;
+        }
+
+        if(_min_disk < 15){
+            return 1;
+        }
+
+        if(_min_ram < 512){
+            return 4;
+        }
+
+        if(_min_ram > 16384){
+            return 5;
+        }
+        return 0;
+    }
+
+    function imageCreateAjaxDone(json) {
+        var op = {navTabId:json.navTabId};
+        var img_tab = op.navTabId ? navTab._getTab(op.navTabId) : navTab._getTabs().eq(navTab._currentIndex);
+        if(img_tab){
+            dialogAjaxDone(json);
+        }else{
+            DWZ.ajaxDone(json);
+            $.pdialog.closeCurrent();
+        }
+        if (json.statusCode == DWZ.statusCode.ok) {
+            var tabID = "{% trans "ActiveAndStart" %}";
+            navTab.openTab(tabID, "{% url "instance_image_form" uuid %}",
+                    {title:tabID, fresh:false, external:false});
+        }
+    }
+
+    function imageCreateAjaxDone2(json) {
+        var op = {navTabId:json.navTabId};
+        var img_tab = op.navTabId ? navTab._getTab(op.navTabId) : navTab._getTabs().eq(navTab._currentIndex);
+        if(img_tab){
+            dialogAjaxDone(json);
+        }else{
+            DWZ.ajaxDone(json);
+            $.pdialog.closeCurrent();
+        }
+        if (json.statusCode == DWZ.statusCode.ok) {
+            var tabID = "{% trans "CreateImages" %}";
+            navTab.openTab(tabID, "{% url "detecting_image_form" uuid %}",
+                    {title:tabID, fresh:false, external:false});
+        }
+    }
+
+    $(function(){
+        $("#form_create_id").bind("submit", function(){
+            var validate_flavor = ajax_disk_ram();
+
+            if(validate_flavor == 0){
+                return validateCallback(this,imageCreateAjaxDone2);
+            }else if(validate_flavor == 1){
+                alertMsg.error("{% trans 'Image disk value is too short! not in (15~30).' %}");
+                return false;
+            }else if(validate_flavor == 3){
+                alertMsg.error("{% trans 'Image disk value is too big! not in (15~30).' %}");
+                return false;
+            }else if(validate_flavor == 4){
+                alertMsg.error("{% trans 'Image ram value is too short! not in (512~16384).' %}");
+                return false;
+            }else if(validate_flavor == 5){
+                alertMsg.error("{% trans 'Image ram value is too big! not in (512~16384).' %}");
+                return false;
+            }
+            return false;
+        });
+        $("#image_name").blur(function(){
+            var name=$("#image_name").val();
+            if(name.indexOf(" ")>=0){
+                $("#image_name").val("");
+
+                alertMsg.error("{% trans 'Image name contains spaces,please enter again!' %}");
+            }
+        });
+        $("#min_disk").blur(function(){
+            var _min_disk = $("#min_disk").val();
+            if(_min_disk < 0){
+                $("#min_disk").val('0');
+                alertMsg.error("{% trans 'Image min_disk should greater-than or equal-to 0!' %}");
+            }
+        });
+        $("#min_ram").blur(function(){
+            var _min_ram = $("#min_ram").val();
+            if(_min_ram < 0){
+                $("#min_ram").val('0');
+                alertMsg.error("{% trans 'Image min_ram should greater-than or equal-to 0!' %}");
+            }
+        });
+    });
+    function instance_news(){
+        $.ajax({
+            url: '{% url "launch_form_image_template" %}',
+            cache: false,
+            success: function(htmlData){
+                $("#launch_image_pageForm").html(htmlData).initUI();
+            }
+        });
+
+        $("#launch_image_pageForm").css("display","block");
+        var form = $("#form_create_id");
+        form.attr("action","{% url "create_image_goto_instance"  %}");
+        form.unbind("submit");
+        form.bind("submit", function(){
+            var validate_flavor = ajax_flavor();
+
+            var security_groups=$("input[type=checkbox][name=security_groups]");
+            if(security_groups){
+                var len = $("input[type=checkbox][name=security_groups]:checked").length;
+                if(len == 0){
+                    alertMsg.error("{% trans 'Please select an available security group!' %}");
+                    return false;
+                }
+            }else{
+                alertMsg.error("{% trans 'There is no security groups!' %}");
+                return false;
+            }
+            var networks=$("input[type=checkbox][name=networks]");
+            if(networks){
+                var len = $("input[type=checkbox][name=networks]:checked").length;
+                if(len == 0){
+                    alertMsg.error("{% trans 'Please select an available network!' %}");
+                    return false;
+                }
+            }else{
+                alertMsg.error("{% trans 'There is no network list!' %}");
+                return false;
+            }
+            if(validate_flavor == 0){
+                return validateCallback($(this),imageCreateAjaxDone);
+            }else if(validate_flavor == 1){
+                alertMsg.error("{% trans 'Instance flavor disk less-than Image min disk!' %}");
+                return false;
+            }else if(validate_flavor == 2){
+                alertMsg.error("{% trans 'Instance flavor ram less-than Image min ram!' %}");
+                return false;
+            }else if(validate_flavor == 3){
+                alertMsg.error("{% trans 'Image disk value is too big! not in (15~30).' %}");
+                return false;
+            }else if(validate_flavor == 4){
+                alertMsg.error("{% trans 'Image ram value is too short! not in (512~16384).' %}");
+                return false;
+            }else if(validate_flavor == 5){
+                alertMsg.error("{% trans 'Image ram value is too big! not in (512~16384).' %}");
+                return false;
+            }else if(validate_flavor == 6){
+                alertMsg.error("{% trans 'Image disk value is too short! not in (15~30).' %}");
+                return false;
+            }
+            return false;
+
+        });
+        $("#img_tenant_unit").empty();
+        $("#img_tenant_unit").hide();
+        $("#btnActiveSubmit1").css("display","none");
+        $("#btn_a_img").css("display","block");
+        $("#btnActiveStartCancel").css("display","block");
+        $("#btnActiveStart").css("display","none");
+        $("#btnActCancel").css("display","none");
+    }
+    function instance_news_cancel(){
+        $("#launch_image_pageForm").empty();
+        var form = $("#form_create_id");
+        form.attr("action","{% url "create_image" %}");
+        form.unbind("submit");
+        form.bind("submit", function(){
+            var validate_flavor = ajax_disk_ram();
+
+            if(validate_flavor == 0){
+                return validateCallback(this,imageCreateAjaxDone2);
+            }else if(validate_flavor == 1){
+                alertMsg.error("{% trans 'Image disk value is too short! not in (15~30).' %}");
+                return false;
+            }else if(validate_flavor == 3){
+                alertMsg.error("{% trans 'Image disk value is too big! not in (15~30).' %}");
+                return false;
+            }else if(validate_flavor == 4){
+                alertMsg.error("{% trans 'Image ram value is too short! not in (512~16384).' %}");
+                return false;
+            }else if(validate_flavor == 5){
+                alertMsg.error("{% trans 'Image ram value is too big! not in (512~16384).' %}");
+                return false;
+            }
+            return false;
+        });
+
+        $("#btnActiveSubmit1").css("display","block");
+        $("#btn_a_img").css("display","none");
+        $("#btnActiveStartCancel").css("display","none");
+        $("#btnActiveStart").css("display","block");
+        $("#btnActCancel").css("display","block");
+        $("#launch_image_pageForm").css("display","none");
+    }
+
+</script>

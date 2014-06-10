@@ -1,0 +1,91 @@
+{% load i18n %}
+{% load dashboard %}
+
+<script type="text/javascript">
+    function checkFileExists(url) {
+         $("#download_frame").attr("src", url);
+    }
+</script>
+<style type="text/css">
+    .header_sty{
+        font-size:11px; height: 15%;
+        line-height: 38px;
+        padding-left:20px;
+        float: left;
+        width: 100%;
+        background: url('{{ STATIC_URL }}ui/images/instance/3_2.png') no-repeat;
+
+    }
+    .ins_header1{
+        float: left;
+        line-height: 10px;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left:32px;
+        width:136px;
+        text-align:center;
+    }
+    .ins_header2{
+        float: left;
+        line-height: 10px;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left:30px;
+        width:200px;
+        text-align:center;
+    }
+    .ins_header3{
+        float: left;
+        line-height: 10px;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left:32px;
+        width:160px;
+        text-align:center;
+    }
+    .td_tr{
+        font-size: 16px;
+        font-family: '宋体';
+        word-break: break-all;
+        width: 80%;
+        height: 241px;
+        margin-top: 4px;
+        margin-left: 5px;
+    }
+    .btn_background_img{
+        width:80px;
+        height: 28px;
+        background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+        text-align: center;
+        line-height: 28px;
+        font-size: 15px;
+
+
+    }
+    .btn_background_div{
+        text-align: center;
+        line-height: 27px;
+        height: 27px;
+    }
+</style>
+<div class="pageContent">
+    <iframe style="display: none" id="download_frame" name="download_frame" ></iframe>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="pageFormContent" layouth="58">
+        <div class="header_sty" style="clear:both;width: 95%;background-color: #d7dcde;background-position: left center;">
+            <div class="ins_header1" >{% trans 'Live Migrate' %}</div>
+            <div class="ins_header2" >{% trans 'Add Servers' %}</div>
+            <div class="ins_header3" >{% trans 'Finish' %}</div>
+        </div>
+        <table style="background-color: #ffffff; width:auto;height: 60%;margin-left: 10%;">
+            <tr>
+                <td class="td_tr">{% trans "The resource is not enough,you can buy a server to build environment" %}</td>
+                <td></td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+

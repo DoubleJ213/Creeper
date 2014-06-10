@@ -1,0 +1,39 @@
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "edit_securitygroup_action" tenant_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{tenant_id}}">
+        {% include 'securitygroup_manage/_update.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>
+                    安全组名称：</label>
+                <input type="text" id="name" name="name" size="30" minlength="2" maxlength="10" class="required" />
+            </div>
+            <div class="unit">
+                <label>
+                    描述：</label>
+                <textarea id="descriptyion" name="descriptyion" />
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                提交</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                取消</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,21 @@
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+        {% endfor %}
+    </ul>
+{% endif %}
+{% if form.errors %}
+    <p style="color: red;">
+        Please correct the error{{ form.errors|pluralize }} below.
+    </p>
+{% endif %}
+{% comment %}
+<form action="{% url add_project_users_action tenant_id %}" method="post">
+    <table>
+        {{ form.as_table }}
+    </table>
+    {% csrf_token %}
+    <input type="submit" value="增加">
+</form>
+{% endcomment %}

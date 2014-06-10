@@ -1,0 +1,12 @@
+<html>
+<head>
+    <title>update node</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body leftmargin="0" topmargin="0" rightmargin="0" bottommargin="0">
+<form action="{% url "update_node_action" uuid %}" method="POST">
+    {% include 'node_manage/_update.html' %}
+    <input type="submit" value="submit">
+</form>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{% for hidden in form.hidden_fields %}
+    {{ hidden }}
+{% endfor %}
+{% if form.non_field_errors %}
+    <div>
+        {{ form.non_field_errors }}
+    </div>
+{% endif %}
+{% for field in form.visible_fields %}
+        {{ field.label_tag }}
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        {% endif %}
+        <span>{{ field.help_text }}</span>
+        <div>
+            {{ field }}
+        </div>
+{% endfor %}

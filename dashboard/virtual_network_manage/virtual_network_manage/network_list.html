@@ -1,0 +1,89 @@
+{% load i18n %}
+{% load dashboard %}
+<form id="pagerForm" action="{% url "get_tenant_networks" tenant_id %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}"/>
+    <input type="hidden" name="numPerPage" value="{{ page_obj.paginator.per_page }}"/>
+</form>
+
+<div class="pageContent listContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li style="line-height: 23px;">{% trans 'NetWork Info' %}</li>
+         </ul>
+    </div>
+    <table class="table" width="100%" layoutH="75" nowrapTD="false">
+        <thead>
+        <tr>
+            <th>{% trans "Sequence Number" %}</th>
+            <th>{% trans 'Tenant' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Subnets Associated' %}</th>
+            <th>{% trans 'Shared' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Admin State' %}</th>
+{#            <th>{% trans 'action' %}</th>#}
+        </tr>
+        </thead>
+        <tbody>
+        {% for network in networklist %}
+            <tr>
+                <td style="text-align: center;">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                <td>
+                {% for id,name in tenants %}
+                    {% if network.tenant_id == id  %}
+                        {{ name }}
+                    {% endif %}
+                {% endfor %}
+                </td>
+
+                <td>{{ network.name }}</td>
+                <td>
+                    {% for subnet in network.subnets %}
+                                <p style="line-height: 18px;">
+                                {% if subnet.name|length > 0 %}
+                                    <b>{{ subnet.name }}</b>
+                                {% endif %}
+                                {{ subnet.cidr }}
+                                </p>
+                    {% endfor %}
+                 </td>
+                <td>
+                    {% if network.shared == 0 %}
+                        {% trans 'False' %}
+                    {% else %}
+                         {% trans 'True' %}
+                    {% endif %}
+
+                </td>
+                <td>
+
+                    {% if network.status == 'ACTIVE' %}
+                        {% trans 'ACTIVE' %}
+                    {% else %}
+                        {% trans 'PAUSED' %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if network.admin_state == 'UP' %}
+                        {% trans 'UP' %}
+                    {% else %}
+                        {% trans 'DOWN' %}
+                    {% endif %}
+                </td>
+
+{#            <td>#}
+{##}
+{#                    <a  target="dialog"  href="{% url get_securitygroup_info securitygroup.id %}" tmask="true">{% trans 'securitygroup info' %}</a>#}
+{#                    {% if 'default' != securitygroup.name  %}#}
+{#                       <a  target="dialog"  href="{% url delete_securitygroup_index securitygroup.id %}" tmask="true" width="250" height="150">{% trans 'delete security group' %}</a>#}
+{#                    {% endif %}#}
+{#                    <a  target="navTab"  href="{% url edit_securitygrouprules securitygroup.id %}" rel="{% trans 'rules tab' %}" tmask="true">{% trans 'rules tab' %}</a>#}
+{#                </td>#}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>

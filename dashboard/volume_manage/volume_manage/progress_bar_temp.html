@@ -1,0 +1,74 @@
+{% load i18n %}
+{% load dashboard %}
+
+{% if usages != None %}
+    <div class="quota_title clearfix">
+        <strong>{% trans "Total Gigabytes" %} <span>({{ usages.gigabytes.used }}GB)</span></strong>
+
+        <p style="width:auto;float:none;position: relative;margin: 0px;height: auto;padding: 0">{% trans "Available Gigabytes" %}:{{ usages.gigabytes.available }}GB</p>
+    </div>
+
+    <div id="quota_size" data-progress-indicator-for="volume_size" data-quota-limit="{{  usages.gigabytes.quota }}"
+         data-quota-used="{{  usages.gigabytes.used }}" class="quota_bar">
+        {% creeper_progress_bar usages.gigabytes.used usages.gigabytes.quota %}
+    </div>
+
+    <div class="quota_title clearfix">
+        <strong>{% trans "Number of Volumes" %} <span>({{ usages.volumes.used }})</span></strong>
+        <p style="width:auto;float:none;position: relative;margin: 0px;height: auto;padding: 0">{% trans "Available Volumes" %}:{{ usages.volumes.available }}</p>
+    </div>
+
+    <div id="quota_volumes" data-progress-indicator-step-by="1" data-quota-limit="{{ usages.volumes.quota }}"
+         data-quota-used="{{ usages.volumes.used }}" class="quota_bar">
+        {% creeper_progress_bar usages.volumes.used usages.volumes.quota %}
+    </div>
+{% else %}
+    {% trans 'Failed to get agency quotas!' %}
+{% endif %}
+
+{% if snapshots %}
+    <div class="unit" id="snapshots_div_temp" style="display: none">
+        <label>
+            {% trans "Use snapshot as a source" %}：</label>
+        <select id="snapshots" onchange="snapshots_change()">
+            <option value="">{% trans "Choose a snapshot" %}</option>
+            {% for snapshot in snapshots %}
+                <option value="{{ snapshot.id }}" snapshot_size="{{ snapshot.size }}" snapshot_display_name="{{ snapshot.display_name }}" snapshot_description="{{ snapshot.display_description }}">{{ snapshot.display_name }}（{{ snapshot.size }}GB）</option>
+            {% endfor %}
+        </select>
+
+    </div>
+{% endif %}
+
+
+
+<script type="text/javascript" charset="utf-8">
+    if(typeof horizon.Quota !== 'undefined') {
+        horizon.Quota.init();
+    } else {
+        addHorizonLoadEvent(function() {
+            horizon.Quota.init();
+        });
+    }
+
+    function snapshots_change(){
+        var snapshots=$("#snapshots");
+        if(snapshots){
+            var display_size=$(snapshots).find("option:selected").attr("snapshot_size");
+            var display_name=$(snapshots).find("option:selected").attr("snapshot_display_name");
+            var display_description=$(snapshots).find("option:selected").attr("snapshot_description");
+
+            var snapshot_id=$(snapshots).val();
+
+            $("#id_volume_name").val(display_name);
+            var show_size= display_size == 10?'small':display_size==20?'medium':display_size==50?'large':display_size==100?'max':''
+            $("a[name=volume_size]").text(display_size);
+            $("a[name=volume_size]").val(show_size);
+            $("select[id=volume_size]").val(show_size);
+            $("textarea[name=volume_description]").val(display_description);
+            $("input[name=snapshot_id]").val(snapshot_id)
+
+        }
+    }
+
+</script>

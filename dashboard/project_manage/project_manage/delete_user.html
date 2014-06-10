@@ -1,0 +1,51 @@
+{% load i18n %}
+{% load dashboard %}
+
+<script type="text/javascript">
+
+    $(document).ready(function (){
+        setProTreeNodeId();
+    });
+
+    function setProTreeNodeId(){
+        if($("#project_tree_htmlVal")){
+            $("#project_tree_hidden").html($("#project_tree_htmlVal").val());
+        }
+        if($("#project_tree_li_id_old")){
+            $("#project_tree_li_id_old").val('');
+        }
+    }
+
+    function delete_tree_project_user(json){
+        if($("#project_tree_li_id") && $("#project_tree_li_id").val()!=""){
+            var delObj = $("#project_tree_hidden #" + $("#project_tree_li_id").val());
+            if(delObj){
+                var len = delObj.siblings("li").length;
+                if(len > 0){
+                    delObj.remove();
+                }else{
+                    delObj.parent('ul').remove();
+                }
+            }
+            if($("#project_tree_htmlVal")){
+                $("#project_tree_htmlVal").val($("#project_tree_hidden").html());
+            }
+            $("#project_tree_hidden").html('');
+        }
+    }
+
+</script>
+
+<Table align="center" width="100%" height="100%" valign="middle">
+    <tr><td align="center">
+        {% trans "Are you sure for deleting this user from this project?" %}</td></tr>
+    <tr><td align="center">
+<form action="{% url "delete_project_users_action" tenant_id user_id %}" method="post" onsubmit="return validateCallback2(this,dialogAjaxDoneForProject);">
+    {% add_in_method 'delete'%}
+    {% csrf_token %}
+    <input type="submit" value={% trans "Submit" %} />
+    <input type="button" onclick="$.pdialog.closeCurrent()" value={% trans "Cancel" %} />
+</form>
+    </tr>
+</Table>
+<div id="project_tree_hidden" style="display: none"></div>

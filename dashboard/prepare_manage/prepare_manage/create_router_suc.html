@@ -1,0 +1,107 @@
+{% load i18n %}
+<style type="text/css">
+    .btn_background_img{
+        width:80px;
+        height: 28px;
+        background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+        text-align: center;
+        line-height: 28px;
+        font-size: 15px;
+        left:10px;
+        margin-left: 5px;
+    }
+    .succ_message {
+        height: 30px;
+        margin: 30px auto 0;
+        width: 400px;
+    }
+
+    .succ_message span{
+        float: left;
+    }
+    .succ_message label{
+        font-size: 19px;
+        line-height: 30px;
+    }
+    .succ_message .desc{
+        font-size: 16px;
+        line-height: 30px;
+        float: left;
+        text-align: right;
+        margin-left: 20px;
+    }
+
+    .ins_header1{
+        width: 141px;
+        float: left;
+        line-height: 24px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .header_pic1 {
+        clear:both;
+        width: 100%;
+        height:70px;
+        background:#d7dcde url('{{ STATIC_URL }}ui/images/instance/4_1.png') no-repeat ;
+        background-position: left center;
+        margin-bottom: 10px;
+    }
+</style>
+<div class="pageFormContent" style="height: 90%">
+
+    <div class="header_pic1" >
+        <div class="ins_header1" style="margin-left: 40px;" >{% trans 'Create router' %}</div>
+        <div class="ins_header1" >{% trans 'Create Interface' %}</div>
+        <div class="ins_header1" >{% trans 'Set Gateway' %}</div>
+        <div class="ins_header1" >{% trans 'Finish' %}</div>
+    </div>
+
+    <div class="unit">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{ tenant_id }}"/>
+    <table class="table" width="100%" >
+
+        <thead>
+        <tr>
+            <th>{% trans 'Tenant' %}</th>
+            <th>{% trans 'Name' %}</th>
+            <th>{% trans 'Status' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for routerProject in router_list %}
+            <tr>
+                <td>
+                    {{ tenant_name }}
+                </td>
+
+                <td>{{ routerProject.name }}</td>
+                <td>{{ routerProject.status }}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <div class="succ_message" style="margin-top: 50px;">
+        <span style="margin-left: 60px;"><img src="{{ STATIC_URL }}ui/images/icon_2.png" width="26" height="26" /></span>
+        <label style="text-align: left; width: auto;">{% trans "Router was successfully created" %}</label>
+    </div>
+{#    <div class="succ_message"style="width: auto;">#}
+{#        <div class="desc" style="text-align: left;">{% trans "If you don't create interface,you will be on the left side menu(Virtual Routers Manage) to add a interface" %}</div>#}
+{#    </div>#}
+    <div class="succ_message">
+        <div class="desc">{% trans "You can connect a specified subnet to the router" %}</div>
+        <a target="dialog" href="{% url "create_router_project_index" tenant_id router_id virtual_router_obj_id %}" tmask="true"
+           style="text-decoration: none; float: left;" width="700" height="500" title="{% trans 'Create Interface' %}"
+           id="prepare_router_a_id">
+            <div class="btn_background_img">GO</div>
+        </a>
+    </div>
+
+
+
+
+
+</div>
+

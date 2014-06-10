@@ -1,0 +1,52 @@
+{% load i18n %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "import_keypair_action" %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{tenant_id}}">
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>
+                    {% trans 'Keypair Name' %}：</label>
+                <input type="text" id="name" name="name" size="30" minlength="6" maxlength="20" class="required" />
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Public Key' %}：</label>
+                <textarea id="public_key"  rows="5" cols="30" name="public_key"></textarea>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Description' %}：</label>
+
+            </div>
+            <div class="unit">
+                <li style="line-height: 23px;">
+                    {% trans 'Keypairs are ssh credentials which are injected into images when they are launched.Creating a new key pair registers the public key and downloads the private key (a .pem file).Protect and use the key as you would any normal ssh private key.'%}
+                </li>
+            </div>
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

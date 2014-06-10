@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+<h1>Host Monitor Information</h1>
+<table>
+    <tr>
+        <td>Scope</td>
+        <td>Memory(MB)</td>
+        <td>Host</td>
+        <td>CPU</td>
+        <td>Disk(GB)</td>
+    </tr>
+    {% for host_monitor_info in host_monitor_infos %}
+        <tr>
+            <td>{{ host_monitor_info.resource.project }}</td>
+            <td>{{ host_monitor_info.resource.memory_mb }}</td>
+            <td>{{ host_monitor_info.resource.host }}</td>
+            <td>{{ host_monitor_info.resource.cpu }}</td>
+            <td>{{ host_monitor_info.resource.disk_gb }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>

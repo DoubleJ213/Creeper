@@ -1,0 +1,104 @@
+{% load i18n %}
+
+<script type="text/javascript">
+
+    $(document).ready(function (){
+        setProTreeNodeId();
+    });
+
+    function setProTreeNodeId(){
+        if($("#project_tree_htmlVal")){
+            $("#project_tree_hidden").html($("#project_tree_htmlVal").val());
+        }
+        if($("#project_tree_li_id") && $("#project_tree_li_id_old")){
+            if($("#project_tree_li_id").val() == ""){
+                $("#project_tree_li_id").val($("#project_tree_li_id_old").val());
+            }else{
+                $("#project_tree_li_id_old").val($("#project_tree_li_id").val());
+            }
+
+        }
+    }
+
+    function update_tree_project(json){
+        if($("#project_tree_li_id") && $("#project_tree_li_id").val()!=""){
+            var f_id = $("#project_tree_li_id").val();
+            var obj = $("#project_tree_hidden #" + f_id + " a lable");
+            if(obj){
+                var treeNodeObj = json.treeNodeObj;
+                var enabled = treeNodeObj.project_enabled;
+                var project_id = treeNodeObj.project_id;
+                var project_name = treeNodeObj.project_name;
+                if(enabled == true){
+                    var lastVal = "<img src=\"{{ STATIC_URL }}ui/images/icon/delete.gif\" class=\"tree_icon_img\" title=\"{% trans 'Delete Project' %}\" "
+                            + " onclick=\"openProDialog('/project_manage/projects/" + project_id + "/delete', 'proTreeDialogId', '', 250, 150, '#project_target_url', '', '#project_tree_li_id', '" + f_id + "')\">";
+                    obj.first().find("img").attr("src","{{ STATIC_URL }}ui/images/icon/preso_icon_1.png");
+                    obj.eq(1).find("span").attr("title",project_name).html(project_name);
+                    obj.eq(5).html(lastVal);
+                }else{
+                    var lastVal = "<img src=\"{{ STATIC_URL }}ui/images/icon/enable.png\" class=\"tree_icon_img\" title=\"{% trans 'Enable Project' %}\" "
+                            + " onclick=\"openProDialog('/project_manage/projects/"+project_id+"/enable/', 'proTreeDialogId', '', 250, 150, '#project_target_url', '', '#project_tree_li_id', '"+f_id+"')\">";
+                    obj.first().find("img").attr("src","{{ STATIC_URL }}ui/images/icon/preso_icon2.png");
+                    obj.eq(1).find("span").attr("title",project_name).html(project_name);
+                    obj.eq(5).html(lastVal);
+                }
+            }
+            if($("#project_tree_htmlVal")){
+                $("#project_tree_htmlVal").val($("#project_tree_hidden").html());
+            }
+            $("#project_tree_hidden").html('');
+        }
+    }
+
+</script>
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="panelBar">
+        <ul>
+            <li style="line-height: 23px;">{% trans 'Update Project' %}</li>
+        </ul>
+    </div>
+    <form method="post" action="{% url "update_project_action" tenant_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDoneForProject);">
+        {% include 'project_manage/_update_project.html' %}
+        <div class="pageFormContent" layouth="58">
+
+            <div class="unit" style="display: none">
+                <label>ID：</label>
+                <input readonly="readonly" type="text" name="id" size="30" value="{{ form.fields.id.initial}}" />
+            </div>
+            <div class="unit">
+                <label>{% trans "Project Name" %}：</label>
+                <input type="text" name="name" size="30" minlength="2" maxlength="10" class="required" value="{{ form.fields.name.initial}}" />
+            </div>
+            <div class="unit">
+                <label>{% trans "Project Description" %}：</label>
+                <textarea name="description" size="30" cols="29"  minlength="6" maxlength="400" class="required">{{ form.fields.description.initial}}</textarea>
+            </div>
+            <div class="unit">
+                <label>{% trans "Enabled" %}：</label>
+                <input type="checkbox" id="enabledId"  name="enabled"
+                        {% if form.fields.enabled.initial %}
+                           checked="checked"
+                        {% endif %}
+                />
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div id="project_tree_hidden" style="display: none"></div>

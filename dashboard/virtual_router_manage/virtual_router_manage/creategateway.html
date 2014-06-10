@@ -1,0 +1,75 @@
+{% load i18n %}
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_gateway_action" router_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDone);">
+        <input type="hidden" name="router_id" id="router_id" value="{{router_id}}">
+        <input type="hidden" name="router_name" id="router_name" value="{{form.fields.router_name.initial}}">
+        <div class="pageFormContent" layouth="58">
+
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "Set Gateway" %}</li>
+                </ul>
+            </div>
+            <div class="unit">
+                <label>{% trans "External Network" %}：</label>
+                    <select id="extNetwork" name="extNetwork" class="required select">
+                    {% for key,value in form.fields.extNetwork.choices %}
+                        <option value= {{ key }} >
+                            {% if value == 'Select network' %}
+                                {% trans 'Select network' %}
+                            {% elif value == 'No network available' %}
+                                {% trans 'No network available' %}
+                            {% else %}
+                                {{ value }}
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+                    </select>
+            </div>
+
+            <div id="routernameDiv" class="unit">
+                <label>{% trans 'Router Name' %}：</label>
+                <label style="display:inline-block; width:300px; padding: 0px;">{{form.fields.router_name.initial}}</label>
+
+            </div>
+
+            <div id="routerIdDiv" class="unit">
+                <label>{% trans 'Router ID' %}：</label>
+                <label style="display:inline-block; width:300px; padding: 0px;">{{router_id}}</label>
+
+            </div>
+
+            <div id="routerDesDiv" class="unit">
+                <label>{% trans 'Description' %}：</label>
+{#                <label style="display:inline-block;width:900px">{{form.fields.description.initial}}</label>#}
+
+                <div name="description" id="description" style="line-height: 21px;">
+                    {% trans "You can connect a specified external network to the router. The external network is regarded as a default route of the router and the router acts as a gateway for external connectivity." %}
+                </div>
+            </div>
+        </div>
+
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+{#                <li>#}
+{#                    <div class="button">#}
+{#                        <div class="buttonContent">#}
+{#                            <button type="button" class="close" ">#}
+{#                                {% trans "Cancel" %}</button></div>#}
+{#                    </div>#}
+{#                </li>#}
+            </ul>
+        </div>
+    </form>
+</div>

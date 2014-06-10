@@ -1,0 +1,85 @@
+{% load i18n %}
+{% load permission %}
+
+<style type="text/css">
+    .unit #description, #name{
+        line-height: 21px;  
+    }
+</style>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% csrf_token %}
+    <div class="pageFormContent" layouth="58" >
+        <div class="panelBar">
+            <ul>
+                <li style="line-height: 23px;">{% trans "Securitygroup Info" %}</li>
+{#                <li><a class="add" target="dialog"  href="{% url create_securitygrouprules_index security_group_id %}" tmask="true"><span>{% trans "add" %}</span></a></li>#}
+        	</ul>
+        </div>
+
+
+         <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+                <div id="name" name="name" >{{ securitygroup.name }}</div>
+         </div>
+         <div class="unit">
+              <label>
+                  {% trans 'Descriptyion' %}：</label>
+              <div id="description" name="description" ><pre>{{ securitygroup.description }}</pre></div>
+         </div>
+
+        <div class="unit">
+{#            <label>{% trans 'security rules' %}：</label>#}
+            <div class="panelBar">
+                {% permission 'Create Rule' %}
+                <ul class="toolBar">
+                    <li style="line-height: 23px;">
+                        <a class="add" target="dialog" width="610" href="{% url 'create_securitygrouprules_index' securitygroup.id tenant_id %}" onclick="sec_nextUrl('/securitygroup_manage/securitygroup/{{  securitygroup.id  }}/tenants/{{ tenant_id }}/getsecuritygroupinfo/')" >
+                            <span>{% trans "Create Rule" %}</span>
+                        </a>
+                {% otherwise %}
+                <ul>
+                    <li style="line-height: 23px;">
+                            {% trans 'security group rules' %}
+                {% endpermission %}
+                    </li>
+                </ul>
+            </div>
+
+            <table class="table" width="100%">
+                <thead>
+                <tr>
+                    <th>{% trans "Sequence Number" %}</th>
+                    <th>{% trans 'ID' %}</th>
+                    <th>{% trans 'Ip Protocol' %}</th>
+                    <th>{% trans 'From Port' %}</th>
+                    <th>{% trans 'To Port' %}</th>
+                    <th>{% trans 'Ip Range' %}</th>
+                    <th>{% trans 'Action' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rule in rules %}
+                    <tr>
+                        <td style="width:50px; text-align: center;">{{ forloop.counter }}</td>
+                        <td>{{ rule.id }}</td>
+                        <td>{{ rule.ip_protocol }}</td>
+                        <td>{{ rule.from_port }}</td>
+                        <td>{{ rule.to_port }}</td>
+                        <td>{{ rule.ip_range }}</td>
+                        <td>
+                            {% permission 'Delete Rule' %}
+                                <a href="#"
+                                   onclick="delsgUrl('/securitygroup_manage/securitygroup/{{ securitygroup.id }}/rule/{{ rule.id }}/deletegrouprulesaction/','/securitygroup_manage/securitygroup/{{ securitygroup.id }}/tenants/{{ tenant_id }}/getsecuritygroupinfo/',2)">
+                                   <img title=" {% trans 'Delete Rule' %}" src="/static/ui/images/delete.png" />
+                                </a>
+                            {% endpermission %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

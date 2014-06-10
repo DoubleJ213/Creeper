@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load dashboard %}
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title></title>
+</head>
+<body>
+   <h1>controller</h1>
+   <table>
+   {% for controller in controllers %}
+       <tr>
+           <td>{{ controller.id }}</td>
+           <td>{{ controller.label_name }}</td>
+           <td>{{ controller.action_name }}</td>
+           <td>{{ controller.action_type }}</td>
+           <td>{{ controller.parent_id }}</td>
+           <td>{{ controller.role }}</td>
+           <td>
+               <form action="{% url "delete_controller" controller.id %}" method="post">{% add_in_method 'delete'%}{% csrf_token %}<input type="submit" value="删除"/>
+               </form>
+           </td>
+       </tr>
+   {% endfor %}
+   </table>
+</body>
+</html>

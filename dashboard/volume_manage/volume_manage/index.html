@@ -1,0 +1,800 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+<form id="delete_volume_form" action="{% url "delete_single_volume" %}"
+      method="post" onsubmit="return iframeCallback(this,dialogAjaxDone)">
+    {% add_in_method 'delete' %}{% csrf_token %}
+    <input type="hidden" name="volume_id" value="">
+</form>
+<div class="pageContent listContent">
+<script type="text/javascript">
+var iRows_volume = new Array();
+var attach_img = '<img src="{{ STATIC_URL }}ui/images/attach_volume.png" title="{% trans "Attach Volume" %}" alt="{% trans "Attach Volume" %}"/>';
+var delete_img = '<img src="{{ STATIC_URL }}ui/images/delete.png" title="{% trans 'Delete Volume' %}" alt="{% trans 'Delete Volume' %}"/>';
+var detach_img = '<img src="{{ STATIC_URL }}ui/images/detach_volume.png" title="{% trans "Detach Volume" %}" alt="{% trans "Detach Volume" %}"/>';
+var snapshot_img = '<img src="{{ STATIC_URL }}ui/images/snapshot.png" title="{% trans 'Create Volume Snapshot' %}" alt="{% trans 'Create Volume Snapshot' %}"/>';
+function initialize() {
+    for (var i = 0; i < iRows_volume.length; i++) {
+        var _url = $("#volume_" + iRows_volume[i]).attr("status");
+        $.ajax({
+            url:_url,
+            global:false,
+            success:function (response) {
+                var _data = eval("(" + response + ")");
+                var _status;
+                var _instance_id = _data['instance_id'];
+                var _id = _data['volume_id'];
+
+                _status = _data['status'];
+                var old_status = $("#volume_" + _id + " > td[upgrade=status]").text().trim();
+
+                if (old_status && old_status == _status) {
+                    return;
+                }
+
+                if (_status == '{% trans 'available' %}') {
+                    handle_available(_id, _status);
+                }
+                else if (_status == '{% trans 'in-use' %}') {
+                    handle_inuse(_id, _status, _instance_id);
+                } else if (_status == '{% trans 'None' %}' || _status == 'error_deleting') {
+                    handle_other(_id);
+                    iRows_volume.splice(i, 1);
+                } else if (_status != '{% trans 'error' %}') {
+                    $("#volume_" + _id + " > td[upgrade=status]").empty();
+                    $("#volume_" + _id + " > td[upgrade=status]").html("<div class='status_loading'></div>" + _status);
+                    $("#attach_volume_" + _id).hide();
+                    $("#detach_volume_" + _id).hide();
+                    $("#delete_volume_" + _id).hide();
+                    $("#snapshot_" + _id).hide();
+                } else {
+                    $("#volume_" + _id + " > td[upgrade=status]").empty();
+                    $("#volume_" + _id + " > td[upgrade=status]").html(_status);
+
+                    var $delete_a = $("#delete_volume_" + _id);
+                    if ($delete_a) {
+                        handle_attr($delete_a, ['title'], ['{% trans 'Delete Volume' %}']);
+                        $delete_a.bind("click", function () {
+                            delete_single_volume(_id);
+                        });
+                        $delete_a.append(delete_img);
+                    }
+                }
+            },
+            error:function (xhr, ajaxOptions, thrownError) {
+                DWZ.ajaxError(xhr, ajaxOptions, thrownError)
+            }
+        });
+    }
+}
+$(document).ready(function () {
+    snapshot_refresh();
+    {#        var lang = getBrowserLanguage();#}
+    {#        if (lang == "en-us" || lang == "en") {#}
+    {#            $("#volume_actionId").width("350px");#}
+    {#        } else if (lang == "zh-cn" || lang == "zh") {#}
+    {#            $("#volume_actionId").width("200px");#}
+    {#        }#}
+
+    $("#volume_table").find("tbody > tr").each(function (i, row) {
+        iRows_volume.push($(row).attr("id").substring(7));
+    });
+    var navTabId = "{% trans 'Volume Manage' %}";
+    Timer.submit(navTabId, initialize, {period:5000});
+
+});
+
+function handle_attr(obj, attrs, values) {
+    var o = $(obj);
+    for (var i = 0; i < attrs.length; i++) {
+        o.attr(attrs[i], values[i]);
+    }
+}
+
+function handle_available(_id, _status) {
+    $("#volume_" + _id + " > td[upgrade=status]").empty();
+    $("#volume_" + _id + " > td[upgrade=status]").text(_status);
+
+    attach_volume(_id);
+    delete_volume(_id);
+    snapshot_volume(_id);
+    handle_detach_volume(_id);
+
+
+    $("#volume_" + _id + " > td:eq(6)").text('{% trans 'None' %}')
+}
+
+function handle_inuse(_id, _status, _instance_id) {
+    $("#volume_" + _id + " > td[upgrade=status]").empty();
+    $("#volume_" + _id + " > td[upgrade=status]").text(_status);
+
+    var $attach_a = $("#attach_volume_" + _id);
+
+    if ($attach_a) {
+        $attach_a.hide()
+    }
+
+    var $delete_a = $("#delete_volume_" + _id);
+    if ($delete_a) {
+        $delete_a.hide()
+    }
+    var $snapshot_a = $("#snapshot_" + _id);
+    if ($snapshot_a) {
+        $snapshot_a.hide();
+    }
+
+    var instance_obj = $("#volume_" + _id + " > td:eq(6)")
+    var instance_name = $(instance_obj).text().trim()
+
+    if (instance_name == '{% trans 'None' %}') {
+        $(instance_obj).html("<div class='status_loading'></div>");
+        $.ajax({
+            url:'{% url "get_instance_name"  %}',
+            data:{"instance_id":_instance_id},
+            global:false,
+            success:function (response) {
+                var _data = eval("(" + response + ")");
+                var instance_name = _data['instance_name'];
+                if (_data['instance_name'].length > 10) {
+                    instance_name = _data['instance_name'].substr(0, 10) + "...";
+                }
+                $(instance_obj).text(instance_name);
+            }
+        })
+    }
+
+    var $detach_a = $("#detach_volume_" + _id).show();
+    if ($detach_a) {
+        $detach_a.empty();
+        $detach_a.append(detach_img);
+        $detach_a.bind("click", function () {
+            detach_volume(_id, _instance_id);
+        });
+    }
+
+}
+
+function handle_other(_id) {
+    var length = $("#volume_" + _id).parent().children().length - 1;
+    var trlen = $("#volume_" + _id).children().length - 1;
+    if ($("#volume_" + _id).index() == 0 && length > 0) {
+        var $tbody = $("#volume_" + _id).parent();
+        $("#volume_" + _id + " > td ").each(function (i) {
+
+            var width = $(this).css("width");
+
+            if (i == trlen) {
+                return;
+            }
+
+            $tbody.find(" tr:eq(1) > td ").eq(i).css('width', width);
+        });
+        if ($("#volume_" + _id)) {
+            $("#volume_" + _id).remove();
+        }
+    } else {
+        $("#volume_" + _id).remove();
+    }
+
+    try {
+        var str = $("#volume_div").find(".panelBar:eq(1) > .pages > span:eq(1)").text();
+        var records = parseInt(str.split(" ")[2]) - 1;
+        if (isNaN(records)) {
+            $("#volume_div").find(".panelBar:eq(1) > .pages > span:eq(1)").text(str);
+        } else {
+            $("#volume_div").find(".panelBar:eq(1) > .pages > span:eq(1)").text(' {% trans "records" %}，{% trans "total" %}  ' + (records) + ' {% trans 'records' %}');
+        }
+
+    } catch (e) {
+
+    }
+}
+
+function attach_volume(_id) {
+    var $attach_a = $("#attach_volume_" + _id);
+    if ($attach_a) {
+        $attach_a.show();
+        $attach_a.empty();
+        var attach_url = '{% url "attach_volume_form" "#tenant_id#" "#volume_id#" %}';
+        var tenant_id = $attach_a.attr("tenant");
+        attach_url = attach_url.replace("#tenant_id#", tenant_id).replace("#volume_id#", _id);
+        handle_attr($attach_a, ['title', 'href'], ['{% trans "Attach Volume" %}', attach_url]);
+        $attach_a.append($(attach_img));
+    }
+}
+
+function delete_volume(_id) {
+    var $delete_a = $("#delete_volume_" + _id);
+    if ($delete_a) {
+        $delete_a.show();
+        $delete_a.empty();
+        handle_attr($delete_a, ['title'], ['{% trans 'Delete Volume' %}']);
+        $delete_a.bind("click", function () {
+            delete_single_volume(_id);
+        });
+        $delete_a.append($(delete_img));
+    }
+}
+
+function snapshot_volume(_id) {
+    var $snapshot_a = $("#snapshot_" + _id).show();
+    if ($snapshot_a) {
+        $snapshot_a.show();
+        $snapshot_a.empty();
+        var snapshot_url = '{% url "create_volume_snapshot_form" "#tenant_id#" "#volume_id#" %}';
+        var tenant_id = $snapshot_a.attr("tenant");
+        snapshot_url = snapshot_url.replace("#tenant_id#", tenant_id).replace("#volume_id#", _id);
+        handle_attr($snapshot_a, ['title', 'href'], ['{% trans 'Create Volume Snapshot' %}', snapshot_url]);
+        $snapshot_a.append($(snapshot_img));
+    }
+}
+
+function handle_detach_volume(_id) {
+    var $detach_a = $("#detach_volume_" + _id);
+    if ($detach_a) {
+        $detach_a.hide();
+    }
+}
+
+function snapshot_refresh() {
+
+    $("#snapshot_div").children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody > tr").hide()
+    $("#snapshot_div").children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody").html("<tr><td colspan='8' style='text-align: center;'><div class='status_loading' style='left: 50%; margin-left: -50px;'></div><div>{% trans "Loading..." %}</div></td></tr>").initUI();
+
+    setTimeout(function () {
+        var maxH = $("#volume_div").parent().parent().parent().height();
+
+        var volume_H = $("#volume_div").height();
+        var old_H = $("#snapshot_div > form > div > .gridScroller").height();
+
+        $.ajax_no_cover({
+            cache:false,
+            url:'{% url 'get_snapshot_index' %}',
+            method:"get",
+            success:function (html) {
+                $("#snapshot_div").html(html).initUI();
+                $("#snapshot_div").find("[layoutH]").layoutH();
+            }
+        });
+    }, 3000);
+}
+</script>
+<script type="text/javascript">
+function checkAll(obj) {
+    $("input[name=delete_volume]").each(function () {
+        $(this).attr("checked", obj.checked);
+    })
+}
+function submitForm() {
+    var $checkedbox = $("input[name=delete_volume]:checked")
+    if ($checkedbox.length == 0) {
+        alertMsg.error('{% trans "Please select one!" %}')
+        return;
+    }
+    alertMsg.confirm("{% trans "Are you sure for deleting" %} " + $checkedbox.length + " {% trans "items" %}", {
+        okCall:function () {
+            volume_div_fresh($("#delete_volumes_form"));
+        }
+    });
+}
+
+
+function is_checkAll() {
+    var checkedbox = $("input[name=delete_volume]:checked").length
+    var allcheckbox = $("input[name=delete_volume]").length
+    if (checkedbox != allcheckbox) {
+        $("#check_all").attr("checked", false);
+    } else {
+        $("#check_all").attr("checked", true);
+    }
+
+}
+
+function delete_single_volume(volume_id) {
+    $("input[name=volume_id]").val(volume_id);
+    alertMsg.confirm("{% trans "Are you sure to delete this volume?" %}", {
+        okCall:function () {
+            validateCallback($('#delete_volume_form'), function (json) {
+                json.navTabId = ''
+                dialogAjaxDone(json);
+                if (json.statusCode == DWZ.statusCode.ok) {
+                    $("#volume_" + volume_id + " > td:eq(5)").html('<div class="status_loading"></div>' + '{% trans 'deleting' %}');
+                    $("#attach_volume_" + volume_id).hide();
+                    $("#snapshot_" + volume_id).hide();
+                    $("#delete_volume_" + volume_id).hide();
+                }
+            });
+        }
+    });
+}
+
+
+function volume_div_fresh(form) {
+    var old_H = $("#volume_div > form > div > .gridScroller").height();
+
+
+    var th_widths = new Array();
+
+    var $box = $("#volume_div");
+    $box.children(" form ").eq(1).find(" .grid > .gridHeader > .gridThead > table > thead > tr > th").each(function (i) {
+        th_widths.push($(this).width());
+    });
+
+    if (form) {
+        validateCallback(form, function (json) {
+            json.navTabId = ''
+            dialogAjaxDone(json);
+            if (json.statusCode == DWZ.statusCode.ok) {
+                $("#volume_div").children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody > tr").hide();
+                $("#volume_div").children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody").html("<tr><td colspan='8' style='text-align: center;'><div class='status_loading' style='left: 50%; margin-left: -50px;'></div><div>{% trans "Loading..." %}</div></td></tr>").initUI();
+
+                $.ajax_no_cover({
+                    url:'{% url 'get_volume_list_temp' %}',
+                    success:function (html) {
+                        $("#volume_div").html(html).initUI();
+                        $("#volume_div > form > div > .gridScroller").height(old_H);
+
+
+                        $box.children(" form ").eq(1).find(" .grid > .gridHeader > .gridThead > table > thead > tr > th").each(function (i) {
+
+                            if (i == th_widths.length - 1) {
+                                return;
+                            }
+                            $(this).width(th_widths[i]);
+
+                        });
+
+                        $box.children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody > tr:eq(0) > td ").each(function (i) {
+
+                            if (i == th_widths.length - 1) {
+                                return;
+                            }
+                            $(this).width(th_widths[i]);
+
+                        });
+                    }
+                });
+            }
+
+        });
+    }
+}
+
+function volume_div() {
+    var old_H = $("#volume_div > form > div > .gridScroller").height();
+
+    var th_widths = new Array();
+
+    var $box = $("#volume_div");
+    $box.children(" form ").eq(1).find(" .grid > .gridHeader > .gridThead > table > thead > tr > th").each(function (i) {
+        th_widths.push($(this).width());
+    });
+
+
+    $("#volume_div").children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody > tr").hide();
+    $("#volume_div").children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody").html("<tr><td colspan='8' style='text-align: center;'><div class='status_loading' style='left: 50%; margin-left: -50px;'></div><div>{% trans "Loading..." %}</div></td></tr>").initUI();
+
+    $.ajax_no_cover({
+        url:'{% url 'get_volume_list_temp' %}',
+        success:function (html) {
+            $("#volume_div").html(html).initUI();
+
+            $("#volume_div > form > div > .gridScroller").height(old_H);
+            $("#volume_div").find("layoutH").layoutH();
+
+            $box.children(" form ").eq(1).find(" .grid > .gridHeader > .gridThead > table > thead > tr > th").each(function (i) {
+
+                if (i == th_widths.length - 1) {
+                    return;
+                }
+                $(this).width(th_widths[i]);
+
+            });
+
+            $box.children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody > tr:eq(0) > td ").each(function (i) {
+
+                if (i == th_widths.length - 1) {
+                    return;
+                }
+                $(this).width(th_widths[i]);
+
+            });
+        }
+    });
+}
+
+function detach_volume(volume_id, instance_id) {
+    var url = '{% url "handle_detach_volume" "#volume_id#" "#instance_id#" %}';
+    alertMsg.confirm("{% trans "Are you sure to detach the volume?" %}", {
+        okCall:function () {
+            if (instance_id == 'None') {
+                instance_id = $("#detach_volume_" + volume_id + " > a").attr("instance_id");
+            }
+            url = url.replace("#volume_id#", volume_id).replace("#instance_id#", instance_id);
+            $("#detach_volume_form").attr("action", url);
+            $("#detach_volume_form").submit();
+        }
+    });
+}
+
+
+function detachCallback(json) {
+    json.navTabId = "";
+    dialogAjaxDone(json);
+
+    if (json.statusCode == DWZ.statusCode.ok) {
+        var volume_id = json['volume_id'];
+        var div = $("#volume_" + volume_id + " td:eq(5)").html("<div class='status_loading'></div>" + "{% trans 'detaching' %}");
+        $("#attach_volume_" + volume_id).hide();
+        $("#detach_volume_" + volume_id).hide();
+        $("#delete_volume_" + volume_id).hide();
+        $("#snapshot_" + volume_id).hide();
+    }
+}
+
+function divSearch(form, divId) {
+    var $form = $(form);
+    var old_H = $("#volume_div > form > div > .gridScroller").height();
+
+    var th_widths = new Array();
+
+    var $box = $("#volume_div");
+    $box.children(" form ").eq(1).find(" .grid > .gridHeader > .gridThead > table > thead > tr > th").each(function (i) {
+        th_widths.push($(this).width());
+    });
+    var ajaxbg = $("#background,#progressBar");
+    if (ajaxbg) {
+        ajaxbg.show();
+    }
+
+    $.ajax({
+        url:$form.attr("action"),
+        method:"get",
+        data:$form.serializeArray(),
+        global:false,
+        success:function (html) {
+            $("#" + divId).html(html).initUI();
+            $("#volume_div > form:eq(1) > div > .gridScroller").height(old_H);
+            $box.children(" form ").eq(1).find(" .grid > .gridHeader > .gridThead > table > thead > tr > th").each(function (i) {
+
+                if (i == th_widths.length - 1) {
+                    return;
+                }
+                $(this).width(th_widths[i]);
+
+            });
+
+            $box.children(" form ").eq(1).find(" .grid > .gridScroller > .gridTbody > table > tbody > tr:eq(0) > td ").each(function (i) {
+
+                if (i == th_widths.length - 1) {
+                    return;
+                }
+                $(this).width(th_widths[i]);
+
+            });
+            if (ajaxbg) {
+                ajaxbg.hide();
+            }
+        },
+        error:function () {
+            if (ajaxbg) {
+                ajaxbg.hide();
+            }
+        }
+    });
+    return false;
+}
+</script>
+<div id="volume_div">
+<form id="pagerForm" action="{% url "get_volume_list_temp" %}">
+    {% add_in_method 'get' %}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}"/>
+    <input type="hidden" name="numPerPage"
+           value="{{ page_obj.paginator.per_page }}"/>
+    <input type="hidden" name="volume_name" value="{{ volume_name }}"/>
+</form>
+<div class="panelBar" id="volume_head_panelBar_id">
+    <ul class="toolBar">
+        <li>
+            {% permission 'Create Volume' %}
+                <a class="add" target="dialog" width="590" height="330"
+                   href="{% url "create_volume_form" 'tenant' uuid %}"
+                   tmask="true"><span>{% trans "Create Volume" %}</span></a>
+            {% endpermission %}
+        </li>
+        {#            <li><a class="add" target="dialog" width="500" height="330"#}
+        {#                   href="{% url "get_volume_type_list" %}"#}
+        {#                   tmask="true"><span>{% trans "Create Volume Type" %}</span></a>#}
+        {#            </li>#}
+        {#            <li>#}
+        {#                <a class="delete" width="650" height="330"#}
+        {#                   onclick="submitForm()" id="delete_a"#}
+        {#                   href="javascript:void(0)"#}
+        {#                   tmask="true"><span>{% trans "Delete Volumes" %}</span></a>#}
+        {#            </li>#}
+        {#               <li>#}
+        {#                   <a class="delete" width="650" height="330" target="dialog"  href="{% url 'get_snapshot_index' %}"#}
+        {#                      tmask="true"><span>{% trans "Delete Volumes" %}</span></a>#}
+        {#               </li>#}
+        <div>
+            <form action="{% url "get_volume_list_temp" %}" method="get"
+                  onsubmit="return  divSearch(this,'volume_div')">
+                {% add_in_method 'get' %}
+                {% csrf_token %}
+                <span style="padding-left: 10px; padding-right: 5px; cursor: auto;">{% trans "Volume Name" %}：</span>
+                <input name="volume_name" type="text" class="textInput"
+                       maxlength="10" value="{{ volume_name }}">
+            </form>
+        </div>
+    </ul>
+</div>
+<form id="delete_volumes_form" action="{% url "delete_volumes" %}"
+      method="post"
+      class="pageForm required-validate">
+    {% add_in_method "delete" %}
+    {% csrf_token %}
+    <table class="table" width="100%" layoutH="75" id="volume_table">
+        <thead>
+        <tr>
+            {#                <th>#}
+            {#                    <div style="float: left; padding-top: 1px;"><input#}
+            {#                            type="checkbox" id="check_all" name="check_all"#}
+            {#                            onclick="checkAll(this)"/></div>#}
+            {#                    <div style="float: left; padding-top: 5px;">{% trans 'Check All' %}</div>#}
+            {#                </th>#}
+            <th>{% trans "Sequence Number" %}</th>
+            <th>{% trans 'Pertain Tenant' %}</th>
+            <th>{% trans 'Volume Name' %}</th>
+
+            <th>{% trans 'Volume Description' %}</th>
+            <th>{% trans "Volume Size" %}（G）</th>
+            <th>{% trans 'Volume Status' %}</th>
+            {#                <th>{% trans 'Volume Type' %}</th>#}
+            <th>{% trans 'Volume To Instance' %}</th>
+            <th>{% trans 'Action' %}</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for volume in page_obj.object_list %}
+            {#                <tr refresh="{% url get_volume_list %}">#}
+            <tr status="{{ volume.status_link }}"
+                id="volume_{{ volume.id }}">
+
+                {#                    <td align="center" upgrade="checkbox"><input type="checkbox"#}
+                {#                                                                 name="delete_volume"#}
+                {#                                                                 value="{{ volume.id }}"#}
+                {#                                                                 onclick="is_checkAll()"/>#}
+                {#                    </td>#}
+                <td align="center">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                <td>{% if volume.tenant == None %}
+                    {% trans 'No Tenant' %}{% else %}
+                    {{ volume.tenant.name }}{% endif %}</td>
+                <td><a href="{% url "get_volume_detail" volume.id %}"
+                       tmask="true" target="dialog"
+                       height="480">{{ volume.display_name }}</a></td>
+                <td>
+                    {% if volume.display_description == '' or volume.display_description == 'None' %}
+                        {% trans 'None' %}
+                    {% else %}
+                        {{ volume.display_description|truncatechars:30 }}
+                    {% endif %}
+
+                </td>
+                <td>{{ volume.size }}</td>
+                <td upgrade='status'>
+                    {% if volume.status != 'available' and volume.status != 'in-use' and volume.status != 'error' %}
+                        <div class="status_loading"></div>{% endif %}
+                    {% trans volume.status %}
+                </td>
+                {#                    <td>{{ volume.volume_type }}</td>#}
+                <td>
+                    {% if volume.instance_name == None %}
+                        {% trans 'None' %}
+                    {% else %}
+                        {{ volume.instance_name|truncatechars:10 }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% permission 'Delete Volume' %}
+                        {% if  volume.status == 'available' or volume.status == 'error' or volume.status == 'error-deleting' %}
+                            <a id="delete_volume_{{ volume.id }}"
+                               href="javascript:void(0)" tmask="true"
+                               onclick="delete_single_volume('{{ volume.id }}')"
+                               title="{% trans 'Delete Volume' %}">
+                                <img src="{{ STATIC_URL }}ui/images/delete.png"
+                                     title="{% trans 'Delete Volume' %}"
+                                     alt="{% trans 'Delete Volume' %}"/>
+                            </a>
+                        {% else %}
+                            <a id="delete_volume_{{ volume.id }}"
+                               href="javascript:void(0)" tmask="true"></a>
+                        {% endif %}
+                    {% endpermission %}
+
+                    {% permission 'Attach Volume' %}
+                        {% if volume.status == 'available' %}
+                            <a href="{% url "attach_volume_form" volume.tenant.id volume.id %}"
+                               id="attach_volume_{{ volume.id }}"
+                               tmask="true" target="dialog"
+                               title="{% trans "Attach Volume" %}"
+                               tenant="{{ volume.tenant.id }}">
+                                <img src="{{ STATIC_URL }}ui/images/attach_volume.png"
+                                     title="{% trans "Attach Volume" %}"
+                                     alt="{% trans "Attach Volume" %}"/>
+                            </a>
+                        {% else %}
+                            <a href="javascript:void(0);"
+                               id="attach_volume_{{ volume.id }}"
+                               tmask="true" target="dialog"
+                               tenant="{{ volume.tenant.id }}"
+                                    ></a>
+                        {% endif %}
+                    {% endpermission %}
+
+                    {% permission 'Detach Volume' %}
+                        {% if volume.status == 'in-use' %}
+                            <a href="javascript:void(0);" tmask="true"
+                               id="detach_volume_{{ volume.id }}"
+                               title="{% trans "Detach Volume" %}"
+                               instance_id=""
+                               onclick="detach_volume('{{ volume.id }}','{{ volume.instance_id }}')">
+                                <img src="{{ STATIC_URL }}ui/images/detach_volume.png"
+                                     title="{% trans "Detach Volume" %}"
+                                     alt="{% trans "Detach Volume" %}"/>
+                            </a>
+                        {% else %}
+                            <a id="detach_volume_{{ volume.id }}"
+                               href="javascript:void(0);" tmask="true"
+                               title="{% trans "Detach Volume" %}"
+                               alt="{% trans "Detach Volume" %}"
+                               instance_id="{{ volume.instance_id }}"></a>
+                        {% endif %}
+                    {% endpermission %}
+
+
+                    {% permission 'Create Volume Snapshot' %}
+                        {% if volume.status == 'available' %}
+                            {% if volume.tenant and volume.tenant.enabled %}
+                                <a href="{% url "create_volume_snapshot_form" volume.tenant.id volume.id %}"
+                                   id="snapshot_{{ volume.id }}"
+                                   tenant="{{ volume.tenant.id }}"
+                                   tmask="true" onmouseover=""
+                                   target="dialog"
+                                   title="{% trans 'Create Volume Snapshot' %}">
+                                    <img src="{{ STATIC_URL }}ui/images/snapshot.png"
+                                         title="{% trans 'Create Volume Snapshot' %}"
+                                         alt="{% trans 'Create Volume Snapshot' %}"/>
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <a href="javascript:void(0);"
+                               id="snapshot_{{ volume.id }}"
+                               tenant="{{ volume.tenant.id }}"
+                               tmask="true" onmouseover=""
+                               target="dialog"></a>
+                        {% endif %}
+                    {% endpermission %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</form>
+<form action="" method="post" id="detach_volume_form"
+      onsubmit="return iframeCallback(this,detachCallback)">
+    {% csrf_token %}
+    {% add_in_method "post" %}
+</form>
+<div class="panelBar" id="volume_panel_footer_id">
+    <div class="pages">
+        <span>{% trans 'Display' %}  </span>
+        <select class="combox" name="numPerPage"
+                onchange="divPageBreak({numPerPage:this.value},'volume_div')">
+            <option value="10"  {% if page_obj.paginator.per_page == 10 %}
+                    selected {% endif %} >10
+            </option>
+            <option value="20"  {% if page_obj.paginator.per_page == 20 %}
+                    selected {% endif %} >20
+            </option>
+            <option value="50"  {% if page_obj.paginator.per_page == 50 %}
+                    selected {% endif %} >50
+            </option>
+            <option value="100" {% if page_obj.paginator.per_page == 100 %}
+                    selected {% endif %} >100
+            </option>
+            <option value="200" {% if page_obj.paginator.per_page == 200 %}
+                    selected {% endif %} >200
+            </option>
+        </select>
+        <span> {% trans 'records' %}，{% trans 'total' %} {{ page_obj.paginator.count }} {% trans 'records' %}</span>
+    </div>
+    <div class="pagination" targetType="div"
+         totalCount="{{ page_obj.paginator.count }}"
+         numPerPage="  {{ page_obj.paginator.per_page }}"
+         pageNumShown="{{ page_obj.paginator.num_pages }}"
+         currentPage="{{ page_obj.number }}" rel="volume_div"></div>
+
+
+</div>
+</div>
+<div id="snapshot_div" style="height: 50%;">
+    <div class="panelBar">
+        {#        <ul class="toolBar">#}
+        {#            <li><a class="delete" width="583" height="330"#}
+        {#                   href="javascript:void(0)"#}
+        {#                   tmask="true"><span>{% trans "Delete Snapshots" %}</span></a>#}
+        {#            </li>#}
+        {#                           <div>#}
+        {#                              <form action="{% url "get_snapshot_index" %}" id="select_tenant_form">#}
+        {#                                  {% add_in_method 'get' %}{% csrf_token %}#}
+        {#                                  <span style="padding-left: 10px; padding-right: 5px; cursor: auto;"> {% trans "Select Tenant" %}:</span>#}
+        {#                                  <select class="combox" id="select_tenant" name="tenant_id">#}
+        {#                                      {% for key,value in tenants_dic.items %}#}
+        {#                                          <option value="{{ key }}" {% if key == tenant_id %} selected{% endif %} >{{ value }}</option>#}
+        {#                                      {% endfor %}#}
+        {#                                  </select>#}
+        {#                              </form>#}
+        {##}
+        {#                           </div>#}
+        {#        </ul>#}
+        <ul>
+            <li style="line-height:21px">
+                {% trans "Snapshot Manage" %}
+            </li>
+        </ul>
+    </div>
+    <form id="delete_snapshot_form" method="post" action=""
+          onsubmit="return iframeCallback(this,dialogAjaxDone)">
+        {% add_in_method "delete" %}
+        {% csrf_token %}
+    </form>
+
+    <form id="delete_snapshots_form" action="{% url "snapshots_delete" %}"
+          method="post"
+          onsubmit="return iframeCallback(this,dialogAjaxDone)"
+          class="pageForm required-validate">
+        {% add_in_method "delete" %}
+        {% csrf_token %}
+        <table class="table" width="100%" layoutH="75" id="snapshot_table">
+            <thead>
+            <tr>
+                {#                <th style="width: 35px">#}
+                {#                    <div style="float: left; padding-top: 1px;"><input#}
+                {#                            type="checkbox" id="ck_delete_snapshot"#}
+                {#                            /></div>#}
+                {#                    {% trans "Check All" %}#}
+                {#                </th>#}
+                <th>{% trans "Sequence Number" %}</th>
+                <th>{% trans 'Pertain Tenant' %}</th>
+                <th>{% trans 'Snapshot Name' %}</th>
+                <th>{% trans 'Snapshot Description' %}</th>
+                <th>{% trans "Snapshot Size" %}（G）</th>
+                <th>{% trans 'Snapshot Status' %}</th>
+                <th>{% trans 'Volume Name' %}</th>
+                <th>{% trans 'Action' %}</th>
+
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr>
+                <td colspan="8" style="text-align: center;">
+                    <div class="status_loading"
+                         style="left: 50%; margin-left: -50px;"></div>
+                    <div>{% trans "Loading..." %}</div>
+                </td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </form>
+
+</div>
+</div>
+
+</div>

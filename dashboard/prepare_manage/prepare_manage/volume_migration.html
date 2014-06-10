@@ -1,0 +1,322 @@
+{% load i18n%}
+{% load dashboard %}
+
+<style type="text/css">
+    .header_sty{
+        font-size:11px; height: 15%;
+        line-height: 38px;
+        padding-left:20px;
+        float: left;
+        width: 100%;
+        background: url('{{ STATIC_URL }}ui/images/instance/3_1.png') no-repeat;
+
+    }
+    .ins_header1{
+        float: left;
+        line-height: 10px;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left:32px;
+        width:136px;
+        text-align:center;
+    }
+    .ins_header2{
+        float: left;
+        line-height: 10px;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left:30px;
+        width:200px;
+        text-align:center;
+    }
+    .ins_header3{
+        float: left;
+        line-height: 10px;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left:32px;
+        width:160px;
+        text-align:center;
+    }
+    .searchRight input{
+        width:140px;
+    }
+
+    .quota_title {
+        color: rgb(153, 153, 153);
+        padding-bottom: 0px;
+        margin-bottom: 8px;
+        width:180px;
+    }
+
+    .quota-dynamic {
+        top: 70px;
+        right: 10px;
+        margin-top: 10px;
+        margin-left: 10px;
+
+    }
+    .clearfix {
+        width: 30%;
+    }
+    .pro_bar{
+
+    }
+
+    .quota_bar {
+        height: 15px;
+        margin: -8px 0 8px;
+        width:100%;
+        float: left;
+    }
+
+    .progress_bar {
+        height: 100%;
+        width: 85%;
+        border: 1px solid #CCC;
+        background-color: #CCC;
+    }
+    .progress {
+        overflow: hidden;
+        height: 18px;
+        margin-bottom: 18px;
+        background-color: rgb(247, 247, 247);
+        background-image: -moz-linear-gradient(center top , rgb(245, 245, 245), rgb(249, 249, 249));
+        background-repeat: repeat-x;
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1) inset;
+        border-radius: 4px 4px 4px 4px;
+    }
+    .progress-success.bar {
+        background-color: rgb(94, 185, 94);
+        background-image: -moz-linear-gradient(center top , rgb(98, 196, 98), rgb(87, 169, 87));
+        background-repeat: repeat-x;
+    }
+    .progress .bar {
+        width: 0%;
+        height: 18px;
+        color: rgb(255, 255, 255);
+        font-size: 12px;
+        text-align: center;
+        text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+        background-color: rgb(14, 144, 210);
+        background-image: -moz-linear-gradient(center top, rgb(20, 155, 223), rgb(4, 128, 190));
+        background-repeat: repeat-x;
+        box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+        -moz-box-sizing: border-box;
+        transition: width 0.6s ease 0s;
+    }
+
+    .progress .bar {
+        width: 0%;
+        height: 18px;
+        color: rgb(255, 255, 255);
+        font-size: 12px;
+        text-align: center;
+        text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+        background-color: rgb(14, 144, 210);
+        background-image: -moz-linear-gradient(center top, rgb(20, 155, 223), rgb(4, 128, 190));
+        background-repeat: repeat-x;
+        box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+        -moz-box-sizing: border-box;
+        transition: width 0.6s ease 0s;
+    }
+
+    .pageFormContent div .unit{
+        margin-top: 5px;margin-left: 10px;
+    }
+.instance_bg_img{
+    width: 119px;
+    height: 119px;
+    background-image: url("{{ STATIC_URL }}ui/images/icon_5.png");
+    float: left;
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+    .instance_bg_img1{
+        width: 119px;
+        height: 119px;
+        background-image: url("{{ STATIC_URL }}ui/images/icon_6.png");
+        float: left;
+        margin-top: 20px;
+        margin-left: 10px;
+    }
+
+.base_migration_div{
+    float: left;
+    margin-left: 10px;
+}
+
+    #quota_cpu,#quota_ram,#quota_disk{float: left;}
+</style>
+
+<script type="text/javascript">
+
+    function dialogAjaxDone_migration(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+
+                $.get("{% url "instance_migrate_suc" %}",function(data){
+                    $("#image_pageContent_id").css("height","90%");
+                    $("#image_pageContent_id").html(data).initUI();
+                    $("#image_pageContent_id > div ").height($("#image_pageContent_id").height());
+                });
+            }
+        }
+    }
+
+    function click_hosts(){
+        var _host = $("#host").val();
+        $.ajax({
+                   url:'{% url "get_instance_and_host" %}',
+                   type:'GET',
+                   data:{host_id:_host},
+                   global:false,
+                   success:function (data) {
+                       $("#base_migration").empty();
+                       $("#base_migration").hide();
+                       $("#host_body_instance").html(data).initUI();
+                       $("#host_body_instance").show();
+                   }
+               });
+    }
+
+    function instance_status(){
+        var _instance_id = $("#id_instance_id").val();
+
+        $.ajax({
+                   url:'{% url "get_instance_status" %}',
+                   type:'GET',
+                   data:{instance_id:_instance_id},
+                   global:false,
+                   success:function (response) {
+
+                       var _data = eval("(" + response + ")");
+                       var status = _data["instance_status"];
+                       if (status == 'ACTIVE'){
+                           $("#instance_pic").addClass("instance_bg_img1");
+                       }
+                   }
+               });
+
+    }
+</script>
+
+<div class="pageContent"  id="image_pageContent_id">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" id="form_create_id" action="{% url "handle_instance_migrate" resource_id %}" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone_migration);">
+
+        <div class="pageFormContent" layouth="70">
+            <div class="header_sty" style="clear:both;width: 95%;background-color: #d7dcde;background-position: left center;">
+                <div class="ins_header1" >{% trans 'Live Migrate' %}</div>
+                <div class="ins_header2" >{% trans 'Add Servers' %}</div>
+                <div class="ins_header3" >{% trans 'Finish' %}</div>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Host Name' %}</label>
+                <select name="host" class="" id="host" onchange="click_hosts();">
+{#                    {% for host in host_list %}#}
+{#                        <option value= {{ host.id }} >{{ host.hypervisor_hostname }}</option>#}
+{#                    {% endfor %}#}
+                    {% for key,value in form.fields.host.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="float: left;margin-top: 20px;">
+                <div id="instance_pic" class="instance_bg_img"></div>
+                <div id="base_migration" class="base_migration_div">
+
+
+                        <div>
+                            <label>
+                                {% trans 'Server Name' %}：</label>
+                            <select name="instance_id" class="" id="instance_id">
+                                <option value= '' >{% trans "Please select an instance." %}</option>
+                            </select>
+
+                        </div>
+                        <div>
+                        <div class="pro_bar quota-dynamic" id="pro_bar_refresh">
+                            <div style="width: 90%;">
+                                <div class="quota_title clearfix">
+                                    <span>CPU&nbsp;({{ hardware.vcpus }}/{{ hardware.vcpus_used }})</span>
+                                </div>
+                                <div id="quota_cpu" data-progress-indicator-for="instance_cpus" data-quota-limit="{{  hardware.vcpus_used }}"
+                                     data-quota-used="{{  hardware.vcpus }}" class="quota_bar">
+                                    {% creeper_progress_bar hardware.vcpus hardware.vcpus_used %}
+                                </div>
+                            </div>
+                            <div style="width: 90%;">
+                                <div class="quota_title clearfix">
+                                    <span>{% trans "RAM" %}&nbsp;({{ hardware.free_disk_gb }}/{{ hardware.disk_available_least }})</span>
+                                </div>
+                                <div id="quota_ram" data-progress-indicator-for="instance_ram" data-quota-limit="{{  hardware.disk_available_least }}"
+                                     data-quota-used="{{  hardware.free_disk_gb }}" class="quota_bar">
+                                    {% creeper_progress_bar hardware.free_disk_gb hardware.disk_available_least %}
+                                </div>
+                            </div>
+                            <div style="width: 90%;">
+                                <div class="quota_title clearfix">
+                                    <span>{% trans "DISK" %}&nbsp;({{ hardware.memory_mb_used }}/{{ hardware.memory_mb }}){% trans "MB" %}</span>
+                                </div>
+                                <div id="quota_disk" data-progress-indicator-for="instance_disk" data-quota-limit="{{  hardware.memory_mb }}"
+                                     data-quota-used="{{  hardware.memory_mb_used }}" class="quota_bar">
+                                    {% creeper_progress_bar hardware.memory_mb_used hardware.memory_mb %}
+                                </div>
+                            </div>
+                                {# Network ips#}
+                                <div style="width: 90%;">
+                                <div class="quota_title clearfix">
+                                    <span>{% trans "Network" %}&nbsp;({{ hardware.memory_mb_used }}/{{ hardware.memory_mb }}){% trans "MB" %}</span>
+                                </div>
+                                <div id="quota_ips" data-progress-indicator-for="instance_ips" data-quota-limit="{{  hardware.memory_mb }}"
+                                     data-quota-used="{{  hardware.memory_mb_used }}" class="quota_bar">
+                                    {% creeper_progress_bar hardware.memory_mb_used hardware.memory_mb %}
+                                </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="host_body_instance" style="display: none;float:left;">
+
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive" id="btnActiveSubmit1">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="button" id="btnActCancel">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

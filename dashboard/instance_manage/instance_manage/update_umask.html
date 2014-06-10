@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load dashboard %}
+
+<Table align="center" width="100%" height="100%" valign="middle">
+    <tr><td align="center">
+        {% trans "Are you sure for update the instance umask?" %}</td></tr>
+    <tr><td align="center">
+        <form action="{% url "update_instance_umask" instance_id umask %}" method="post" onsubmit="return iframeCallback(this,dialogAjaxDone);">
+            {% csrf_token %}
+            <input type="submit" value={% trans "Submit" %} />
+            <input type="button" onclick="$.pdialog.closeCurrent()" value={% trans "Cancel" %} />
+        </form>
+    </tr>
+</Table>

@@ -1,0 +1,122 @@
+
+{% load i18n %}
+<script type="text/javascript">
+    function image_update_space_back(){
+        var _image_name=$("#image_name").val();
+        var _min_disk = $("#min_disk").val();
+        var _min_ram  = $("#min_ram").val();
+        if(_image_name.indexOf(" ")!=-1){
+            alertMsg.error('{% trans 'Name' %}{% trans 'Contains one or multiple Spaces,Please enter again!' %}');
+            return false;
+        }else if(_min_disk > 30){
+            alertMsg.error("{% trans 'Image disk value is too big! not in (15~30).' %}");
+            return false;
+        }else if(_min_disk < 15){
+            alertMsg.error("{% trans 'Image disk value is too short! not in (15~30).' %}");
+            return false;
+        }else if(_min_ram < 512){
+            alertMsg.error("{% trans 'Image ram value is too short! not in (512~16384).' %}");
+            return false;
+        }else if(_min_ram > 16384){
+            alertMsg.error("{% trans 'Image ram value is too big! not in (512~16384).' %}");
+            return false;
+        }else{
+            return validateCallback($("#image_update_form"),dialogAjaxDone);
+            return true;
+        }
+    }
+    function ajax_disk_ram(){
+        var _min_disk = $("#min_disk").val();
+        var _min_ram  = $("#min_ram").val();
+
+
+    }
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form id="image_update_form" method="post" action="{% url "update_image_template" image_id %}" class="pageForm required-validate"
+          onsubmit="return image_update_space_back();">
+        <input type="hidden" id="image_id" name="image_id" value="{{ image_id }}}">
+        {% include 'user_manage/_update.html' %}
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+
+                <input type="text" name="name" size="30" minlength="2" maxlength="10" class="required" id="image_name"
+                        {% if form.fields.name.initial %}
+                            value = {{ form.fields.name.initial }}
+                        {% endif %}
+                        />
+
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Disk Format' %}：</label>
+                <input type="text" name="disk_format" value="{{ form.fields.disk_format.initial }}" style="border:0px;" readonly="readonly" />
+{#                <select name="disk_format">#}
+{#                    {{ form.fields.disk_format.initial }}#}
+{#                    {% for key,value in form.fields.disk_format_list.choices %}#}
+{#                        <option {% if key == form.fields.disk_format.initial %}selected = "selected"{% endif %} value= {{ key }} >{{ value }}</option>#}
+{##}
+{#                    {% endfor %}#}
+
+                </select>
+
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans "Min Disk (GB)" %}：</label>
+
+                <input type="text" id="min_disk" name="min_disk" size="30" minlength="2" maxlength="2" class="required digits"
+                        {% if form.fields.min_disk.initial %}
+                            value = {{ form.fields.min_disk.initial }}
+                        {% endif %}
+                        />
+
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans "Min Ram (MB)" %}：</label>
+                <input type="text" id="min_ram" name="min_ram" size="30" minlength="3" maxlength="5" class="required digits"
+                        {% if form.fields.min_ram.initial %}
+                            value = {{ form.fields.min_ram.initial }}
+                        {% endif %}
+                        />
+
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Public' %}：</label>
+
+                <input type="checkbox"  name="enabled" id="enabled"
+                        {% if form.fields.enabled.initial and form.fields.enabled.initial != 'None' %}
+                       checked="checked"
+                        {% endif %}
+                        />
+
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit" id="sub_btn">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+

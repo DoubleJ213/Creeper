@@ -1,0 +1,55 @@
+
+{% load i18n %}
+{% load dashboard %}
+
+<style type="text/css">
+    .unit_div_1 {
+        width: 120px;
+        float: left;
+    }
+    .unit_div_2{
+        line-height: 25px;
+        float: left;
+    }
+</style>
+<div class="pageContent"  id="image_pageContent_id">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url 'resume_task' %}" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+
+        <div class="pageFormContent" layouth="65">
+            <h2 style="text-align: center;">您的申请已过期，请确定要重新提交此申请。</h2>
+            <hr style="border: 1px solid #000000"/>
+            <input type="hidden" id="task_id" name="task_id" value="" />
+            <div class="unit">
+                <label>
+                    {% trans "Task Name" %}：</label>
+                <textarea name="check_comment" size="30" cols="29"  style="resize: none;width: 300px;height: 120px;" minlength="6" maxlength="400"  class="required"></textarea>
+            </div>
+
+        </div>
+        {% csrf_token %}
+                <div class="formBar">
+                    <ul>
+                        <li>
+                            <div class="buttonActive" id="btnActiveSubmit1">
+                                <div class="buttonContent">
+                                    <button type="submit" value="submit">
+                                        {% trans "Submit" %}</button></div>
+                            </div>
+                        </li>
+                        <li>
+
+                            <div class="button">
+                                <a target="dialog"
+                                   style="white-space: nowrap; text-overflow: ellipsis;overflow: hidden;width: 100px;display: block;"
+                                   title="{% trans task.name %}" width="600" height="400" href="{% url 'task_action' task_id 'edit' %}">
+                                    <div class="buttonContent">
+                                        {% trans "Cancel" %}</div>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+    </form>
+</div>
+

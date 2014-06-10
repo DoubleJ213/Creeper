@@ -1,0 +1,437 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=7"/>
+<script type="text/javascript">
+var popup = $("#popup");
+var networkOutValue = 0;
+var networkInValue = 0;
+var _status_info = null;
+var node_name = "{{ host_name }}";
+var template = {
+    width:360,
+    height:310,
+    radius:"auto",
+    value:0,
+    max:100,
+    min:0,
+    startAngle:300,
+    sweepAngle:300,
+    origin:{x:0.5, y:0.5},
+    labels:{
+        style:{
+            "font-size":15,
+            fill:"#000",
+            stroke:"none"
+        },
+        offset:40
+    },
+    pointer:{
+        length:0.8,
+        width:4,
+        style:{ fill:"180-rgb(255,255,255)", stroke:"rgb(255,255,255)", "stroke-width":1.5 }
+    },
+    cap:{
+        style:{
+            fill:"270-#777d8d-#555b6b",
+            stroke:"#555b6b"
+        }
+    },
+    tickMajor:{
+        factor:4,
+        offset:44,
+        interval:10,
+        position:"inside",
+        style:{ fill:"#555b6b", stroke:"#555b6b", "stroke-width":4 }
+    },
+    tickMinor:{
+        visible:true,
+        offset:44,
+        interval:5,
+        factor:1.5,
+        position:"inside",
+        style:{ fill:"#606779", stroke:"#606779", "stroke-width":1.5 }
+    },
+    face:{
+        style:{},
+        template:function (ui) {
+            var set = ui.canvas.set();
+            var circle = ui.canvas.circle(ui.origin.x, ui.origin.y, ui.r);
+            circle.attr({ "stroke":"#8f8f8f", "stroke-width":3, fill:"#e2e2e2" });
+            set.push(circle);
+            var circle2 = ui.canvas.circle(ui.origin.x, ui.origin.y, ui.r - 14);
+            circle2.attr({ "stroke":"#717171", "stroke-width":2, fill:"270-#a6a6a6-#efefef" });
+            set.push(circle2);
+            return set;
+        }
+    },
+    ranges:[
+        {
+            startWidth:7,
+            endWidth:7,
+            startValue:0,
+            endValue:100,
+            startDistance:0.50,
+            endDistance:0.50,
+            style:{
+                fill:"#555b6b", stroke:"none"
+            }
+        },
+        {
+            startWidth:7,
+            endWidth:7,
+            startValue:40,
+            endValue:60,
+            startDistance:0.45,
+            endDistance:0.45,
+            style:{
+                fill:"90-rgb(248,255,1)-rgb(248,255,39)", stroke:"rgb(249,255,73)", "stroke-width":1.5
+            }
+        },
+        {
+            startWidth:7,
+            endWidth:7,
+            startValue:60,
+            endValue:80,
+            startDistance:0.45,
+            endDistance:0.45,
+            style:{
+                fill:"90-rgb(255,158,1)-rgb(255,177,53)", stroke:"rgb(255,195,101)", "stroke-width":1.5
+            }
+        },
+        {
+            startWidth:7,
+            endWidth:7,
+            startValue:80,
+            endValue:100,
+            startDistance:0.45,
+            endDistance:0.45,
+            style:{
+                fill:"180-rgb(255,15,3)-rgb(212,10,0)", stroke:"rgb(255,15,3)", "stroke-width":1.5
+            }
+        }
+    ]
+};
+
+function refreshIcon(flag) {
+    var target = $("#switch_info");
+    $.ajax({
+        type:"GET",
+        url:"{% url "get_node_monitor_info_item" node_uuid 'check_status' %}",
+        dataType:"json",
+        global:false,
+        success:function (data) {
+            if ("name" in data && !node_name) {
+                node_name = data["name"];
+            }
+            delete data["name"];
+            for (var id in data) {
+                status = data[id];
+            }
+            if (flag) {
+                _status_info = status;
+                target.addClass(status == "online" ? "on" : "off");
+            } else if (status != _status_info) {
+                _status_info = status;
+                target.removeClass(status == "online" ? "off" : "on");
+                target.removeClass(status == "online" ? "na" : "on");
+                target.addClass(status == "online" ? "on" : "na");
+            }
+        },
+        error:DWZ.ajaxError
+    });
+}
+
+function bobble(type, level) {
+    if (level == "OK" || level == "FINE") {
+        return;
+    }
+
+    var msg = null;
+    var header = null;
+    if (type == "CPU") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'CPU usage reached the warning threshold.' %}" :
+                "{% trans 'CPU usage reached the critical threshold.' %}");
+    } else if (type == "Memory") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'Memory usage reached the warning threshold.' %}" :
+                "{% trans 'Memory usage reached the critical threshold.' %}");
+    } else if (type == "DiskSpace") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'Disk left space reached the warning threshold.' %}" :
+                "{% trans 'Disk left space usage reached the critical threshold.' %}");
+    } else if (type == "DiskIO") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'Disk IO reached the warning threshold.' %}" :
+                "{% trans 'Disk IO  reached the critical threshold.' %}");
+    } else if (type == "Network") {
+        header = level;
+        msg = (level == "WARNING" ? "{% trans 'Network usage reached the warning threshold.' %}" :
+                "{% trans 'Network usage reached the critical threshold.' %}");
+    } else {
+        if (window.console) console.log("Error type!");
+    }
+
+    popup.jGrowl(node_name + msg, {
+        theme:'flora',
+        header:header,
+        sticky:true,
+        closer:false,
+        beforeOpen:function (e, m, o) {
+            var bobbles = $(".jGrowl-notification.ui-state-highlight.ui-corner-all.flora", popup);
+            var length = bobbles.length;
+            var bobble = null;
+            for (var i = 0; i < length; i++) {
+                if ($(".jGrowl-message", bobbles[i]).html() == m) {
+                    bobble = bobbles[i];
+                    break;
+                }
+            }
+
+            return bobble == null;
+        }
+    });
+}
+
+
+$(document).ready(function () {
+    $("#cpu").wijradialgauge(template);
+    $("#network_in").wijradialgauge(template);
+    $("#disk").wijradialgauge(template);
+    $("#memory").wijradialgauge(template);
+    $("#network_out").wijradialgauge(template);
+    template.labels.format = function (value) {
+        return (value / 10) + "K";
+    };
+    template.labels.style['font-size'] = 13;
+    template.labels.offset = 44;
+    $("#disk_io").wijradialgauge(template);
+
+    loadAllServiceStatus();
+});
+
+
+function loadAllServiceStatus() {
+    if (global_ws) {
+        global_ws.close();
+        global_ws = null;
+    }
+    var uri = "{{ websock_uri }}";
+    global_ws = new Websock();
+    global_ws.open(uri);
+    global_ws.on('open', function () {
+        global_ws.send_string("{{ host_id }}");
+    });
+    global_ws.on('message', function () {
+        global_ws.send_string("{{ host_id }}");
+        var data = eval("(" + global_ws.rQshiftStr() + ")");
+        var cpu = data['CPU'];
+        var mem = data['MEM'];
+        var net = data['NET'];
+        var disk = data['DISK'];
+        var io = data['IO'];
+        var services = data['SERVICE'];
+
+        var hostStatus = data['HOST'];
+        performCPU(cpu);
+        performMem(mem);
+        performDisk(disk);
+        performIO(io);
+        performNetWork(net);
+        performService(services);
+    });
+    global_ws.on('close', function () {
+        if (global_ws) {
+            global_ws.close();
+        }
+        global_ws = null;
+    });
+}
+
+function performHOST(data) {
+    var target = $("#switch_info");
+    if (!_status_info) {
+        _status_info = data;
+        target.addClass(data == "online" ? "on" : "off");
+    } else if (data != _status_info) {
+        _status_info = data;
+        target.removeClass(data == "online" ? "off" : "on");
+        target.removeClass(data == "online" ? "na" : "on");
+        target.addClass(data == "online" ? "on" : "na");
+    }
+}
+
+function performCPU(data) {
+    var value = data['cpu_usage'];
+    var cpu_status = data['status'];
+    if (!value) {
+        value = 0;
+    }
+    if (cpu_status) {
+        bobble("CPU", cpu_status);
+    }
+    $("#cpu").wijradialgauge("option", {value:value});
+}
+
+function performNetWork(data) {
+    var network_status = data['status'];
+    if (network_status) {
+        bobble("Network", network_status);
+    }
+    var inValue = 0;
+    var outValue = 0;
+    for (var key in data) {
+        if (key == "status") continue;
+        tmp = data[key]['in'];
+        if (tmp.indexOf('Mb') > 0) {
+            inValue += (parseFloat(tmp) / 8);
+        } else if (tmp.indexOf('Kb') > 0) {
+            inValue += parseFloat(tmp) / (8 * 1024);
+        } else {
+            inValue += parseFloat(tmp) / (8 * 1024 * 1024);
+        }
+        tmp = data[key]['out'];
+        if (tmp.indexOf('Mb') > 0) {
+            outValue += (parseFloat(tmp) / 8);
+        } else if (tmp.indexOf('Kb') > 0) {
+            outValue += parseFloat(tmp) / (8 * 1024);
+        } else {
+            outValue += parseFloat(tmp) / (8 * 1024 * 1024);
+        }
+    }
+    $("#network_in").wijradialgauge("option", {value:inValue});
+    $("#network_out").wijradialgauge("option", {value:outValue});
+}
+
+function performMem(data) {
+    var value_used = parseFloat(data['used']);
+    var value_total = parseFloat(data['total']);
+    var mem_status = parseFloat(data['status']);
+    var percentage = (value_used * 100 / value_total).toFixed(1);
+    $("#memory").wijradialgauge("option", {value:percentage});
+    if (mem_status) {
+        bobble("Memory", mem_status);
+    }
+}
+
+function performDisk(data) {
+    var value_used = 0;
+    var value_total = 0;
+    var disk_status = data['status'];
+    if (disk_status) {
+        bobble("DiskSpace", disk_status);
+    }
+    delete data['status'];
+    for (var d in data) {
+        var t = data[d];
+        value_total += parseInt(t['total']);
+        value_used += parseInt(t['used']);
+    }
+    var percentage = (value_used * 100 / value_total).toFixed(1);
+    $("#disk").wijradialgauge("option", {value:percentage});
+}
+
+function performIO(data) {
+    var disk = null;
+    var disk_status = data['status'];
+    if (disk_status) {
+        bobble("DiskIO", disk_status);
+    }
+    delete data['status'];
+    var all = 0;
+    for (var d in data) {
+        all += parseInt(data[d]['tps']);
+    }
+    $("#disk_io").wijradialgauge("option", {value:all / 1000});
+}
+
+function performService(data) {
+    for (var i in data) {
+        var icon_id = i.replace(' ', '_');
+        var icon_element = $("#" + icon_id);
+        var active_class = icon_id + "_true";
+        var inactive_class = icon_id + "_false";
+        if (data[i].status == "OK" && data[i].is_active) {
+            if (icon_element.hasClass(inactive_class)) {
+                icon_element.removeClass(inactive_class);
+            }
+            if (icon_element.hasClass("service_status_loading")) {
+                icon_element.removeClass("service_status_loading");
+            }
+            icon_element.addClass(active_class);
+        }
+        else {
+            if (icon_element.hasClass(active_class)) {
+                icon_element.removeClass(active_class);
+            }
+            if (icon_element.hasClass("service_status_loading")) {
+                icon_element.removeClass("service_status_loading");
+            }
+            icon_element.addClass(inactive_class);
+        }
+    }
+}
+
+</script>
+
+<div class="pageContent" style="height: 860px;min-width: 1178px; _width:1178px;overflow: hidden" >
+    <div style="height: 100%; width:100%" id="content_subject" overflow="hidden">
+        <div class="gauge">
+            <fieldset>
+                <legend class="title">{% trans 'CPU Usage(%)' %}</legend>
+                <div id="cpu">
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend class="title">{% trans 'Memory Usage(%)' %}</legend>
+                <div id="memory">
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend class="title">{% trans 'Disk Usage(%)' %}</legend>
+                <div id="disk">
+                </div>
+            </fieldset>
+        </div>
+        <div class="gauge">
+            <fieldset>
+                <legend class="title">{% trans 'NetWork In (MB per second)' %}</legend>
+                <div id="network_in">
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend class="title">{% trans 'NetWork Out (MB per second)' %}</legend>
+                <div id="network_out">
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend class="title">{% trans 'Disk IO(TPS)' %}</legend>
+                <div id="disk_io">
+                </div>
+            </fieldset>
+        </div>
+        <div class="service_info">
+            <fieldset style="float: left; width: 1092px;">
+                <legend class="title">{% trans 'Services status' %}</legend>
+                <div class="service_top">
+                    <div class="service_icon service_status_loading"
+                         id="dns_service">{% trans 'dns service' %}</div>
+                    <div class="service_icon service_status_loading"
+                         id="network_service">{% trans 'network service' %}</div>
+                    <div class="service_icon service_status_loading"
+                         id="database_service">{% trans 'database service' %}</div>
+                    <div class="service_icon service_status_loading"
+                         id="authorize_service">{% trans 'authorize service' %}</div>
+                    <div class="service_icon service_status_loading"
+                         id="compute_service">{% trans 'compute service' %}</div>
+                    <div class="service_icon service_status_loading"
+                         id="volume_service">{% trans 'volume service' %}</div>
+                    <div class="service_icon service_status_loading"
+                         id="rabbitmq_service">{% trans 'rabbitmq service' %}</div>
+                    <div class="service_icon service_status_loading"
+                         id="schedule_service">{% trans 'schedule service' %}</div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>

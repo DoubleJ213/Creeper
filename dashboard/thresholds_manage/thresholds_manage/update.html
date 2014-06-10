@@ -1,0 +1,50 @@
+{% load i18n %}
+{% load dashboard %}
+<script type="text/javascript">
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "update_thresholds" %}"
+          id="update_thresholds_action" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        {% csrf_token %}
+        <input type="hidden" name="threshold_type"
+               value="{{ threshold.type_id }}">
+
+        <div class="pageFormContent" layouth="58">
+            <div class="unit">
+                    <strong>{% trans 'Current active strategy' %}： {% trans enable_data %}</strong>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'New Strategy' %}：</label>
+                <select id="new_strategy" name="new_strategy">
+                    {% for key, value in ui_data.items %}
+                        <option value="{{ value }}">{% trans key %}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+

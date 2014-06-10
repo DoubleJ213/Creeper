@@ -1,0 +1,149 @@
+
+{% load i18n %}
+{% load dashboard %}
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <div class="pageFormContent" layouth="58">
+
+        <!--  <h4>{% trans "Info" %}</h4>-->
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Pertain Tenant" %}：</label>
+            {{ image.tenant|default:"Unknown" }}
+        </div>
+
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Name" %}：</label>
+            {{ image.name|default:"None" }}
+        </div>
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Status" %}：</label>
+{#            {{ image.status|default:"Unknown"|title }}#}
+            {% if image.status == 'saving' %}
+                {% trans 'Saving' %}
+            {% elif image.status == 'queued' %}
+                {% trans 'Queued' %}
+            {% elif image.status == 'active' %}
+                {% trans 'Active' %}
+            {% else %}
+                {% trans image.status %}
+            {% endif %}
+        </div>
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Public" %}：</label>
+            {% if image.is_public == True %}{% trans 'True' %}{% else %}{% trans 'False' %}{% endif %}
+        </div>
+{#        <div class="unit" style="line-height: 21px;">#}
+{#            <label>#}
+{#                {% trans "Checksum" %}：</label>#}
+{#            {{ image.checksum }}#}
+{#        </div>#}
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Created" %}：</label>
+            {{ image.created_at|datetime_from_utctime|default:"Unknown" }}
+        </div>
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Updated" %}：</label>
+            {{ image.updated_at|datetime_from_utctime|default:"Never updated" }}
+        </div>
+
+
+        <!--     <h4>{% trans "Specs" %}</h4>-->
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Size" %}：</label>
+            {{ image.size|filesizeformat }}
+        </div>
+
+{#        <div class="unit" style="line-height: 21px;">#}
+{#            <label>#}
+{#                {% trans "Container Format" %}：</label>#}
+{#            {{ image.container_format|default:"None"|upper }}#}
+{#        </div>#}
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Disk Format" %}：</label>
+            {{ image.disk_format|default:"None"|upper }}
+        </div>
+
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Min Disk (GB)" %}：</label>
+            {{ image.min_disk }}
+        </div>
+        <div class="unit" style="line-height: 21px;">
+            <label>
+                {% trans "Min Ram (MB)" %}：</label>
+            {{ image.min_ram }}
+        </div>
+
+        <!--<h4>{% trans "Custom Properties" %}</h4>-->
+
+        {% if image.properties.architecture %}
+            <div class="unit" style="line-height: 21px;">
+                <label>
+                    {% trans "Architecture" %}：</label>
+                {{ image.properties.architecture }}
+            </div>
+        {% endif %}
+
+        {% if image.properties.kernel_id %}
+            <div class="unit" style="line-height: 21px;">
+                <label>
+                    {% trans "Kernel ID" %}：</label>
+                {{ image.properties.kernel_id }}
+            </div>
+        {% endif %}
+
+        {% if image.properties.ramdisk_id %}
+            <div class="unit" style="line-height: 21px;">
+                <label>
+                    {% trans "Ramdisk ID" %}：</label>
+                {{ image.properties.ramdisk_id }}
+            </div>
+        {% endif %}
+
+        {% if image.properties.image_state %}
+            <div class="unit" style="line-height: 21px;">
+                <label>
+                    {% trans "Euca2ools state" %}：</label>
+                {{ image.properties.image_state }}
+            </div>
+        {% endif %}
+
+        {% if image.properties.project_id %}
+            <div class="unit" style="line-height: 21px;">
+                <label>
+                    {% trans "Project ID" %}：</label>
+                {{ image.properties.project_id }}
+            </div>
+        {% endif %}
+
+        {% if image.properties.image_type %}
+            <div class="unit" style="line-height: 21px;">
+                <label>
+                    {% trans "Image Type" %}：</label>
+                {{ image.properties.image_type }}
+            </div>
+        {% endif %}
+{##}
+{#        <div class="unit" style="line-height: 21px;">#}
+{#            <label>#}
+{#                {% trans "Action" %}：</label>#}
+{#            <a target="dialog"   href="{% url "delete_image_form" image.id %}" tmask="true">{%  trans 'Del' %}</a>#}
+{#            <a  target="dialog"  href="{% url "update_image_form" image.id %}" tmask="true">{% trans 'Update' %}</a>#}
+{##}
+{#        </div>#}
+
+
+    </div>
+
+</div>
+

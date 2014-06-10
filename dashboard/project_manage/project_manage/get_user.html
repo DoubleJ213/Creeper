@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load dashboard %}
+
+<script type="text/javascript">
+    $(document).ready(function (){
+        if($("#project_tree_li_id_old")){
+            $("#project_tree_li_id_old").val('');
+        }
+    });
+</script>
+
+<div class="pageContent listContent">
+    <div class="panelBar">
+        <ul>
+            <li style="line-height: 23px;">{% trans 'Get Project User' %}</li>
+        </ul>
+    </div>
+    <table class="table" width="100%" layoutH="75">
+        <thead>
+        <tr>
+            <th>{% trans 'Sequence Number' %}</th>
+            <th>{% trans 'User Name' %}</th>
+            <th>{% trans 'Email' %}</th>
+            <th>{% trans 'Role' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user, role_name in user_roles %}
+            <tr>
+                <td align="center">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ role_name }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+

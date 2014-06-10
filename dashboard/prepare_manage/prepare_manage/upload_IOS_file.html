@@ -1,0 +1,36 @@
+{% load i18n %}
+{% load dashboard %}
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="pageFormContent" layouth="58">
+        <table style="background-color: #ffffff; width:auto;height: 60%;margin-left: 10%;">
+            <tr>
+                <td colspan="2">{% trans "There is a system ISO file, whether to create image?" %}</td>
+            </tr>
+            <tr>
+                <td><div class="button">
+                    <a target="dialog" title="{% trans 'CreateImages' %}" width="700" height="500"
+                       href="{% url "create_image_form_page" img_obj_id=None page_id='1' %}"
+                       tmask="true"
+                       style="text-decoration: none">
+                        <div class="buttonContent">
+                            {% trans "CreateImages" %}</div>
+                    </a>
+                </div></td>
+                <td>
+                    <div class="button">
+                        <a target="dialog"  title="{% trans 'ActiveAndStart' %}" width="700" height="500"
+                           href="{% url "launch_form_image_index" image_id=None img_obj_id=sw_obj_id page_id='instance' %}"
+                           tmask="true"  >
+                            <div class="buttonContent">
+                                {% trans "ActiveAndStart" %}</div>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>

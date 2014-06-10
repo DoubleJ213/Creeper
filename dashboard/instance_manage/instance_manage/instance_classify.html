@@ -1,0 +1,86 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+<style>
+    .ins_classify span.error{
+        top:0px;
+    }
+</style>
+<div class="pageContent">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="panelBar">
+        <ul class="toolBar">
+
+            <li><a class="add" target="dialog" width="650" height="330" href="{% url "instance_classify_new" %}"
+                   tmask="true"><span>{% trans "Add" %}</span></a>
+            </li>
+        </ul>
+    </div>
+    <form action="{% url "select_instance_classify" instance_id=instance_id %}" class="pageForm required-validate"
+          method="post" onsubmit="return validateCallback(this, dialogAjaxDone);">
+        {% csrf_token %}
+        <div class="pageFormContent" layouth="78">
+            <table class="table" width="100%">
+                <thead>
+                    <tr>
+                        <th>{% trans "Select" %}</th>
+                        <th>{% trans "Instantce Classify Name" %}</th>
+                        <th>{% trans "Action" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for classify_id,classify_name in classifys.items %}
+                        <tr>
+                            <td class="ins_classify">
+                                <input type="radio" name="classify_id" value="{{ classify_id }}"
+                                    {% if classify_id == old_classify_id %}checked{% endif %} class="required">
+                            </td>
+                            <td>{{ classify_name }}</td>
+                            <td>
+                                {% permission 'Instance Classify' %}
+                                    <a href="{% url "instance_classify_update" classify_id=classify_id %}"
+                                        target="dialog" title="{% trans 'Update' %}">
+                                        <img src="{{ STATIC_URL }}ui/images/edit.png" title="{% trans 'Update' %}">
+                                    </a>
+                                {% endpermission %}
+
+                                {% permission 'Instance Classify' %}
+                                    <a href="{% url "instance_classify_delete" classify_id=classify_id %}" target="dialog"
+                                        tmask="true" title="{% trans "Delete" %}" width="250" height="150">
+                                        <img src="{{ STATIC_URL }}ui/images/delete.png" title="{% trans "Delete" %}">
+                                    </a>
+                                {% endpermission %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        <div class="formBar">
+            <ul>
+                {% if classifys|length != 0 %}
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                {% endif %}
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

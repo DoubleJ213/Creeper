@@ -1,0 +1,77 @@
+{% load i18n %}
+{% load dashboard %}
+
+<div class="pageContent">
+
+    <script type="text/javascript">
+        function snapshotCallback(json){
+            dialogAjaxDone(json);
+
+            if(json.statusCode==DWZ.statusCode.ok){
+{#                var tabId='{% trans 'Snapshot Manage' %}';#}
+{#                navTab.openTab_cover(tabId,'{% url 'get_snapshot_index' %}',{title:tabId, fresh:true, external:false})#}
+                snapshot_refresh();
+            }
+        }
+
+
+        $(function(){
+            $("#snapshot_sub").bind("click",function(){
+                var snapshot_name = $("input[name=name]",$("#snapshot_form")).val();
+                if(snapshot_name.indexOf(" ")>=0){
+                    alertMsg.error('{% trans 'Contains one or multiple Spaces,Please enter again!' %}');
+                    return;
+                }
+                $("#snapshot_form").submit();
+            })
+        })
+
+    </script>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<form method="post" action="{% url "create_volume_snapshot" %}" class="pageForm required-validate"
+      id="snapshot_form" onsubmit="return iframeCallback(this,snapshotCallback);">
+    <input type="hidden" name="volume_id" value="{{ volume_id }}">
+    <input type="hidden" name="tenant_id" value="{{ tenant_id }}">
+    {% add_in_method "post" %}
+    {% csrf_token %}
+    <div class="pageFormContent" layouth="58">
+        <div class="unit">
+            <label>
+                {% trans "Snapshot Name" %}：
+            </label>
+            <input type="text" name="name" minlength="2" maxlength="10" size="27"
+                   class="required"/>
+        </div>
+        <div class="unit">
+            <label>
+                {% trans "Description" %}：
+            </label>
+            <textarea class="textArea" name="description" rows="6" cols="30" maxlength="100"></textarea>
+        </div>
+    </div>
+    <div class="formBar">
+        <ul>
+            <li>
+                <div class="buttonActive">
+                    <div class="buttonContent">
+                        <button type="button" class="submit"
+                                id="snapshot_sub">{% trans "Submit" %}</button>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="button">
+                    <div class="buttonContent">
+                        <button type="button" class="close">{% trans "Cancel" %}</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</form>
+</div>
+
+
+

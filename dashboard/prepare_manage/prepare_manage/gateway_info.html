@@ -1,0 +1,125 @@
+{% load i18n %}
+<style type="text/css">
+    .btn_background_img{
+        width:80px;
+        height: 28px;
+        background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+        text-align: center;
+        line-height: 28px;
+        font-size: 15px;
+        left:10px;
+        margin-left: 5px;
+
+    }
+    .ins_header1{
+        width: 141px;
+        float: left;
+        line-height: 24px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .header_pic1 {
+        clear:both;
+        width: 100%;
+        height:70px;
+        background:#d7dcde url('{{ STATIC_URL }}ui/images/instance/4_4.png') no-repeat ;
+        background-position: left center;
+        margin-bottom: 10px;
+    }
+
+    .succ_message {
+        height: 30px;
+        margin: 30px auto 0;
+        width: 400px;
+    }
+
+    .succ_message span{
+        float: left;
+    }
+    .succ_message label{
+        font-size: 19px;
+        line-height: 30px;
+    }
+    .succ_message .desc{
+        font-size: 19px;
+        line-height: 30px;
+        float: left;
+        text-align: right;
+        margin-left: 50px;
+    }
+</style>
+<div class="unit">
+
+    <div class="header_pic1" >
+        <div class="ins_header1" style="margin-left: 40px;" >{% trans 'Create router' %}</div>
+        <div class="ins_header1" >{% trans 'Create Interface' %}</div>
+        <div class="ins_header1" >{% trans 'Set Gateway' %}</div>
+        <div class="ins_header1" >{% trans 'Finish' %}</div>
+    </div>
+    <table class="table" width="100%">
+        <thead>
+        <tr>
+            <th>{% trans 'name' %}</th>
+            <th>{% trans 'Fixed Ips' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'Admin State' %}</th>
+        </tr>
+        </thead>
+
+        {% for interface in interfaces %}
+
+            <tr>
+                <td>{{ interface.name }}</td>
+                <td>
+
+                    {% for ip in interface.fixed_ips %}
+                        <ul>
+                            <li>
+                                {{ ip.ip_address }}
+                            </li>
+                        </ul>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% if interface.status == 'ACTIVE' %}
+                        {% trans 'ACTIVE' %}
+                    {% else %}
+                        {% trans 'PAUSED' %}
+                    {% endif %}
+                </td>
+                {% if interface.device_owner == "network:router_gateway" %}
+                    <td>{% trans "External Gateway" %}</td>
+                {% else %}
+                    <td>{% trans "Internal Interface" %}</td>
+                {% endif %}
+
+                <td>
+                    {% if interface.admin_state == 'UP' %}
+                        {% trans 'UP' %}
+                    {% else %}
+                        {% trans 'DOWN' %}
+                    {% endif %}
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="project_create_page_div">
+        <div class="succ_message">
+            <span style="margin-left: 60px;"><img src="{{ STATIC_URL }}ui/images/icon_2.png" width="26" height="26" /></span>
+            <label style="text-align: left; width: auto;">{% trans "Create gateway successfully!" %}</label>
+        </div>
+        <div class="succ_message">
+            <div class="desc">{% trans "Launch Instance" %}</div>
+            <span>
+                <a target="dialog" href="{% url "start_image_launch_instance" None %}" title="{% trans 'Launch Instance' %}" width="700" height="500" tmask="true" style="text-decoration: none; float: left;" id="prepare_virtual_a_id" >
+                    <div class="btn_background_img">GO</div>
+                </a>
+            </span>
+        </div>
+    </div>
+</div>

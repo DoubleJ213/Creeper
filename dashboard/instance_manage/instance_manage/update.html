@@ -1,0 +1,47 @@
+{% load i18n%}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "update_instance" instance_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <div class="pageFormContent" layouth="58">
+
+
+            <div class="unit">
+                <label>
+                    {% trans 'Instance Name' %}：</label>
+                <input type="text" name="name" size="30" minlength="2" maxlength="10" class="required" value ={{ form.fields.name.initial}} />
+            </div>
+{#            {% if Flag %}#}
+{#                <div class="unit">#}
+{#                    <label>{% trans 'Include Groups :' %}</label>#}
+{#                    {{ form.has_group }}#}
+{#                </div>#}
+{#                <div class="unit">#}
+{#                    <label>{% trans 'All Security Groups :' %}</label>#}
+{#                    {{ form.security_groups }}#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        <input type="hidden" name="flag" value="{{ Flag }}">#}
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

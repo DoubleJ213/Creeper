@@ -1,0 +1,1362 @@
+{% load i18n %}
+{% load dashboard %}
+<div class="pageContent">
+<script type="text/javascript">
+    function changeTenant()
+    {
+        var tenant_id = document.getElementById('tenant_id').value;
+        $.ajax({
+                   url: '{% url "instance_change_tenant_form" %}',
+                   type:'GET',
+                   dataType:'json',
+                   data:{'tenantId':tenant_id},
+                   global: false,
+                   success: function(data) {
+                       var sec_source = $("#all_security");
+                       var sec_target = $("#enable_security");
+                       var sec_data_value = $("#security_val");
+                       sec_source.empty();
+                       sec_data_value.empty();
+                       sec_target.empty();
+                       $.each(data, function (i, item) {
+
+                           {#                    if (item[0]=="default")#}
+                           {#                    {#}
+                           {#                        var txt = "<div class='select_area' id ='"+item[0]+"'>" +#}
+                           {#                                "<div class='sel_left'></div>" +#}
+                           {#                                "<div class='sel_middle' >"+item[0]+"</div><div class='sel_right'></div></div>";#}
+                           {##}
+                           {#                        sec_target.append(txt);#}
+                           {#                        var chk_initial = "<input type='checkbox' name='security_groups' id='sec_grp_"+item[0]+"' value='"+item[1]+"' checked='checked'/>";#}
+                           {#                        sec_data_value.append(chk_initial);#}
+                           {#                    }else#}
+                           {#                    {#}
+                           var txt = "<div class='all_area' id='"+item[0]+"' onclick='selectSecurityGroup(this);'>" +
+                                   "<div class='unsel_left'></div>" +
+                                   "<div class='unsel_middle'><a href='#' class='sec_word'>"+item[0]+
+                                   "</a></div><div class='unsel_right'></div></div>";
+
+                           sec_source.append(txt);
+                           var ajax_chk_initial = "<input type='checkbox' name='security_groups' id='sec_grp_"+item[0]+"' value='"+item[1]+"'/>";
+                           sec_data_value.append(ajax_chk_initial);
+                           {#                    }#}
+                           i++;
+                       });
+
+                   },
+                   error: function(response) {
+                       console.log("get security groups error");
+                   }
+               });
+    }
+
+    function getNetworkList()
+    {
+        var tenant_id = document.getElementById('tenant_id').value;
+        $.ajax({
+                   url: '{% url "instance_get_network_list" %}',
+                   type:'GET',
+                   dataType:'json',
+                   data:{'tenantId':tenant_id},
+                   global: false,
+                   success: function(data) {
+                       {#                console.log(data);#}
+                       var source = $("#disable_network");
+                       var target = $("#enable_network");
+                       var net = $("#net_value");
+                       target.empty();
+                       source.empty();
+                       net.empty();
+                       $.each(data, function (i, item) {
+
+                           var net_select = "<div class='net_all_area' id='"+item[0]+"' onclick='selectNetwork(this);'>" +
+                                   "<div class='net_unsel_left'></div>" +
+                                   "<div class='net_unsel_middle'>"+item[1]+"</div>" +
+                                   "<div class='net_unsel_right'></div></div>";
+
+                           var netselect = "<a href='#' id='"+item[0]+"' onclick='selectNetwork(this);'>"+item[1]+"</a>"
+                           source.append(net_select);
+                           var net_value = "<input type='checkbox' name='networks' id='data_"+item[0]+"' value='"+item[0]+"'/>"
+                           net.append(net_value);
+                           i++;
+                       });
+
+                   },
+                   error: function(response) {
+                       console.log("get security groups error");
+                   }
+               });
+    }
+
+    function getUser()
+    {
+        var tenant_id = document.getElementById('tenant_id').value;
+        var user_source = $("#selectContentUser");
+        user_source.empty();
+        $.ajax({
+                   url: '{% url "get_tenant_user" %}',
+                   type:'GET',
+                   dataType:'json',
+                   data:{'tenantId':tenant_id},
+                   global: false,
+                   success: function(data) {
+                       console.log(data);
+                       $.each(data, function (i, item) {
+                           var user_text = "<div class='select2optionClassUser' " +
+                                   "name='"+item[1]+"' title='"+item[1]+"' value='"+item[0]+"'>"+item[1]+"</div>"
+                           user_source.append(user_text);
+                           $(".select2optionClassUser").bind("click",function(){
+                               var user_id = $(this).attr("value");
+                               $("#user_val").val(user_id);
+                               $("#selectTextUser").html($(this).attr("name"));
+                               $("#selectU").val(user_id);
+                           });
+                       });
+                   },
+                   error: function(response) {
+                       console.log("get user error");
+                   }
+               });
+    }
+
+
+    function getProjectQuotas(){
+        var tenant_id = document.getElementById('tenant_id').value;
+        $.ajax({
+                   url:'{% url "get_project_usages" %}',
+                   type:'GET',
+                   data:{'tenantId':tenant_id},
+                   success:function(htmlData){
+                       $("#pro_bar_refresh").empty();
+                       $("#pro_bar_refresh").html(htmlData).initUI();
+                   }
+               });
+    }
+
+</script>
+<script>
+function dialogAjaxDone_instance(json) {
+    DWZ.ajaxDone(json);
+    if (json.statusCode == DWZ.statusCode.ok) {
+        if (json.navTabId) {
+            navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+        } else if (json.rel) {
+            var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+            var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+            navTabPageBreak(args, json.rel);
+        }
+        if ("closeCurrent" == json.callbackType) {
+            $.pdialog.closeCurrent();
+        }
+    }
+}
+function selectFun(){
+    stopBubble();
+    if($("#selectContent")){
+        if($("#selectContent").css("display") == "none"){
+            $("#selectContent").show();
+            $("#selectContentImg").hide();
+            $("#selectContentTenant").hide();
+            $("#selectContentUser").hide();
+        }else{
+            $("#selectContent").hide();
+        }
+    }
+}
+function selectImg(){
+    stopBubble();
+    if($("#selectContentImg")){
+        if($("#selectContentImg").css("display") == "none"){
+            $("#selectContentImg").show();
+            $("#selectContent").hide();
+            $("#selectContentTenant").hide();
+            $("#selectContentUser").hide();
+        }else{
+            $("#selectContentImg").hide();
+        }
+    }
+}
+function selectTenant(){
+    stopBubble();
+    if($("#selectContentTenant")){
+        if($("#selectContentTenant").css("display") == "none"){
+            $("#selectContentTenant").show();
+            $("#selectContent").hide();
+            $("#selectContentImg").hide();
+            $("#selectContentUser").hide();
+        }else{
+            $("#selectContentTenant").hide();
+        }
+    }
+}
+function selectUser(){
+    stopBubble();
+    if($("#selectContentUser")){
+        if($("#selectContentUser").css("display") == "none"){
+            $("#selectContentUser").show();
+            $("#selectContent").hide();
+            $("#selectContentImg").hide();
+            $("#selectContentTenant").hide();
+        }else{
+            $("#selectContentUser").hide();
+        }
+    }
+}
+$(document).ready(function(){
+    $("#item2").hide();
+    $("#item3").hide();
+    $("#item4").hide();
+    $(".ins_right2").hide();
+    $(".ins_right3").hide();
+    $(".ins_right4").hide();
+    $(".buttonActive").hide();
+    $("#pre_button").hide();
+    $("#step_button").attr("onclick", "getStep2()");
+
+    //Display the corresponding picture when click next
+    $(".header").addClass("header_sty header_pic1");
+
+    $("input[type=checkbox][name=networks]").attr("onclick", "selectNetwork()");
+
+    $("input[name=networks]").attr("class","required");
+
+    //select image
+    $(".select2optionClassImg").click(function(){
+        $("#min").val($(this).attr("min_disk"));
+        $("#imgT").val($(this).attr("value"));
+        $("#selectTextImg").html($(this).attr("name"));
+        $("#minR").val($(this).attr("min_ram"));
+
+    });
+
+    //select tenant
+    $(".select2optionClassTenant").click(function(){
+        var tenant_id = $(this).attr("value");
+        $("#tenant_id").val(tenant_id);
+        $("#selectTextTenant").html($(this).attr("name"));
+        changeTenant();
+        getNetworkList();
+        getProjectQuotas();
+        getUser();
+
+    });
+    //select user
+    {#        $(".select2optionClassUser").click(function(){#}
+    {#            var user_id = $(this).attr("value");#}
+    {#            alert($(this).attr("name"));#}
+    {#            console.log($(this).attr("name"));#}
+    {#            $("#user_val").val(user_id);#}
+    {#            $("#selectTextUser").html($(this).attr("name"));#}
+    {#            $("#selectU").val(user_id);#}
+    {##}
+    {#        });#}
+
+    $(".select2optionClass").click(function(){
+        {#                $("#selectT").val($(this).attr("value"));#}
+        $("#selectT").val($(this).attr("value"));
+        $("#selectText").html($(this).attr("name"));
+        $("#flavor_val").val($(this).attr("value"));
+        var flavor_id = $("#selectT").val();
+        $.ajax({
+                   url:'{% url "get_ins_flavor" %}',
+                   type:'GET',
+                   dataType:'json',
+                   global:false,
+                   data:{'flavorId': flavor_id},
+                   success:function(data){
+                       {#                    alert(data.name);#}
+                       var flavor_name = data.name;
+                       var flavor_vcpus = data.vcpus;
+                       var flavor_disk = data.disk;
+                       var flavor_memory = data.ram;
+
+                       $(".fla_name").html(flavor_name);
+                       $(".fla_vcpus").html(flavor_vcpus);
+                       $(".fla_disk").html(flavor_disk);
+                       $(".fla_memory").html(flavor_memory);
+                   }
+               });
+    });//end of click
+    $(document).click(function(){
+        if($("#selectContent").css("display") == "block"){
+            $("#selectContent").hide();
+        }
+        if($("#selectContentImg").css("display") == "block"){
+            $("#selectContentImg").hide();
+        }
+        if($("#selectContentTenant").css("display") == "block"){
+            $("#selectContentTenant").hide();
+        }
+        if($("#selectContentUser").css("display") == "block"){
+            $("#selectContentUser").hide();
+        }
+    });
+
+    var form = $("#launch_image_form_id");
+
+{#    form.attr("action","{% url "launch_image" %}");#}
+
+    form.attr("action","{% url "create_instance_index" img_obj_id %}");
+    form.unbind("submit");
+    form.bind("submit", function(){
+        var networks=$("input[type=checkbox][name=networks]");
+        if(networks){
+            var len = $("input[type=checkbox][name=networks]:checked").length;
+            if(len == 0){
+                alertMsg.error("{% trans 'Please select an available network!' %}");
+                return false;
+            }else{
+                return validateCallback(this,dialogAjaxDone_instance);
+            }
+        }else{
+            alertMsg.error("{% trans 'There is no network list!' %}");
+            return false;
+        }
+    });
+});
+
+
+
+function ajax_instance_flavor(){
+{#        var _id_image_min_disk = parseInt($("#image_id").find("option:selected").attr("min_disk"));#}
+    var _id_image_min_disk = parseInt($("#min").val());
+    var _id_image_min_ram=parseInt($("#minR").val());
+    var _flavor_id = $("#selectT").val();
+    var _f_value = parseInt($('#task0'+_flavor_id+"0").attr("flav_disk"));
+    var _f_ram = parseInt($('#task0'+_flavor_id+"0").attr("flav_ram"));
+
+    if(_f_value == 0){
+        return 1;
+    }
+    if (_f_value >= _id_image_min_disk && _f_ram>_id_image_min_ram){
+
+        return 2;
+    }
+    if (_f_ram<_id_image_min_ram){
+        return 3;
+    }
+    if (_f_value < _id_image_min_disk){
+        return 4;
+    }
+}
+
+function getStep1(){
+    $(".header").removeClass("header_pic2").addClass("header_pic1");
+    $("#item1").show();
+    $("#item2").hide();
+    $("#item3").hide();
+    $("#item4").hide();
+    $(".ins_right1").show();
+    $(".ins_right2").hide();
+    $(".ins_right3").hide();
+    $(".ins_right4").hide();
+    $("#pre_button").hide();
+    $("#step_button").attr("onclick", "getStep2();");
+}
+function getStep2Pre(){
+    $(".header").removeClass("header_pic3").addClass("header_pic2");
+    //left
+    $("#item1").hide();
+    $("#item2").show();
+    $("#item3").hide();
+    $("#item4").hide();
+    //right
+    $(".ins_right1").hide();
+    $(".ins_right2").show();
+    $(".ins_right3").hide();
+    $(".ins_right4").hide();
+    //button event
+    $(".buttonActive").hide();
+    $("#up_button").attr("onclick", "getStep1();")
+    $(".button").show();
+    $("#step_button").attr("onclick", "getStep3();");
+}
+function getStep2(){
+    $("#item3").hide();
+    $("#item4").hide();
+    $(".header").removeClass("header_pic1").addClass("header_pic2");
+
+    var _ajax_instance_flavor = ajax_instance_flavor();
+    var flavor_value = $("#selectT").val();
+    var ins_name = $("#create_instance_name").val();
+    var ten_value = $("#tenant_id").val();
+    var img_value = $("#imgT").val();
+    var count_val = $("#instance_count").val();
+
+    if(ins_name == ""){
+        alertMsg.error("{% trans 'Please enter your instance name' %}");
+        return false;
+    }
+    if(ins_name.length < 2 || ins_name.length > 10){
+        alertMsg.error("{% trans 'The length of the instance name must be in 2~10' %}");
+        return false;
+    }
+    if(ten_value == ""){
+        alertMsg.error("{% trans 'Please select a tenant' %}");
+        return false;
+    }
+    if(img_value == ""){
+        alertMsg.error("{% trans 'Please select an image!' %}");
+        return false;
+    }
+    if(flavor_value == ""){
+        alertMsg.error("{% trans 'Please select a flavor' %}");
+        return false;
+    }
+    if(_ajax_instance_flavor==1){
+        alertMsg.error("{% trans 'Instance flavor value is zero!' %}");
+        return  false;
+    }else if(_ajax_instance_flavor==2){
+        if(count_val == ""){
+            alertMsg.error("{% trans 'Please input instance count' %}");
+            return false;
+        }else if(!$.isNumeric(count_val)){
+            alertMsg.error("{% trans 'The instance count must be integer' %}");
+            return false;
+        }else if(count_val == 0){
+            alertMsg.error("{% trans 'The instance count must more than 0' %}");
+            return false;
+        }else{
+            $("#item1").hide();
+            $("#item3").hide();
+            $("#item4").hide();
+            $("#item2").show();
+            $("#step_button").attr("onclick", "getStep3()");
+            $(".ins_right1").hide();
+            $(".ins_right3").hide();
+            $(".ins_right2").show();
+            $(".ins_right4").hide();
+            $("#pre_button").show();
+            //get previous
+            $("#pre_button").show();
+            $("#up_button").attr("onclick", "getStep1();");
+        }
+        //security style
+    {#            $(".select_area").addClass("undisplay");#}
+    }else if(_ajax_instance_flavor==4){
+        alertMsg.error("{% trans 'Instance flavor disk less-than Image min disk!' %}");
+        return false;
+    }else{
+        alertMsg.error("{% trans 'Instance flavor disk less-than Image min disk!' %}");
+        return false;
+    }
+}
+function getStep3(){
+    $(".header").removeClass("header_pic2").addClass("header_pic3");
+
+    var security_groups=$("input[type=checkbox][name=security_groups]");
+    if(security_groups){
+        var len = $("input[type=checkbox][name=security_groups]:checked").length;
+        if(len == 0){
+            alertMsg.error("{% trans 'Please select an available security group!' %}");
+            return false;
+        }else{
+            $("#item1").hide();
+            $("#item2").hide();
+            $("#item3").show();
+            $(".button").hide();
+        {#                $(".buttonActive").show();#}
+        {#                $("#sub_button").show();#}
+        {#                $("#step_button").attr("onclick", "getStep4()");#}
+            $(".ins_right1").hide();
+            $(".ins_right2").hide();
+            $(".ins_right3").show();
+            //display picture
+            $("#ins_detail").addClass("header_sty header_pic2");
+            $("#ins_sec").addClass("header_sty header_pic2");
+            $("#ins_net").addClass("header_sty header_pic1");
+            //previous function
+            $("#pre_button").show();
+            $("#up_button").attr("onclick", "getStep2Pre();");
+            $(".button").show();
+            $("#step_button").attr("onclick", "getStep4();");
+
+        }
+    }else{
+        alertMsg.error("{% trans 'There is no security groups!' %}");
+        return false;
+    }
+}
+function getStep3Pre(){
+    $(".header").removeClass("header_pic4").addClass("header_pic3");
+    //left
+    $("#item1").hide();
+    $("#item2").hide();
+    $("#item3").show();
+    $("#item4").hide();
+    //right
+    $(".ins_right1").hide();
+    $(".ins_right2").hide();
+    $(".ins_right3").show();
+    $(".ins_right4").hide();
+    //button event
+    $(".buttonActive").hide();
+    $("#up_button").attr("onclick", "getStep2Pre();")
+    $(".button").show();
+    $("#step_button").show();
+    $("#step_button").attr("onclick", "getStep4();");
+}
+function getStep4(){
+    $(".header").removeClass("header_pic3").addClass("header_pic4");
+    var networks=$("input[type=checkbox][name=networks]");
+    if(networks){
+        var len = $("input[type=checkbox][name=networks]:checked").length;
+        if(len == 0){
+            alertMsg.error("{% trans 'Please select an available network!' %}");
+            return false;
+        }else{
+            //left
+            $("#item1").hide();
+            $("#item2").hide();
+            $("#item3").hide();
+            $("#item4").show();
+            //right
+            $(".ins_right1").hide();
+            $(".ins_right2").hide();
+            $(".ins_right3").hide();
+            $(".ins_right4").show();
+            //button
+            $(".button").hide();
+            $("#step_button").hide();
+            $(".buttonActive").show();
+            $("#sub_button").show();
+            $("#pre_button").show();
+            $("#up_button").attr("onclick", "getStep3Pre();");
+
+        }
+    }else{
+        alertMsg.error("{% trans 'There is no networks!' %}");
+        return false;
+    }
+}
+
+function selectNetwork(obj) {
+    var checkbox = $("#data_"+obj.id);
+    var target = $("#enable_network");
+    var source = $("#disable_network");
+
+    if (checkbox.attr("checked")) {
+        var source_id = $(obj).attr('id');
+        var display_text = $(obj).text();
+        var source_txt = "<div class='net_all_area' id='"+source_id+"' onclick='selectNetwork(this);'>" +
+                "<div class='net_unsel_left'></div><div class='net_unsel_middle'>"+display_text+"</div>" +
+                "<div class='net_unsel_right'></div></div>";
+
+        source.append(source_txt);
+        checkbox.attr("checked", false);
+        $(obj).remove();
+    } else {
+        var target_id = $(obj).attr('id');
+        var target_txt = $(obj).text();
+        var txt = "<div class='net_select_area'  id ='"+target_id+"' onclick='selectNetwork(this);'>" +
+                "<div class='net_sel_left'></div><div class='net_sel_middle' >"+target_txt+
+                "</div><div class='net_sel_right'></div></div>";
+
+        target.append(txt);
+        checkbox.attr("checked", true);
+        $(obj).remove();
+    }
+}
+function selectSecurityGroup(obj){
+    var t=$(obj).find(".unsel_middle").text();
+    var sec_target = $("#enable_security");
+    var sec_checkbox = $("#sec_grp_"+t);
+
+    if($(sec_checkbox).attr("checked")){
+        $("#"+t).hide();
+        $(obj).show();
+        $(sec_checkbox).attr("checked", false);
+        if($(sec_target).find("#"+t)){
+            $(sec_target).find("#"+t).remove();
+        }
+    }else{
+        var txt = "<div class='select_area'  id ='"+t+"' ><div class='sel_left'></div><div class='sel_middle' ></div><div class='sel_right'></div></div>"
+        sec_target.append(txt);
+        $(obj).hide();
+    {#                $(obj).remove();#}
+        $("#"+t).find(".sel_middle").text(t);
+        $("#"+t).bind("click",function(){
+            selectSecurityGroup(obj);
+        });
+        $(sec_checkbox).attr("checked", true);
+    }
+}
+</script>
+<style>
+.divSelect1,.divSelect1Img,.divSelect1Tenant,.divSelect1User{
+    width: 238px;
+    height: 29px;
+    line-height: 29px;
+{#        border: 1px solid #add8e6;#}
+}
+.divSelect1 .select1left{
+    width: 208px;
+    line-height: 29px;
+    float: left;
+    overflow: hidden;
+    background: url('{{ STATIC_URL }}ui/images/instance/checkbox.png');
+    text-align: center;
+}
+.divSelect1Img .select1leftImg{
+    width: 208px;
+    line-height: 29px;
+    float: left;
+    overflow: hidden;
+    background: url('{{ STATIC_URL }}ui/images/instance/checkbox.png');
+    text-align: center;
+}
+.divSelect1Tenant .select1leftTenant{
+    width: 208px;
+    line-height: 29px;
+    float: left;
+    overflow: hidden;
+    background: url('{{ STATIC_URL }}ui/images/instance/checkbox.png');
+    text-align: center;
+}
+.divSelect1User .select1leftUser{
+    width: 208px;
+    line-height: 29px;
+    float: left;
+    overflow: hidden;
+    background: url('{{ STATIC_URL }}ui/images/instance/checkbox.png');
+    text-align: center;
+}
+.divSelect1 .select1right{
+    width: 30px;
+    line-height: 29px;
+    float: right;
+    text-align: right;
+    cursor: pointer;
+}
+.divSelect1Img .select1rightImg{
+    width: 30px;
+    line-height: 29px;
+    float: right;
+    text-align: right;
+    cursor: pointer;
+}
+.divSelect1Tenant .select1rightTenant{
+    width: 30px;
+    line-height: 29px;
+    float: right;
+    text-align: right;
+    cursor: pointer;
+}
+.divSelect1User .select1rightUser{
+    width: 30px;
+    line-height: 29px;
+    float: right;
+    text-align: right;
+    cursor: pointer;
+}
+.divSelect2,.divSelect2Img,.divSelect2Tenant,.divSelect2User{
+    width: 238px;
+    height: 100px;
+    line-height: 29px;
+    border: 1px solid #add8e6;
+    border-top: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: none;
+    background: #ffffff;
+    #background: white;
+    position: absolute;
+    #position: relative;
+    z-index:1;
+}
+.divSelect2 .select2optionClass{
+    width: 208px;
+    height: 29px;
+    line-height: 29px;
+    text-align: left;
+    padding-left: 5px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+
+}
+.divSelect2Img .select2optionClassImg{
+    width: 208px;
+    height: 29px;
+    line-height: 29px;
+    text-align: left;
+    padding-left: 5px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+
+}
+.divSelect2Tenant .select2optionClassTenant{
+    width: 208px;
+    height: 29px;
+    line-height: 29px;
+    text-align: left;
+    padding-left: 5px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+
+}
+.divSelect2User .select2optionClassUser{
+    width: 208px;
+    height: 29px;
+    line-height: 29px;
+    text-align: left;
+    padding-left: 5px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+
+}
+.divSelect2 .select2optionClass:hover{
+    background: #bc8f8f;
+
+}
+.divSelect2Img .select2optionClassImg:hover{
+    background: #bc8f8f;
+
+}
+.divSelect2Tenant .select2optionClassTenant:hover{
+    background: #bc8f8f;
+
+}
+.divSelect2User .select2optionClassUser:hover{
+    background: #bc8f8f;
+
+}
+.ins_left{
+    float: left;
+    clear: both;
+    width: 50%;
+{#        border-right: 2px dotted #808080;#}
+}
+.ins_right1{
+    background: url('{{ STATIC_URL }}ui/images/instance/right1_new.png') no-repeat;
+}
+.ins_right2,.ins_right3,.ins_right4{
+    background: url('{{ STATIC_URL }}ui/images/instance/right1.png') no-repeat;
+}
+.ins_right{
+    height: 300px;
+    float: left;
+    margin-left: 20px;
+    width:46%;
+}
+.flavor_name{
+    width: 100px;
+    font-size: 12px;
+    height: 25px;
+}
+.fla_vcpus{
+    font-size: 14px;
+    text-align: center;
+}
+
+.undisplay{
+    display: none;
+}
+.app_display{
+    display: block;
+}
+.pro_bar{
+
+}
+
+.quota-dynamic {
+    top: 70px;
+    right: 10px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.right {
+    float: right;
+    width: 200px;
+}
+.quota_title {
+    color: rgb(153, 153, 153);
+    padding-bottom: 0px;
+    margin-bottom: 8px;
+    margin-right: 30px;
+    text-align: right;
+
+}
+.clearfix {
+}
+.quota_bar {
+    height: 15px;
+    margin: -8px 0 8px;
+}
+.progress_bar {
+    height: 100%;
+    width: 85%;
+    border: 1px solid #CCC;
+    background-color: #CCC;
+}
+.progress {
+    overflow: hidden;
+    height: 18px;
+    margin-bottom: 18px;
+    background-color: rgb(247, 247, 247);
+    background-image: -moz-linear-gradient(center top , rgb(245, 245, 245), rgb(249, 249, 249));
+    background-repeat: repeat-x;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1) inset;
+    border-radius: 4px 4px 4px 4px;
+}
+.progress-success.bar {
+    background-color: rgb(94, 185, 94);
+    background-image: -moz-linear-gradient(center top , rgb(98, 196, 98), rgb(87, 169, 87));
+    background-repeat: repeat-x;
+}
+.progress .bar {
+    width: 0%;
+    height: 18px;
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    text-align: center;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+    background-color: rgb(14, 144, 210);
+    background-image: -moz-linear-gradient(center top , rgb(20, 155, 223), rgb(4, 128, 190));
+    background-repeat: repeat-x;
+    box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+    -moz-box-sizing: border-box;
+    transition: width 0.6s ease 0s;
+}
+.progress_bar_selected {
+    background-color: rgb(71, 144, 174);
+    width: 0px;
+}
+.progress_bar_fill, .progress_bar_selected {
+    height: 100%;
+    float: left;
+}
+.progress_bar_fill.progress-warning.bar {
+    background-color: rgb(137, 137, 137);
+    background-image: -moz-linear-gradient(center top , rgb(153, 153, 153), rgb(51, 51, 51));
+    background-repeat: repeat-x;
+}
+.progress .bar {
+    width: 0%;
+    height: 18px;
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+    text-align: center;
+    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+    background-color: rgb(14, 144, 210);
+    background-image: -moz-linear-gradient(center top , rgb(20, 155, 223), rgb(4, 128, 190));
+    background-repeat: repeat-x;
+    box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+    -moz-box-sizing: border-box;
+    transition: width 0.6s ease 0s;
+}
+.progress_bar_fill {
+    background-color: rgb(102, 102, 102);
+}
+.progress_bar_fill, .progress_bar_selected {
+    height: 100%;
+    float: left;
+}
+
+.cp{
+    width:auto;
+    float:right;
+    position: relative;
+    margin: 0px;
+}
+
+.header_sty{
+    font-size:11px;
+    height: 15%;
+    line-height: 38px;
+    padding-left:20px;
+    float: left;
+    width: 100%;
+
+}
+.header_pic1{
+    background: url('{{ STATIC_URL }}ui/images/instance/detail2.png') no-repeat;
+}
+.header_pic2{
+    background: url('{{ STATIC_URL }}ui/images/instance/security2.png') no-repeat;
+}
+.header_pic3{
+    background: url('{{ STATIC_URL }}ui/images/instance/network2.png') no-repeat;
+}
+.header_pic4{
+    background: url('{{ STATIC_URL }}ui/images/instance/user2.png') no-repeat;
+}
+.sec_word{
+{#        color: #4169e1;#}
+{#        border: 3px groove #2B7DD1;#}
+    line-height: 31px;
+}
+.sel_left,.net_sel_left{
+    float: left;
+    width: 7px;
+    height: 31px;
+    background: url('{{ STATIC_URL }}ui/images/instance/se_left.png') no-repeat;
+}
+.sel_right,.net_sel_right{
+    float: left;
+    height: 31px;
+    width: 7px;
+    background: url('{{ STATIC_URL }}ui/images/instance/se_right.png') no-repeat;
+}
+.sel_middle,.net_sel_middle{
+    line-height: 31px;
+    float: left;
+    width: auto;
+    height: 31px;
+    background: url('{{ STATIC_URL }}ui/images/instance/se_middle.png') repeat-x;
+}
+.unsel_left,.net_unsel_left{
+    float: left;
+    width: 6px;
+    height: 31px;
+    background: url('{{ STATIC_URL }}ui/images/instance/unsel_left.png') no-repeat;
+}
+.unsel_right,.net_unsel_right{
+    float: left;
+    height: 31px;
+    width: 6px;
+    background: url('{{ STATIC_URL }}ui/images/instance/unsel_right.png') no-repeat;
+}
+.unsel_middle,.net_unsel_middle{
+    line-height: 31px;
+    float: left;
+    width: auto;
+    height: 31px;
+    background: url('{{ STATIC_URL }}ui/images/instance/unsel_middle.png') repeat-x;
+}
+.new{
+    height: 10%;
+}
+.fla_style{
+{#        border-bottom: 2px dotted #808080;#}
+    margin-left: 10px;
+}
+.right_word{
+    font-family: '宋体';
+    font-size: 14px;
+    line-height: 20px;
+}
+.right_help_txt{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+a:hover{
+    text-decoration: none;
+}
+.select_area,.net_select_area{
+    float: left;
+    margin: 10px;
+}
+.all_area,.net_all_area{
+    float: left;
+    margin: 10px;
+}
+.ins_header1{
+    float: left;
+    line-height: 10px;
+    font-size: 14px;
+    margin-left: 65px;
+    margin-top: 5px;
+}
+.ins_header2{
+    float: left;
+    line-height: 10px;
+    margin-left: 65px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.ins_header3{
+    float: left;
+    margin-left: 65px;
+    line-height: 10px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.ins_header4{
+    float: left;
+    margin-left: 80px;
+    line-height: 10px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+.pageFormContent label{
+    width: 80px;
+}
+.pageFormContent .textInput{
+    background: url('{{ STATIC_URL }}ui/images/instance/input.png');
+    width: 240px;
+    height: 32px;
+    border: none;
+}
+.pageFormContent select{
+    background: url('{{ STATIC_URL }}ui/images/instance/checkbox_no_sel.png');
+    width: 237px;
+    height: 29px;
+    border: none;
+}
+.ins_right_word{
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.ins_left span.error {
+    display: block;
+    overflow: hidden;
+    width: auto;
+    height: 21px;
+    padding: 0px 3px;
+    line-height: 21px;
+    background: none repeat scroll 0% 0% rgb(255, 0, 0);
+    color: rgb(255, 255, 255);
+    position: absolute;
+    top: 5px;
+    left: 100px;
+    margin-top:30px;
+}
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<form method="post" id="launch_image_form_id" action="{% url "create_instance_index" img_obj_id %}" class="pageForm required-validate" >
+{% csrf_token %}
+<div class="pageFormContent" layouth="58">
+<div class="header" style="clear:both;width: 95%;background-color: #d7dcde;background-position: left center;">
+    <div class="ins_header1" >{% trans 'Instance Detail' %}</div>
+    <div class="ins_header2" >{% trans 'Select Securiity' %}</div>
+    <div class="ins_header3" >{% trans 'Select Network' %}</div>
+    <div class="ins_header4" >{% trans 'Select User' %}</div>
+</div>
+<div class="ins_left">
+
+<div id="item1">
+    <div class="unit new">
+        <label>
+            {% trans 'Instance Name' %}：</label>
+        <input type="text" id="create_instance_name" name="name" size="30" minlength="2" maxlength="10" class="required" /><span style="color: red; margin-left: -10px;">*</span>
+
+    </div>
+
+    {#        <div class="unit new">#}
+    {#            <label>#}
+    {#                {% trans 'Tenant' %}：</label>#}
+    {#            <select id="tenant_id" name="tenant_id" class="required" onchange="changeTenant();getNetworkList();getProjectQuotas();">#}
+    {#                {% for key,value in form.fields.tenant_id.choices %}#}
+    {#                    {% if key == oldtenantid %}#}
+    {#                        <option value= {{ key }} selected >{{ value }}</option>#}
+    {#                    {% else %}#}
+    {#                        <option value= {{ key }} >{{ value }}</option>#}
+    {#                    {% endif %}#}
+    {#                {% endfor %}#}
+    {##}
+    {#            </select>#}
+    {#        </div>#}
+    <div class="unit new">
+        <div style="float: left;"><label>{% trans "Tenant" %}:</label></div>
+        <div style="float: left;">
+            <div class="divSelect1Tenant" onclick="selectTenant();">
+                <div id="selectTextTenant" class="select1leftTenant">{% trans "Please select a tenant" %}
+                    <input type="hidden" id="tenant_val" class="required"/>
+                </div>
+                <div class="select1rightTenant"><img src="{{ STATIC_URL }}ui/images/instance/checkbox_right.png"></div>
+            </div>
+
+            <div id="selectContentTenant" class="divSelect2Tenant">
+                {% for key,value in form.fields.tenant_id.choices %}
+                    <div class="select2optionClassTenant" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" > {{ value|truncatechars:59 }} </div>
+                {% endfor %}
+            </div>
+        </div>
+        <input type="hidden" id="tenant_id" name="tenant_id" >
+    </div>
+    {#        <div class="unit new">#}
+    {#            <label>{% trans 'Image Template' %}: </label>#}
+    {#            <select id="image_id" name="image_id" class="required">#}
+    {#                {% for key,value in form.fields.image_id.choices %}#}
+    {#                    <option value="{{ key }}" min_disk="{{ value.min_disk }}" >{{ value.name }} </option>#}
+    {#                {% endfor %}#}
+    {#            </select>#}
+    {#        </div>#}
+    <div class="unit new">
+        <div style="float: left;"><label>{% trans "Image Template" %}:</label></div>
+        <div style="float: left;">
+            <div class="divSelect1Img" onclick="selectImg();">
+                <div id="selectTextImg" class="select1leftImg">{% trans "Please select an image" %}
+                    <input type="hidden" id="img_val" class="required"/>
+                </div>
+                <div class="select1rightImg"><img src="{{ STATIC_URL }}ui/images/instance/checkbox_right.png"></div>
+            </div>
+
+            <div id="selectContentImg" class="divSelect2Img">
+                {% for key,value in form.fields.image_id.choices %}
+                    <div class="select2optionClassImg"  min_disk="{{ value.min_disk }}"  min_ram="{{ value.min_ram }}"  name="{{ value.name|truncatechars:59 }}" title="{{ value.name }}" value="{{ key }}" > {{ value.name|truncatechars:59 }} </div>
+                {% endfor %}
+            </div>
+        </div>
+        <input type="hidden" id="min" name="min" >
+        <input type="hidden" id="minR" name="minR" >
+        <input type="hidden" id="imgT"  name="image_id" >
+    </div>
+
+    {#        <div class="unit" style="height:13%">#}
+    {#            <label>#}
+    {#                {% trans 'User Data' %}：</label>#}
+    {#            <textarea name="user_data" size="30" cols="29"  minlength="6"  ></textarea>#}
+    {#        </div>#}
+    {#        Flavor              #}
+    <div class="unit new">
+        <div style="float: left;"><label>{% trans "Flavor" %}:</label></div>
+
+        <div style="float: left;">
+            <div class="divSelect1" onclick="selectFun();">
+                <div id="selectText" class="select1left">{% trans "Please select a flavor" %}
+                    <input type="hidden" id="flavor_val" class="required"/>
+                </div>
+                <div class="select1right"><img src="{{ STATIC_URL }}ui/images/instance/checkbox_right.png"></div>
+            </div>
+
+            <div id="selectContent" class="divSelect2">
+                {% for key,value in form.fields.flavor.choices %}
+                    <div class="select2optionClass" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" > {{ value|truncatechars:59 }} </div>
+                {% endfor %}
+            </div>
+        </div>
+        <input type="hidden" id="selectT"  name="flavor" >
+    </div>
+
+    <div class="unit" style="display: none">
+        <label>
+            {% trans 'Keypair' %}：</label>
+        <select name="keypair">
+            {% for key,value in form.fields.keypair.choices %}
+                <option value= {{ key }} >{{ value }}</option>
+            {% endfor %}
+
+        </select>
+    </div>
+    <div class="unit new">
+        <label>
+            {% trans 'Instance Count' %}：</label>
+        <input id="instance_count" type="text" name="count" size="30" maxlength="3" class="required digits" value ={{ form.fields.count.initial}} /><span style="color: red; margin-left: -10px;">*</span>
+    </div>
+    <div class="unit" style="display: none">
+        {% for key,value in form.fields.flavor_input.choices %}
+            <input type="hidden" id="task0{{ key }}0" flav_disk="{{ value.fla_disk}}" flav_ram="{{ value.fla_ram }}" name="task_instance_value" />
+        {% endfor %}
+    </div>
+</div>
+
+<div id="item2" style="clear: both;">
+    {#    <div class="unit" id="security_groups_div">#}
+    <div class="unit">
+        <div style="float: left;width: 100%;"><label>{% trans 'Selected Security' %}：</label></div>
+        <ul id="enable_security">
+
+        </ul>
+    </div>
+
+    <div class="unit">
+        <div style="float: left; width: 100%;"><label>{% trans 'Security Groups' %}：</label></div>
+        <ul id="all_security">
+            {% for security_name, security_name in form.fields.security_groups.choices %}
+
+                <div class="all_area"  onclick="selectSecurityGroup(this);">
+                    <div class="unsel_left"></div>
+                    <div class="unsel_middle"><a href="#" class="sec_word" >{{ security_name }}</a></div>
+                    <div class="unsel_right"></div>
+                </div>
+            {% endfor %}
+
+        </ul>
+    </div>
+
+    <div id="security_val" style="display: none;">
+        {% for security_name, security_name in form.fields.security_groups.choices %}
+            <input type="checkbox" name="security_groups" id="sec_grp_{{ security_name }}" value="{{ security_name }}"/>
+        {% endfor %}
+
+    </div>
+
+    {#    </div>#}
+</div>
+
+<div id="item3">
+    {#    <div class="unit" id="network_list">#}
+    <div class="unit">
+        <div style="float: left;width: 100%;"><label>{% trans 'Selected Networks' %}：</label></div>
+        <ul id="enable_network">
+
+        </ul>
+    </div>
+    <div class="unit">
+        <div style="float: left; width: 100%;"><label>{% trans 'Available Networks' %}：</label></div>
+        <ul id="disable_network">
+            {% for nic_id, nic_name in form.fields.networks.choices %}
+
+                <div class="net_all_area"  id="{{ nic_id }}" onclick="selectNetwork(this);">
+                    <div class="net_unsel_left"></div>
+                    <div class="net_unsel_middle"><a href="#" class="sec_word" >{{ nic_name }}</a></div>
+                    <div class="net_unsel_right"></div>
+                </div>
+                {#                    <li><a href="#" id="{{ nic_id }}" onclick="selectNetwork(this);">{{ nic_name }}</a></li>#}
+            {% endfor %}
+        </ul>
+    </div>
+    <div id="net_value" style="display: none;">
+        {% for nic_id, nic_name in form.fields.networks.choices %}
+            <input type="checkbox" name="networks" id="data_{{ nic_id }}" value="{{ nic_id }}"/>
+        {% endfor %}
+
+    </div>
+    {#    </div>#}
+</div>
+<div id="item4">
+    <div class="unit new">
+        <div style="float: left;"><label>{% trans "User" %}:</label></div>
+
+        <div style="float: left;">
+            <div class="divSelect1User" onclick="selectUser();">
+                <div id="selectTextUser" class="select1leftUser">{% trans "Please select an user" %}
+                    <input type="hidden" id="user_val"/>
+                </div>
+                <div class="select1rightUser"><img src="{{ STATIC_URL }}ui/images/instance/checkbox_right.png"></div>
+            </div>
+
+            <div id="selectContentUser" class="divSelect2User">
+                {#                {% for key,value in form.fields.flavor.choices %}#}
+                {#                    <div class="select2optionClassUser" name="{{ value|truncatechars:59 }}" title="{{ value }}" value="{{ key }}" > {{ value|truncatechars:59 }} </div>#}
+                {#                {% endfor %}#}
+            </div>
+        </div>
+        <input type="hidden" id="selectU"  name="user" >
+    </div>
+</div>
+</div>   <!-- ins_left -->
+<div class="ins_right ins_right1">
+    <div class="fla_style">
+        <span class="right_word">{% trans "Flavor Detail:" %}</span>
+        <table>
+            <tbody>
+            <tr>
+                <td class="flavor_name">{% trans 'Name' %}</td>
+                <td class="fla_name"></td>
+            </tr>
+            <tr>
+                <td class="flavor_name">{% trans 'VCPUs' %}</td>
+                <td class="fla_vcpus"></td>
+            </tr>
+            <tr>
+                <td class="flavor_name">{% trans 'Disk' %}</td>
+                <td class="fla_disk"></td>
+            </tr>
+            <tr>
+                <td class="flavor_name">{% trans 'Memory' %}</td>
+                <td class="fla_memory"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pro_bar quota-dynamic" id="pro_bar_refresh">
+        <span class="right_word">{% trans "Project Quotas" %}</span>
+        {% if usages != None %}
+            <div class="quota_title clearfix">
+                <span>{% trans "Instances Number" %}&nbsp;({{ usages.instances.used }}/{{ usages.instances.available }})</span>
+            </div>
+            <div id="quota_number" data-progress-indicator-for="instance_size" data-quota-limit="{{  usages.instances.quota }}"
+                 data-quota-used="{{  usages.instances.used }}" class="quota_bar">
+                {% creeper_progress_bar usages.instances.used usages.instances.quota %}
+            </div>
+
+            <div class="quota_title clearfix">
+                <span>{% trans "Vcpus Number" %}&nbsp;({{ usages.cores.used }}/{{ usages.cores.available }})</span>
+            </div>
+            <div id="quota_vcpu" data-progress-indicator-for="instance_vcpu" data-quota-limit="{{  usages.cores.quota }}"
+                 data-quota-used="{{  usages.cores.used }}" class="quota_bar">
+                {% creeper_progress_bar usages.cores.used usages.cores.quota %}
+            </div>
+
+            <div class="quota_title clearfix">
+                <span>{% trans "RAM Number" %}&nbsp;({{ usages.ram.quota }}/{{ usages.ram.available }}){% trans "MB" %}</span>
+            </div>
+            <div id="quota_ram" data-progress-indicator-for="instance_ram" data-quota-limit="{{  usages.ram.quota }}"
+                 data-quota-used="{{  usages.ram.used }}" class="quota_bar">
+                {% creeper_progress_bar usages.ram.used usages.ram.quota %}
+            </div>
+        {% else %}
+            {% trans "Fail to get project quotas!" %}
+
+        {% endif %}
+    </div>
+
+</div>
+<div class="ins_right ins_right2">
+    <div class="ins_right_word">
+        <span class="right_word">{% trans "Security Group Help Text" %}</span>
+    </div>
+    <div class="right_help_txt">
+        {% trans "Please select one or more security group." %}
+    </div>
+
+</div>
+<div class="ins_right ins_right3">
+    <div class="ins_right_word">
+        <span class="right_word">{% trans "Network Help Text" %}</span>
+    </div>
+    <div class="right_help_txt">
+        {% trans "Please select one or more network." %}
+    </div>
+</div>
+<div class="ins_right ins_right4">
+    <div style="width: 254;height: 256;margin-right: 15px">
+        <div class="ins_right_word">
+            <span class="right_word">{% trans "User Help Text" %}</span>
+        </div>
+        <div class="right_help_txt">
+            {% trans "You can distribution the instance to one user if you select a user." %}
+
+        </div>
+    </div>
+</div>
+</div>
+<div class="formBar">
+    <ul>
+        <li style="float: left;">
+            <div class="button" id="pre_button">
+                <div class="buttonContent">
+                    <button type="button" id="up_button" style="line-height: 25px;">
+                        {% trans "Previous" %}</button>
+                </div>
+            </div>
+        </li>
+        <li style="float: left;">
+            <div class="button">
+                <div class="buttonContent">
+                    <button type="button" id="step_button" style="line-height: 25px;">
+                        {% trans "Next" %}</button>
+                </div>
+            </div>
+        </li>
+
+        <li style="float: left;">
+            <div class="buttonActive">
+                <div class="buttonContent">
+                    <button type="submit" id="sub_button" style="line-height: 25px;">
+                        {% trans "Submit" %}</button>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+</form>
+</div>
+
+

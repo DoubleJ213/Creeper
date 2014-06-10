@@ -1,0 +1,136 @@
+{% load i18n %}
+{% load permission %}
+<script type="text/javascript">
+    $(document).ready(function (){
+        setProTreeNodeId();
+    });
+
+    function setProTreeNodeId(){
+        if($("#project_tree_li_id")){
+            $("#tree_father_id").val($("#project_tree_li_id").val());
+        }
+        if($("#project_tree_htmlVal")){
+            $("#project_tree_hidden").html($("#project_tree_htmlVal").val());
+        }
+        if($("#project_tree_li_id_old")){
+            $("#project_tree_li_id_old").val('');
+        }
+    }
+
+    function add_tree_project(json){
+        var tree_father_id = $("#tree_father_id").val();
+        if($("#" + tree_father_id)){
+            var childnum = $("#" + tree_father_id + " .protree_fatherNode").length;
+            var f_id = "protree_f0";
+            if(childnum > 0){
+                var id_num = ($("#" + tree_father_id + " .protree_fatherNode").last().attr("id")).replace("protree_f" , "");
+                id_num = parseInt(id_num) + 1;
+                f_id =  "protree_f" + id_num;
+            }
+            var treeNodeObj = json.treeNodeObj;
+            var project_enabled = treeNodeObj.project_enabled;
+            var project_id = treeNodeObj.project_id;
+            var project_name = treeNodeObj.project_name;
+            var get_project_users_url_now = get_project_users_url.replace("#project_id#",project_id);
+            var add_project_user_url_now = add_project_user_url.replace("#project_id#",project_id);
+            var update_project_url_now = update_project_url.replace("#project_id#",project_id);
+            var update_project_quotas_url_now = update_project_quotas_url.replace("#project_id#",project_id);
+            var delete_project_url_now = delete_project_url.replace("#project_id#",project_id);
+            var enable_project_url_now = enable_project_url.replace("#project_id#",project_id);
+            treeHtml = "<li id='"+f_id+"' class=\"protree_fatherNode\">\n";
+            treeHtml = treeHtml + "<a class=\"level1\">\n";
+            if(project_enabled == true){
+                treeHtml = treeHtml + "<lable class=\"tree_lable_common\"><img src=\"{{ STATIC_URL }}ui/images/icon/preso_icon_1.png\" class=\"tree_icon_img2\"></lable>\n";
+            }else{
+                treeHtml = treeHtml + "<lable class=\"tree_lable_common\"><img src=\"{{ STATIC_URL }}ui/images/icon/preso_icon2.png\" class=\"tree_icon_img2\"></lable>\n";
+            }
+            treeHtml = treeHtml + "<lable>";
+            {% permission 'View Project Users' %}
+            treeHtml = treeHtml + "<span title=\""+project_name+"\" class=\"protree_span_calss\" onclick=\"gotoUrl('#project_rightDiv','"+get_project_users_url_now+"','#project_target_url','','#project_tree_li_id','"+f_id+"')\">";
+            {% endpermission %}
+            treeHtml = treeHtml + project_name;
+            {% permission 'View Project Users' %}
+            treeHtml = treeHtml + "</span>";
+            {% endpermission %}
+            treeHtml = treeHtml + "</lable>\n";
+            {% permission 'Create Project User' %}
+            treeHtml = treeHtml + "&nbsp;&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+            treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/add.gif\" class=\"tree_icon_img\" title=\"{% trans 'Add Project User' %}\" onclick=\"gotoUrl('#project_rightDiv','"+add_project_user_url_now+"','#project_target_url','"+get_project_users_url_now+"','#project_tree_li_id','"+f_id+"')\">";
+            treeHtml = treeHtml + "</lable>\n";
+            {% endpermission %}
+            {% permission 'Update Project' %}
+            treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+            treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/edit_1.png\" class=\"tree_icon_img\" title=\"{% trans 'Update Project' %}\" onclick=\"gotoUrl('#project_rightDiv','"+update_project_url_now+"','#project_target_url','"+update_project_url_now+"','#project_tree_li_id','"+f_id+"')\">";
+            treeHtml = treeHtml + "</lable>\n";
+            {% endpermission %}
+            {% permission 'Update Project Quotas' %}
+            treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+            treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/edit_2.png\" class=\"tree_icon_img\" title=\"{% trans 'Update Quotas' %}\" onclick=\"gotoUrl('#project_rightDiv','"+update_project_quotas_url_now+"','#project_target_url','"+update_project_quotas_url_now+"','#project_tree_li_id','"+f_id+"')\">";
+            treeHtml = treeHtml + "</lable>\n";
+            {% endpermission %}
+            treeHtml = treeHtml + "&nbsp;&nbsp;<lable class=\"protree_lable_class\">";
+            if(project_enabled == true){
+                {% permission 'Delete Project' %}
+                treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/delete.gif\" class=\"tree_icon_img\" title=\"{% trans 'Delete Project' %}\" onclick=\"openProDialog('"+delete_project_url_now+"', 'proTreeDialogId', '', 250, 150, '#project_target_url', '', '#project_tree_li_id', '"+f_id+"')\">";
+                {% endpermission %}
+            }else{
+                treeHtml = treeHtml + "<img src=\"{{ STATIC_URL }}ui/images/icon/enable.png\" class=\"tree_icon_img\" title=\"{% trans 'Enable Project' %}\" onclick=\"openProDialog('"+enable_project_url_now+"', 'proTreeDialogId', '', 250, 150, '#project_target_url', '', '#project_tree_li_id', '"+f_id+"')\">";
+            }
+            treeHtml = treeHtml + "</lable>\n";
+            treeHtml = treeHtml + "</a>\n";
+            treeHtml = treeHtml + "</li>\n";
+            $("#project_tree_hidden").append(treeHtml);
+            if($("#project_tree_htmlVal")){
+                $("#project_tree_htmlVal").val($("#project_tree_hidden").html());
+            }
+            $("#project_tree_hidden").html('');
+        }
+    }
+
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="panelBar">
+        <ul>
+            <li style="line-height: 23px;">{% trans "Add Project" %}</li>
+        </ul>
+    </div>
+    <form method="post" action="{% url "create_project_action" %}" class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDoneForProject);">
+        {% include 'project_manage/_project_base.html' %}
+        <div class="pageFormContent" layouth="58">
+
+            <div class="unit">
+                <label>
+                    {% trans "Project Name" %}：</label>
+                <input type="text" name="name" size="30" minlength="2" maxlength="10" class="required" />
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans "Project Description" %}：</label>
+                <textarea name="description" size="30" cols="29"  minlength="6" maxlength="400"  class="required"></textarea>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans "Enabled" %}：</label>
+                <input type="checkbox" name="enabled"/>
+            </div>
+            <input type="hidden" id="tree_father_id" name="tree_father_id" value="">
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+<div id="project_tree_hidden" style="display: none"></div>

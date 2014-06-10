@@ -1,0 +1,73 @@
+{% load i18n %}
+{% load dashboard %}
+<form id="pagerForm" action="{% url "get_thresholds_list" %}">
+    {% add_in_method 'get' %}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}"/>
+    <input type="hidden" name="numPerPage" value="{{ page_obj.paginator.per_page }}"/>
+</form>
+
+<div class="pageContent listContent">
+    <script lang="text/javascript">
+
+    </script>
+
+
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li><a class="edit" target="dialog" href="{% url "update_form" %}" tmask="true"><span>{% trans 'Update' %}</span></a></li>
+{#            <li><a class="icon" target="navTab" href="{% url "get_thresholds_type_list" %}" tmask="true"><span>{% trans 'Threshold Type' %}</span></a></li>#}
+        </ul>
+    </div>
+
+
+    <table class="table" width="100%" layoutH="75" id="node_table">
+        <thead>
+        <tr>
+            <th>{% trans 'Threshold Strategy' %}</th>
+{#            <th>{% trans 'Threshold Host' %}</th>#}
+            <th>{% trans 'Threshold Type' %}</th>
+            <th>{% trans 'Warning Value' %}</th>
+            <th>{% trans 'Critical Value' %}</th>
+            <th>{% trans 'Current State' %}</th>
+{#            <th>{% trans 'Action' %}</th>#}
+        </tr>
+        </thead>
+        <tbody>
+        {% for node in page_obj.object_list %}
+            <tr>
+                <td>{%  trans node.strategy_name  %}</td>
+                <td>{% trans node.type_name %}</td>
+{#                <td>{{ node.type_id }}</td>#}
+                <td>{{ node.warning }}</td>
+                <td>{{ node.critical }}</td>
+                {% if node.enable == 1 %}
+                    <td>{% trans "Enable"  %}</td>
+                {% else %}
+                    <td>{% trans "Disable"  %}</td>
+                {% endif %}
+{#                <td>#}
+{#                </td>#}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <div class="panelBar">
+        <div class="pages">
+            <span>{% trans 'Display' %}  </span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+            </select>
+            <span> {% trans 'records' %}，{% trans 'total' %}  {{ page_obj.paginator.count }}  {% trans 'records' %}</span>
+        </div>
+        <div class="pagination" targetType="navTab" totalCount="{{ page_obj.paginator.count }}"
+             numPerPage="  {{ page_obj.paginator.per_page }}" pageNumShown="{{ page_obj.paginator.num_pages }}"
+             currentPage="{{ page_obj.number }}"></div>
+    </div>
+</div>

@@ -1,0 +1,186 @@
+{% load i18n %}
+
+<style type="text/css">
+    #project_name {
+        background: url("{{ STATIC_URL }}/ui/images/input_bg.png") no-repeat;
+        border: 0;
+        width: 240px;
+        height: 25px;
+    }
+
+    #project_description {
+        background: url("{{ STATIC_URL }}/ui/images/box_5.png") no-repeat;
+        width: 237px;
+        height: 106px;
+        border: 0;
+    }
+
+    .project_go{
+        background: url('{{ STATIC_URL }}ui/images/instance/btn_3.png')no-repeat;
+        height: 21px;
+        width: 21px;
+        margin-top:10px;
+        margin-left: 10px;
+        float:left;
+        position:relative;
+    }
+
+    .subnet_info{
+        height: 21px;
+        width: 50px;
+        margin-top:20px;
+        margin-left: 10px;
+        float:left;
+        position:relative;
+    }
+    .btn_background_img{
+        width:80px;
+        height: 28px;
+        background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+        text-align: center;
+        line-height: 28px;
+        font-size: 15px;
+
+        left:10px;
+
+    }
+    .project_prepare_tr{
+        height: 40px;
+    }
+
+    .prepare_ul_li{float: left;width: auto;height: 30px;font-size: 16px;}
+    .prepare_ul{
+        width: auto;height: 30px;margin-left:25%;
+    }
+
+</style>
+<script type="text/javascript">
+
+    function dialogAjaxDone_project(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                $("#project_span").val(json.tenant_id);
+
+                $("#project_tenant_from").css("display",'none');
+                $("#project_create_page_div").css("display","block");
+                $("#prepare_virtual_a_id").attr("href",'prepare_manage/prepare/network/create_network/project');
+            }
+        }
+    }
+
+    function validateCallBackProject(){
+        var project_name = $("#project_name").val();
+        var project_description = $("#project_description").val();
+        if (project_name.length > 10 || project_name.length < 2) {
+            alertMsg.error('{% trans "Tenant name format wrong!" %}');
+
+            return false;
+        }
+
+        if (project_description.length > 400 || project_description.length < 6) {
+            alertMsg.error('{% trans 'Tenant description format wrong!' %}');
+
+            return false;
+        }
+
+    }
+
+</script>
+<div class="pageContent" id="pageContent_page_div">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_project_tenant" need_uuid %}" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone_project);"
+          id="project_tenant_from">
+        {% include 'prepare_manage/_prepare_base.html' %}
+        <div class="pageFormContent" layouth="58">
+            <input type="hidden" name="need_uuid" id="need_uuid"
+                   value="{{ need_uuid }}"/>
+
+            <div class="unit">
+                <label>
+                    {% trans "Project Name" %}：</label>
+                <input type="text" name="name" id="project_name" size="30"
+                       minlength="2" maxlength="10" class="text_input_border"/><span style="color: red; margin-left: -10px;">*</span>
+
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans "Project Description" %}：</label>
+                <textarea name="description" size="30" id="project_description"
+                          minlength="6" maxlength="400" class="required" style="resize: none"></textarea><span style="color: red; margin-left: -8px;">*</span>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans "Enabled" %}：</label>
+                <input type="checkbox" id="project_tenant_checkbox" name="enabled" checked id="project_enabled" />
+            </div>
+
+        </div>
+
+
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" id="project_create_button" value="submit">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close" onclick="">
+                                {% trans "Cancel" %}</button>
+                        </div>
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+    </form>
+    <div id="project_create_page_div" style="display: none;">
+        <div class="pageFormContent" layouth="58" >
+            <table style="width: 100%;margin-top: 30px;">
+                <tr class="project_prepare_tr">
+                    <td style="text-align:center;"><img src="{{ STATIC_URL }}ui/images/icon_2.png" style="margin-left: 20px;" width="26" height="26" />
+                        <span style="font-size: 16px;">{% trans "Project was successfully created" %}</span><span id="project_span"></span></td>
+                </tr>
+                <tr  class="project_prepare_tr">
+                    <td>
+
+                        <ul class="prepare_ul" style="margin-left:40%;">
+                            <li class="prepare_ul_li">{% trans "Click" %} {% trans "Finish" %}&nbsp;</li>
+                            <li class="prepare_ul_li"><div class="btn_background_img">
+                                <a title=" " onclick="$.pdialog.closeCurrent()"  style="text-decoration: none">
+                                    <div  class="btn_background_div" style="text-align: center; padding-top: 5px;">{% trans "Finish" %}</div>
+                                </a>
+                            </div></li>
+                        </ul></td>
+                </tr>
+                <tr class="project_prepare_tr">
+                    <td>
+                        <ul class="prepare_ul" >
+                            <li class="prepare_ul_li">{% trans "or continue to add your first network" %}&nbsp;&nbsp;</li>
+                            <li class="prepare_ul_li"><a target="dialog" id="prepare_virtual_a_id" title=" " href="#" width="700" height="500" tmask="true" style="text-decoration: none;width:122px;height:38px;" >
+                                <div class="btn_background_img">
+                                    GO</div>
+                            </a></li>
+                        </ul></td>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+

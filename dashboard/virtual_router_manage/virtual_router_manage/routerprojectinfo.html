@@ -1,0 +1,127 @@
+{% load i18n %}
+{% load permission %}
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% csrf_token %}
+    <div class="pageFormContent" layouth="58" >
+        <div class="panelBar">
+            <ul>
+                <li style="line-height: 23px;">{% trans "routerproject info" %}</li>
+        	</ul>
+        </div>
+
+        <div class="unit">
+            <label style="display:inline-block;width:190px">
+                {% trans 'Name' %}:</label>
+            <label style="display:inline-block;width:500px" >{{ routerproject.name }} </label>
+        </div>
+
+        <div class="unit">
+            <label style="display:inline-block;width:190px">
+                {% trans 'ID' %}:</label>
+            <label style="display:inline-block;width:500px">{{ routerproject.id }}</label>
+        </div>
+
+        <div class="unit">
+            <label style="display:inline-block;width:190px">
+                {% trans 'Status' %}:</label>
+            <label style="display:inline-block;width:500px">
+                {% if routerproject.status == "ACTIVE" %}
+                    {% trans 'ACTIVE' %}
+                {% else %}
+                    {% trans "DOWN" %}
+                {% endif %}
+            </label>
+        </div>
+
+        <div class="unit">
+            <label style="display:inline-block;width:190px">
+                {% trans 'External Gateway Information' %}:</label>
+            <label style="display:inline-block;width:500px">{{ routerproject.external_gateway_info.network }} </label>
+        </div>
+
+        <div class="unit">
+
+            <div class="panelBar">
+                {% permission 'Add Router Interface' %}
+                <ul class="toolBar">
+                    <li style="line-height: 23px;">
+                        <a class="add" target="dialog" href="{% url 'create_routerprojectdetail' routerproject.id tenant_id %}" onclick="router_nextUrl('/virtual_router_manage/routers/{{  routerproject.id  }}/tenants/{{ tenant_id }}/getRouterProjectInfo/')" >
+                           <span>{% trans "Add Router Interface" %}</span>
+                        </a>
+                    {% otherwise %}
+                    <ul>
+                        <li style="line-height: 23px;">
+                        {% trans 'Router Interface' %}
+                    {% endpermission %}
+                    </li>
+                </ul>
+            </div>
+
+            <table class="table" width="100%">
+                <thead>
+                <tr>
+                    <th>{% trans "Sequence Number" %}</th>
+                    <th>{% trans 'name' %}</th>
+                    <th>{% trans 'Fixed Ips' %}</th>
+                    <th>{% trans 'Status' %}</th>
+                    <th>{% trans 'Type' %}</th>
+                    <th>{% trans 'Admin State' %}</th>
+                    <th>{% trans 'Action' %}</th>
+                </tr>
+                </thead>
+
+               {% for interface in interfaces %}
+
+                    <tr>
+                        <td align="center">{{ forloop.counter }}</td>
+                        <td>{{ interface.name }}</td>
+                        <td>
+
+                        {% for ip in interface.fixed_ips %}
+                            <ul>
+                                <li>
+                                    {{ ip.ip_address }}
+                                </li>
+                            </ul>
+                        {% endfor %}
+                        </td>
+                        <td>
+                            {% if interface.status == "ACTIVE" %}
+                                {% trans 'ACTIVE' %}
+                            {% else %}
+                                {% trans 'DOWN' %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if interface.device_owner == "network:router_gateway" %}
+                                {% trans 'External Gateway' %}
+                            {% else %}
+                                {% trans 'Internal Interface' %}
+                            {% endif %}
+                        </td>
+{#                        <td>{{ interface.device_owner }}</td>#}
+                        <td>
+                            {% if interface.admin_state == "UP" %}
+                                {% trans 'UP' %}
+                            {% else %}
+                                {% trans 'DOWN' %}
+                            {% endif %}
+                        </td>
+                        <td>
+                        {% permission 'Delete Router Interface' %}
+                            <a href="#"  onclick="delRouterUrl('/virtual_router_manage/routers/{{ routerproject.id }}/interfaces/{{ interface.id }}/deleteRouterIFaction/','/virtual_router_manage/routers/{{ routerproject.id }}/tenants/{{ tenant_id }}/getRouterProjectInfo/',3)">
+                                <img title="{% trans 'Delete Router Interface' %}" src="/static/ui/images/delete.png">
+                            </a>
+                        {% endpermission %}
+                        </td>
+                    </tr>
+
+                 {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>

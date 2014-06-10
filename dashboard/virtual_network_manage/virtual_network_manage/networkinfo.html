@@ -1,0 +1,270 @@
+{% load i18n %}
+{% load permission%}
+
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% csrf_token %}
+    <div class="pageFormContent" layouth="58" >
+        <div id="networkinfo_div">
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "NetWork Info" %}</li>
+                </ul>
+            </div>
+
+
+            <div class="unit">
+                <label>
+                    {% trans 'Name' %}:</label>
+                <label style="width:255px;">
+                    {% if network.name == 'None'%}
+                        {% trans 'None' %}
+                    {% else %}
+                        {{ network.name}}
+                    {% endif %}
+
+                </label>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Tenant' %}:</label>
+                <label style="width: 255px;">
+                    {% for id,name in tenants %}
+                        {% if network.tenant_id == id  %}
+                            {{ name }}
+                        {% endif %}
+                    {% endfor %}</label>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Status' %}:</label>
+                <label>
+                    {% if network.status == 'ACTIVE'%}
+                        {% trans 'ACTIVE' %}
+                    {% else %}
+                        {% trans 'PAUSED' %}
+                    {% endif %}
+
+                </label>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Admin State' %}:</label>
+                <label>
+                    {% if network.admin_state == 'UP'%}
+                        {% trans 'UP' %}
+                    {% else %}
+                        {% trans 'DOWN' %}
+                    {% endif %}
+                </label>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Shared' %}:</label>
+                <label>
+                    {#                 {{ network.shared|yesno|capfirst }}#}
+                    {% if network.shared == 0 %}
+                        {% trans 'False' %}
+                    {% else %}
+                        {% trans 'True' %}
+                    {% endif %}
+                </label>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'External Network' %}:</label>
+                <label>
+                    {#                 {{ network.router__external|yesno|capfirst }}#}
+                    {% if network.router__external == 0 %}
+                        {% trans 'False' %}
+                    {% else %}
+                        {% trans 'True' %}
+                    {% endif %}
+                </label>
+            </div>
+            {% if network.provider__network_type %}
+                <div class="unit">
+                    <div class="panelBar">
+                        <ul>
+                            <li style="line-height: 23px;">{% trans "Provider Network" %}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="unit">
+                    <label>{% trans 'Network Type' %}:</label>
+                    <label>
+                        {% if network.status == 'Unknown'%}
+                            {% trans 'Unknown' %}
+                        {% else %}
+                            {{ network.provider__network_type}}
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="unit">
+                    <label>{% trans "Physical Network" %}:</label>
+                    <label>
+                        {{ network.provider__physical_network|default:"-" }}
+
+                    </label>
+                </div>
+                <div class="unit">
+                    <label>{% trans "Segmentation ID" %}:</label> <label>{{ network.provider__segmentation_id|default:"-" }}</label>
+                </div>
+            {% endif %}
+
+        </div>
+        <div class="unit">
+{#            <label>{% trans 'security rules' %}:</label>#}
+            <div class="panelBar">
+                {% permission 'Create Subnet' %}
+                <ul class="toolBar">
+                    <li style="line-height: 23px;">
+                        <a class="add" width="660" height="630" target="dialog" href="{% url 'create_subnet_index' network.id %}"
+                           onclick="network_nextUrl('/virtual_network_manage/network/{{network.id }}/tenants/{{ network.tenant_id }}/getnetworkinfo/')" >
+                            <span>{% trans "Create Subnet" %}</span>
+                        </a>
+                        {% otherwise %}
+                            <ul>
+                                <li style="line-height: 23px;">
+                                {% trans 'Subnet' %}
+                        {% endpermission %}
+                    </li>
+                </ul>
+            </div>
+
+            <table class="table" width="99%">
+                <thead>
+                <tr>
+                    <th>{% trans "Sequence Number" %}</th>
+                    <th>{% trans 'Name' %}</th>
+                    <th>{% trans 'Network Address' %}</th>
+                    <th>{% trans 'IP Version' %}</th>
+                    <th>{% trans 'Gateway IP' %}</th>
+                    <th>{% trans 'Action' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for subnet in subnets %}
+
+                    <tr>
+                        <td align="center">{{ forloop.counter }}</td>
+                        <td>
+                            <a target="dialog" width="680" height="500"  href="{% url 'get_subnet_info' subnet.id %}"
+                               onclick="network_nextUrl('/virtual_network_manage/network/subnets/{{ subnet.id }}/getsubnetinfo/','')">{{ subnet.name }}</a>
+                        </td>
+                        <td>{{ subnet.cidr }}</td>
+                        <td>IPv{{ subnet.ip_version }}</td>
+                        <td>{{ subnet.gateway_ip|default:"-" }}</td>
+                        <td>
+{#                            <a  href="#" onclick="gotonwUrl('/virtual_network_manage/network/{{ subnet.id }}/getsubnetinfo/','')">{% trans 'Detail' %}</a>#}
+                            {% permission 'Edit Subnet' %}
+                                <a title="{% trans 'Edit Subnet' %}" target="dialog" width="660" height="530" href="{% url 'edit_subnet_index' subnet.id %}"
+                                    onclick="network_nextUrl('/virtual_network_manage/network/{{network.id }}/tenants/{{ network.tenant_id }}/getnetworkinfo/')">
+                                    <img title="{% trans 'Edit Subnet' %}" src="/static/ui/images/edit.png">
+                                </a>
+                            {% endpermission %}
+                            {% permission 'Delete Subnet' %}
+                                <a href="#" style="margin-left: 5px; "
+                                    onclick="delnwUrl('/virtual_network_manage/network/subnets/{{ subnet.id }}/deletesubnetaction/','/virtual_network_manage/network/{{network.id }}/tenants/{{ network.tenant_id }}/getnetworkinfo/',2)">
+                                    <img title="{% trans 'Delete Subnet' %}" src="/static/ui/images/delete.png">
+                                </a>
+                            {% endpermission %}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="unit">
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "Port" %}</li>
+                </ul>
+            </div>
+
+            <table class="table" width="100%" nowrapTD="false">
+                <thead>
+                <tr>
+                    <th>{% trans "Sequence Number" %}</th>
+                    <th>{% trans 'Name' %}</th>
+                    <th>{% trans 'Fixed IPs' %}</th>
+                    <th>{% trans 'Attached Device' %}</th>
+                    <th>{% trans 'Status' %}</th>
+                    <th>{% trans 'Admin State' %}</th>
+                    <th>{% trans 'Action' %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for port in ports %}
+
+                    <tr>
+                        <td style="text-align: center;">{{ forloop.counter }}</td>
+                        <td>
+                            <a target="dialog" width="730" height="490"  href="{% url 'get_port_info' port.id %}"
+                               onclick="network_nextUrl('/virtual_network_manage/network/ports/{{ port.id }}/getportinfo/','')">
+                                {{ port.name }}
+                            </a>
+                        </td>
+                        <td>
+                            {% for ip in port.fixed_ips %}
+                                <ul>
+                                    <li style="padding: 2px 0px 2px 0px; line-height: 21px;">
+                                        {{ ip.ip_address }}
+                                    </li>
+                                </ul>
+                            {% endfor %}
+                        </td>
+                        <td>{{ port.attached }}
+                            {% if port.device_owner == 'compute:None'%}
+                                {% trans 'compute:None' %}
+                            {% elif  port.device_owner == 'network:dhcp'%}
+                                {% trans 'network:dhcp' %}
+                            {% elif  port.device_owner == 'network:router_interface'%}
+                                {% trans 'network:router_interface' %}
+                            {% else %}
+                                {{ port.device_owner }}
+                            {% endif %}
+
+                        </td>
+                        <td>
+                            {% if port.status == 'ACTIVE' %}
+                                {% trans 'ACTIVE' %}
+                            {% else %}
+                                {% trans 'PAUSED' %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if port.admin_state == 'UP' %}
+                                {% trans 'UP' %}
+                            {% else %}
+                                {% trans 'DOWN' %}
+                            {% endif %}
+
+                        </td>
+                        <td>
+{#                            <a  href="#" onclick="gotonwUrl('/virtual_network_manage/network/{{ port.id }}/getportinfo/','')">{% trans 'Detail' %}</a>#}
+                            {% permission 'Edit Port' %}
+                                <a target="dialog" title="{% trans 'Edit Port' %}" width="630" height="300" href="{% url 'edit_port_index' port.id %}"
+                                    onclick="network_nextUrl('/virtual_network_manage/network/{{network.id }}/tenants/{{ network.tenant_id }}/getnetworkinfo/')">
+                                    <img title="{% trans 'Edit Port' %}" src="/static/ui/images/edit.png">
+                                </a>
+                            {% endpermission %}
+                            {% permission 'Delete Port' %}
+                                <a title="{% trans 'Delete Port' %}" href="#" style="margin-left: 5px;"
+                                    onclick="delnwUrl('/virtual_network_manage/network/ports/{{ port.id }}/deleteportaction/','/virtual_network_manage/network/{{network.id }}/tenants/{{ network.tenant_id }}/getnetworkinfo/',3)">
+                                    <img title="{% trans 'Delete Port' %}" src="/static/ui/images/delete.png">
+                                </a>
+                            {% endpermission %}
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>

@@ -1,0 +1,56 @@
+{% load i18n %}
+{% load dashboard %}
+
+<div class="pageContent">
+{#    <script type="text/javascript">#}
+{#           $(function(){#}
+{#               $("#volume_type_create").bind("click",function(){#}
+{#                   $("#volume_type_id").submit();#}
+{#                   $.pdialog.closeCurrent();#}
+{#               })#}
+{#           })#}
+{#    </script>#}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <form action="{% url "create_volume_type_action" %}" class="pageForm required-validate"
+          method="post" onsubmit="return iframeCallback(this,dialogAjaxDone);" id="volume_type_id">
+        {% add_in_method "post" %}
+        {% csrf_token %}
+        <div class="pageFormContent" layouth="58">
+
+            <div class="unit">
+                <label>{% trans "Volume Type Name" %}:</label>
+                <input type="text" name="volume_type_name" size="30" minlength="3" maxlength="200" class="required">
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit" id="volume_type_create">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <a target="dialog" width="500" height="330" href="{% url 'get_volume_type_list' %}" tmask="true" class="back" style="line-height: 28px;">{% trans "Back" %}</a>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,17 @@
+{% load i18n%}
+
+<form action="{% url "change_pwd" instance_id %}" method="post">
+    {% comment %}
+    {% if form.non_field_errors %}
+        {{ form.non_field_errors }}
+    {% endif %}
+    {% if form.password.errors %}
+        请输入密码！
+    {% endif %}
+    {% if form.confirm_password.errors %}
+        请输入确认密码！
+    {% endif %}
+    {% endcomment %}
+    {{ form.as_p }}{% csrf_token %}
+    <input type="submit" value="{% trans "Submit" %}">
+</form>

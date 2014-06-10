@@ -1,0 +1,31 @@
+{% load i18n %}
+{% load dashboard %}
+{#<div style="width: 316px; line-height: 20px; font-size: 13px;height: auto; ">#}
+{#    <div class="tr">#}
+{#        <div style="width: 20px;float: left; text-align: center;">{{% trans "sequence" %}}</div>#}
+{#        <div style="width: 80px; float: left; text-align: center;">{{% trans "Task Name" %}}</div>#}
+{#        <div style="width: 60px; float: left; text-align: center;">{{% trans "Task Status" %}}</div>#}
+{#        <div style="width: 130px; float: left; text-align: center;">{{% trans "Task Name" %}}</div>#}
+{#    </div>#}
+{#</div>#}
+{% for task in task_list %}
+    <div style="width: 336px; line-height: 20px; font-size: 13px;height: auto; ">
+        <div class="tr">
+            <div style="width: 20px;float: left; text-align: center;">{{ forloop.counter }}</div>
+            <div style="width: 100px; float: left; text-align: center;">
+                <a target="dialog"
+                style="white-space: nowrap; text-overflow: ellipsis;overflow: hidden;width: 100px;display: block;"
+                title="{% trans task.name %}" width="600" height="400"
+                    href="{% url 'get_task_detail' task.id %}">
+                {% trans task.name %}
+                </a>
+            </div>
+            <div style="width: 60px; float: left; text-align: center;">
+                    {% trans task.status %}
+            </div>
+            <div style="width: 130px; float: left; text-align: center;">
+                {{  task.submit_time | datetime_from_utctime  }}
+            </div>
+        </div>
+    </div>
+{% endfor %}

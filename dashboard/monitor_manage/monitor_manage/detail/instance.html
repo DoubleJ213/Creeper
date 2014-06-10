@@ -1,0 +1,78 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=7"/>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var content = "";
+        $.ajax({
+            type:"GET",
+            url:"{% url "get_instance_monitor_info" instance_id %}",
+            dataType:"json",
+            success:function (data) {
+                if (data != "Not Found") {
+                    var memory = data["memory"]/1024;
+                    var cpu_data = data["cpu0_time"]/1000000000;
+                    var cpu_element = $("#cpu_info");
+                    if (cpu_element.html().trim() == "") {
+                        cpu_element.append("cpu0_time").append(": ").append(cpu_data).append(" seconds");
+                    }
+                    var vda_read = data["vda_read"] /1024 /1024;
+                    var vda_write = data["vda_write"] /1024 / 1024;
+                    var vda_write_req = data["vda_write_req"];
+                    var vda_read_req = data["vda_read_req"];
+                    var vda_errors = data["vda_errors"];
+                    var instance_element = $("#instance_disk");
+                    if (instance_element.html().trim() == "") {
+                        instance_element.append("vda_read").append(": ").append(vda_read).append(' MB').append("<br/>")
+                                .append("vda_write").append(": ").append(vda_write).append(' MB').append("<br/>")
+                                .append("vda_write_req").append(": ").append(vda_write_req).append(' requests').append("<br/>")
+                                .append("vda_read_req").append(": ").append(vda_read_req).append(' requests').append("<br/>")
+                                .append("vda_errors").append(": ").append(vda_errors).append("<br/>");
+                    }
+                    var memory_element = $("#memory_info");
+                    if (memory_element.html().trim() == "") {
+                        memory_element.append("Memory").append(": ").append(memory).append(" MB");
+                    }
+                    var network_element = $("#instance_network");
+                    if (network_element.html().trim() == "") {
+                        for (var key in data) {
+                            if (key.substring(0, 3) == "tap") {
+                                network_element.append(key).append(": ").append(data[key]).append("<br/>");
+                            }
+                        }
+                    }
+                }
+            },
+            error:DWZ.ajaxError
+        });
+    });
+</script>
+<div class="pageContent" layoutH="10" style=" padding:5px;">
+    <div style="height: 100%;width:100%; text-align:center;position: relative; color: #8F929D">
+        <div class="instance_bg">
+            <div class="disk_content" style="border-bottom: 2px solid #EFEFEF;">
+                <div class="title"></div>
+                <div id="instance_disk" class="content_info"></div>
+            </div>
+            <div id="instance_cpu" class="cpu_content" style="border-bottom: 2px solid #EFEFEF; border-left: 2px solid #EFEFEF">
+                <div style="float: left">
+                    <div class="title"></div>
+                    <div class="cpu_info" id="cpu_info"></div>
+                </div>
+                <div class="cpu_bg" style="float: right"></div>
+            </div>
+
+
+            <div class="network_content" style="border-right: 2px solid #EFEFEF; padding-top: 40px">
+                <div class="title"></div>
+                <div id="instance_network" class="content_info"></div>
+            </div>
+            <div id="instance_memory" class="memory_content" style="padding-top: 40px">
+                <div style="float: left">
+                    <div class="title"></div>
+                    <div class="memory_info" id="memory_info"></div>
+                </div>
+                <div class="memory_bg" style="float: right"></div>
+            </div>
+        </div>
+    </div>
+</div>

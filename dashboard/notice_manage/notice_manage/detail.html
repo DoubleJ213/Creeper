@@ -1,0 +1,37 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<div class="pageContent">
+    <div class="pageFormContent" layouth="58">
+        <h2 class="contentTitle">{% trans "Title" %}：{{ notice.title }}</h2>
+        <div class="divider"></div>
+       	<dl class="nowrap">
+			<dt style="width: 110px;">{% trans "Notice Author" %}：</dt>
+			<dd style="width: auto;">
+                {{ notice.operater_name }}
+			</dd>
+		</dl>
+        <div class="divider"></div>
+       	<dl class="nowrap">
+			<dt style="width: 110px;">{% trans "Level" %}：</dt>
+			<dd style="width: auto;">
+				 {% if notice.level == '1' %} {% trans "High Level" %} {% else %} {% trans "General" %} {% endif %}
+			</dd>
+		</dl>
+        <div class="divider"></div>
+        	<dl class="nowrap">
+			<dt style="width: 110px;">{% trans "Whether Release" %}：</dt>
+			<dd style="width: auto;">
+				{% if notice.release == '1' %} {% trans "Is Released" %} {% else %} {% trans "No Released" %} {% endif %}
+			</dd>
+		</dl>
+        <div class="divider"></div>
+        	<dl class="nowrap">
+			<dt style="width: 120px;">{% trans "Content" %}：</dt>
+			<dd style="width: auto; padding-left: 10px; clear: both">
+{#				<pre style=" line-height: 18px; white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;">{{ notice.content }}</pre>#}
+                <pre style=" width: 760px; line-height: 18px;white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -o-pre-wrap;word-wrap: break-word;">{{ notice.content }}</pre>
+            </dd>
+		</dl>
+    </div>
+</div>

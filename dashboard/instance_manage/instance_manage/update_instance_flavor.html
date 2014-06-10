@@ -1,0 +1,122 @@
+{% load i18n %}
+{% load dashboard %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script>
+    $(document).ready(function(){
+        getFlavorDetail();
+    });
+    function getFlavorDetail(){
+        var flavorId = $("#flavor").val();
+        $.ajax({
+            url:'{% url "get_ins_flavor" %}',
+            type:'GET',
+            dataType:'json',
+            data:{'flavorId': flavorId},
+            success:function(data){
+                var flavor_name = data.name;
+                var flavor_vcpus = data.vcpus;
+                var flavor_disk = data.disk;
+                var flavor_memory = data.ram;
+                $(".up_fla_name").html(flavor_name);
+                $(".up_fla_vcpus").html(flavor_vcpus);
+                $(".up_fla_disk").html(flavor_disk + " GB");
+                $(".up_fla_memory").html(flavor_memory + " MB");
+            }
+
+        });
+    }
+</script>
+<style>
+    .up_fla{
+        height: 100px;
+        width: 250px;
+        margin-top: 40px;
+    }
+    .up_fla table{
+        margin-left: 20px;
+    }
+    .fla_word{
+        font-size: 14px;
+        margin-left: 10px;
+    }
+    .fla{
+        height: 30px;
+        width: 150px;
+    }
+    .up_fla_name,.up_fla_disk,.up_fla_memory,.up_fla_vcpus{
+        font-size: 12px;
+        text-align: center;
+    }
+
+</style>
+    <form method="post" action="{% url "instance_flavor_update" instance_id=instance_id %}"
+          class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+        {% add_in_method "post" %}
+        {% csrf_token %}
+        <div class="pageFormContent" layouth="58">
+
+            <div class="unit">
+                <label>
+                    {% trans 'Flavor' %}：</label>
+                <select id="flavor" name="flavor_id" class="required" onchange="getFlavorDetail()">
+                    {% for key,value in flavor_list %}
+                        {% if key != instance_flavor %}
+                            <option value={{ key }}>{{ value }}</option>
+                        {% endif %}
+                    {% endfor %}
+
+                </select>
+            </div>
+        <div class="up_fla">
+            <span class="fla_word">{% trans "Flavor Detail:" %}</span>
+            <table>
+                <tbody>
+                <tr>
+                    <td class="fla">{% trans 'Name' %}</td>
+                    <td class="up_fla_name"></td>
+                </tr>
+                <tr>
+                    <td class="fla">{% trans 'VCPUs' %}</td>
+                    <td class="up_fla_vcpus"></td>
+                </tr>
+                <tr>
+                    <td class="fla">{% trans 'Disk' %}</td>
+                    <td class="up_fla_disk"></td>
+                </tr>
+                <tr>
+                    <td class="fla">{% trans 'Memory' %}</td>
+                    <td class="up_fla_memory"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+
+

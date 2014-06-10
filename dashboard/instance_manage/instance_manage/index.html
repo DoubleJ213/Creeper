@@ -1,0 +1,881 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+<style type="text/css">
+    /*div style area begin*/
+
+    .instance_list_action a{
+        margin:0 2px;
+    }
+        /*div style area end*/
+</style>
+<form id="pagerForm" action="{% url "get_instance_list" %}">
+    {% add_in_method 'get' %}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}"/>
+    <input type="hidden" name="numPerPage"
+           value="{{ page_obj.paginator.per_page }}"/>
+    <input type="hidden" name="instance_name" value="{{ instance_name }}"/>
+    <input type="hidden" name="instance_classify_id"
+           value="{{ instance_classify_id }}">
+</form>
+<div class="pageContent listContent">
+<script lang="text/javascript">
+    function forbiddenUse(obj){
+        alertMsg.confirm("{% trans 'Are you sure to get the remote desktop?' %}", {
+            okCall:function(){
+                var instance_id = $(obj).parent().attr("value");
+                var remote_status = $("#console_"+instance_id)
+                $.ajax({
+                    url:'{% url "terminate_instance_console" %}',
+                    type:'GET',
+                    dataType:'json',
+                    data:{'instance_id': instance_id},
+                    success:function(data){
+                        var status = data.status;
+                        if(status == 'OK'){
+                            txt = "<img src='{{ STATIC_URL }}ui/images/remote_af.png' title='{% trans 'Desktop is available' %}' />"
+                            remote_status.empty();
+                            remote_status.append(txt);
+                        }
+                        else{
+                            alertMsg.error("{% trans 'Can not interrupt the remote desktop.' %}")
+                            return false;
+                        }
+                    }
+                });
+            }
+        });
+    }
+    var ins_iRows = new Array();
+    var ins_iproj = new Array();
+    var update_vm_info_url = "{% url "update_instance_view_date" "#vm_id#" "#tenant_id#" %}";
+    function initialize() {
+        var flag=0;//record the amount of unexited instances
+        for (var i = 0; i < ins_iRows.length; i++) {
+            var _url = update_vm_info_url.replace('#vm_id#', ins_iRows[i]).replace('#tenant_id#', ins_iproj[i]);
+            $.ajax({
+                url:_url,
+                global:false,
+                success:function (response) {
+                    var _data = eval("(" + response + ")");
+                    var _id = _data['vm_id'];
+                    update_vm_state(_id, _data['vm_state']);
+                    update_vm_task_state(_id, _data['task_state']);
+                    update_vm_power_state(_id, _data['power_state']);
+                    update_vm_ip_address(_id, _data['ip']);
+                    update_vm_host(_id, _data['host']);
+                    update_vm_remote(_id, _data['remote_status'], _data['console']);
+                    update_vm_user(_id,_data['user_name']);
+                },
+                error:function (xhr, ajaxOptions, thrownError) {
+                    if (xhr.status != 404) {
+                        DWZ.ajaxError(xhr, ajaxOptions, thrownError)
+                    } else {
+
+                        var vm_id = xhr.responseText;
+                        if (ins_iRows.length > 1 && ins_iRows[0] == vm_id) {
+                            var first_tds = $("#instance_" + vm_id + " > td");
+                            var second_tds = $("#instance_" + ins_iRows[1] + " > td");
+                            for (var index = 0; index < first_tds.length; index++) {
+                                second_tds[index].style.width =
+                                        first_tds[index].style.width;
+                            }
+                        }
+                        for (var i = 0; i < ins_iRows.length; i++) {
+                            if (ins_iRows[i] == vm_id) {
+                                ins_iRows.splice(i,1);
+                                break;
+                            }
+                        }
+                        $("tr[id=instance_" + vm_id + "]").remove();
+                        flag=flag+1;// flag plus one when one instance is unexited
+                        $("#total_records").empty();
+                        $("#total_records").append({{ page_obj.paginator.count }}-flag);
+                    }
+                }
+            });
+        }
+    }
+
+    function actionDisplay(vm_id){
+        var disp1_num = $("#resize_action_"+vm_id +" > a ").length;
+        var disp2_num = $("#div_"+vm_id +" a ").length;
+        var action_num = disp1_num + disp2_num;
+        if (action_num <= 6){
+            var next_obj = $("#div_"+vm_id).html();
+            $("#resize_action_"+vm_id).prepend(next_obj);
+            $("#action_"+vm_id).hide();
+            $("#dis_action_"+vm_id).hide();
+        }
+    }
+
+    $(document).ready(function () {
+        $("#vm_instance_table").find("tbody > tr").each(function (i, row) {
+            ins_iRows.push($(row).attr("id").substring(9));
+            ins_iproj.push($(row).attr("proj_id").substring(9));
+        });
+        var navTabId = "{% trans 'Instance Manage' %}";
+        for(var i = 0; i < ins_iRows.length; i++){
+            actionDisplay(ins_iRows[i]);
+        }
+        Timer.submit(navTabId, initialize);
+    });
+
+    function navTabQuery(form) {
+
+        navTabSearch(form, '{% trans 'Instance Manage' %}');
+    }
+
+    function update_vm_state(vm_id, data) {
+        var td_status = $("#instance_" + vm_id + " > td[upgrade=status]");
+        td_status.empty();
+        if (data == "{% trans 'ACTIVE' %}") {
+            td_status.text("{% trans 'ACTIVE' %}");
+        } else if (data == "{% trans 'RESIZE' %}") {
+            $("#instance_" + vm_id + " > td[resize=resize] > div > a:eq(5)").hide();
+        } else if (data == "{% trans 'VERIFY_RESIZE' %}") {
+            var $resize_verify = $("#resize_verify");
+            var html_val = "<img src='{{ STATIC_URL }}ui/images/confirm_re.png' title='{% trans "Instance Flavor Resize Confirm" %}'/>"
+            var url = '{% url "instance_flavor_confirm" '#ins_id#' %}'.replace('#ins_id#', vm_id);
+            $resize_verify.attr("href",url)
+{#            alert($resize_verify.html());#}
+            $resize_verify.html(html_val);
+            td_status.html("<div class='status_loading'></div>" + data);
+        }
+        else {
+            td_status.empty();
+            td_status.html("<div class='status_loading'></div>" + data);
+        }
+    }
+
+    function update_vm_power_state(vm_id, data) {
+        var td_power = $("#instance_" + vm_id + " > td[upgrade=power]");
+        td_power.empty();
+        if (data == "{% trans 'Running' %}") {
+            td_power.text("{% trans 'Running' %}");
+        } else {
+            td_power.html("<div class='power_loading'></div>" + data);
+        }
+    }
+
+    function update_vm_task_state(vm_id, data) {
+        var td_task = $("#instance_" + vm_id + " > td[upgrade=task]");
+        td_task.empty();
+        if (!data) {
+            td_task.text("{% trans 'None' %}");
+        }
+{#        else if(data == 'deleting'){#}
+{#            td_task.html("<div class='task_loading'></div>" + data);#}
+{#            $("#instance_" + vm_id + " > td[resize=resize] > div > a:eq(0)").siblings(a).hide();#}
+{#        }#}
+        else {
+            td_task.html("<div class='task_loading'></div>" + data);
+        }
+    }
+
+    function update_vm_ip_address(vm_id, data) {
+        var td_ip_addr = $("#ip_" + vm_id);
+        var ip = data.substring(0, data.length - 1);
+        td_ip_addr.empty();
+        td_ip_addr.html("<div>" + ip + "</div>");
+    }
+
+    function update_vm_host(vm_id, data) {
+        var td_host = $("#host_" + vm_id);
+        td_host.empty();
+        td_host.html("<div>" + data + "</div>");
+    }
+    function update_vm_remote(vm_id, data, console){
+        var td_remote = $("#console_" + vm_id);
+{#        alert(td_remote.attr("re_status"));#}
+        var re_status = console;
+        var ac_remote = $("#con_status_" + vm_id);
+        td_remote.empty();
+        var status = "{% trans 'in-use' %}";
+        if(data == '使用中'){
+            td_remote.html("<img src='{{ STATIC_URL }}ui/images/remote.png' title='{% trans 'Desktop is in_use' %}'/>" + re_status);
+            $("#con_status_"+vm_id+" img").attr("src", "{{ STATIC_URL }}ui/images/instance/forbidden_use.png");
+            $("#con_status_"+vm_id+" img").attr('value', vm_id);
+{#            $("#con_status_"+vm_id+" img").bind('click', function(){#}
+{#                forbiddenUse(this);#}
+{#            });#}
+        }
+        else{
+            td_remote.html("<img src='{{ STATIC_URL }}ui/images/remote_af.png' title='{% trans 'Desktop is available' %}'/>");
+            $("#con_status_"+vm_id+" img").attr("src", "{{ STATIC_URL }}ui/images/instance/forbidden_use_af.png");
+            $("#con_status_"+vm_id+" img").attr('value', vm_id);
+        }
+    }
+
+    // update the instance's user
+    function update_vm_user(vm_id, data){
+        var td_user = $("#user_" + vm_id);
+        td_user.empty();
+        td_user.html("<div>" + data + "</div>");
+        var instance_distribution = $(".instance_distribution_"+vm_id);
+        var distribution_image=$(".distribution_image_"+vm_id);
+        distribution_image.removeAttr("src");
+        distribution_image.removeAttr("title");
+        instance_distribution.removeAttr("href");
+        if(data==""){
+            distribution_image.attr("src","{{ STATIC_URL }}ui/images/distribute.png");
+            distribution_image.attr("title","{% trans 'Distribution' %}");
+            var url = "/instance_manage/instances/"+vm_id+"/distribution/";
+            instance_distribution.attr("title","{% trans 'Distribution' %}");
+            instance_distribution.attr("href", url);
+            instance_distribution.removeAttr("width");
+            instance_distribution.removeAttr("height");
+        }else{
+
+            distribution_image.attr("src","{{ STATIC_URL }}ui/images/udistribute.png");
+            distribution_image.attr("title","{% trans 'Undistribution' %}");
+            var url ="/instance_manage/instances/"+vm_id+"/undistribution/";
+            instance_distribution.attr("title","{% trans 'Undistribution' %}");
+            instance_distribution.attr("href", url);
+            instance_distribution.attr("width", 250);
+            instance_distribution.attr("height", 150);
+        }
+    }
+
+    function usb_mask(url,type){
+        alertMsg.confirm('{% trans "Are you sure for update the instance umask?" %}',{
+            okCall:function(){
+                $("#umask_form").attr("action",url);
+                $("#umask_form input[name=t]").val(type);
+                $("#umask_form").submit();
+            }
+        })
+    }
+
+    function instance_dialogAjaxDone(json){
+        dialogAjaxDone(json);
+        if(json.statusCode ==DWZ.statusCode.ok){
+            if(json.type == 'usb'){
+                if(json.us_right){
+                    if(json.umask){
+                    $("#usb_"+json.instance_id +" img ").attr("src","{{ STATIC_URL }}ui/images/instance/stop_usb.png");
+                    $("#usb_"+json.instance_id +" img ").attr("title", "{% trans 'USB Stop' %}");
+                    }else{
+                    $("#usb_"+json.instance_id +" img ").attr("src","{{ STATIC_URL }}ui/images/instance/open_usb.png");
+                    $("#usb_"+json.instance_id +" img ").attr("title", "{% trans 'USB Open' %}");
+                    }
+                }
+                else{
+                    $("#usb_"+json.instance_id + " img").hide();
+                }
+
+            }else{
+                if(json.aud_right){
+                    if(json.umask){
+                        $("#audio_"+json.instance_id +" img ").attr("src","{{ STATIC_URL }}ui/images/instance/stop_audio.png");
+                        $("#audio_"+json.instance_id +" img ").attr("title", "{% trans 'Audio Stop' %}");
+                    }else{
+                        $("#audio_"+json.instance_id +" img ").attr("src","{{ STATIC_URL }}ui/images/instance/open_audio.png");
+                        $("#audio_"+json.instance_id +" img ").attr("title", "{% trans 'Audio Open' %}");
+                    }
+                }
+                else{
+                    $("#audio_"+json.instance_id + " img").hide();
+                }
+            }
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    function submitForm() {
+        var $checkedbox = $("input[name=delete_instance]:checked");
+        if ($checkedbox.length == 0) {
+            alertMsg.error('{% trans "Please select one!" %}')
+            return;
+        }
+        alertMsg.confirm("{% trans "Are you sure for deleting" %} " + $checkedbox.length + " {% trans "items" %}", {
+            okCall:function () {
+                $("#delete_instances_form").submit();
+            }
+        });
+    }
+
+
+</script>
+
+<div class="panelBar" id="instance_panel_bar" style="height: auto;">
+    <ul class="toolBar">
+        <li>
+            {% permission 'Add Instance' %}
+                <a class="add" target="dialog" width="715" height="490"
+                   href="{% url "launch_form_image" %}" tmask="true">
+                    <span>{% trans 'Add Instance' %}</span>
+                </a>
+            {% endpermission %}
+
+        </li>
+        <li>
+            {% permission 'Delete Instance' %}
+            <a class="delete" width="650" height="330"
+               onclick="submitForm()" id="delete_a"
+               href="javascript:void(0)"
+               tmask="true"><span>{% trans "Delete Instances" %}</span></a>
+            {% endpermission %}
+        </li>
+        <form id="queryInstanceForm" action="{% url "get_instance_list" %}"
+              onsubmit="return navTabSearch(this,'{% trans 'Instance Manage' %}')">
+            <div style="float: left;">
+                {% add_in_method 'get' %}{% csrf_token %}
+                <span style="padding-left: 10px; padding-right: 5px; cursor: auto;">{% trans "Instance Name" %}:</span>
+                <input type="text" name="instance_name" id="instance_name"
+                       value="{{ instance_name }}" maxlength="10"
+                       class="textInput" style="width:100px;">
+
+            </div>
+            <div style="float: left;">
+                {% add_in_method 'get' %}{% csrf_token %}
+                <span style="padding-left: 10px; padding-right: 5px; cursor: auto;">{% trans "Instance User" %}:</span>
+                <input type="text" name="instance_user" id="instance_user" maxlength="10"
+                       value="{{ instance_user }}"  class="textInput" style="width:100px;">
+                {#            </form> #}
+
+            </div>
+            <div style="float: left;">
+                {#            <form id="queryInstanceClassify" action="{% url "get_instance_list" %}">#}
+                {% add_in_method 'get' %}{% csrf_token %}
+                <span style="padding-right: 5px; cursor: auto;">{% trans "Instance Classify" %}:</span>
+                <select class="select" name="instance_classify_id">
+                    <option value="default">{% trans "---select instance classify---" %}</option>
+                    {% for key,value in classifys.items %}
+                        <option value="{{ key }}"
+                                {% if key == instance_classify_id %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="subBar" style="float: left; margin-left: 10px;">
+                        <div class="buttonActive">
+                            <div class="buttonContent">
+                                <button type="submit">{% trans "Query" %}</button>
+                            </div>
+                        </div>
+            </div>
+        </form>
+    </ul>
+</div>
+<form id="delete_instances_form" action="{% url "delete_instances" %}"
+      method="post" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+    {% add_in_method "delete" %}
+    {% csrf_token %}
+<table class="table" width="100%" layoutH="75" id="vm_instance_table">
+    <thead id="instance_thbody">
+    <tr>
+        <th>
+            {% permission 'Delete Instance' %}
+                <div style="float: left; padding-top: 1px;">
+                    <input type="checkbox" target_event="delete_instance" />
+                </div>
+                <div style="line-height: 21px;">
+                    {% trans 'Check All' %}
+                </div>
+            {% endpermission %}
+        </th>
+        <th>{% trans "Sequence Number" %}</th>
+        <th>{% trans 'Instance Name' %}</th>
+        <th>{% trans 'Tenant' %}</th>
+
+        <th>{% trans 'Host' %}</th>
+
+        <th>{% trans "Instance Classify" %}</th>
+        <th>{% trans 'IP Address' %}</th>
+        {#        <th>{% trans 'Size' %}</th>#}
+        <th>{% trans "Remote Status" %}</th>
+        <th>{% trans 'Status' %}</th>
+
+        <th>{% trans 'Task' %}</th>
+        <th>{% trans 'Power State' %}</th>
+
+        <th>{% trans 'User' %}</th>
+
+        <th>{% trans 'Action' %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for instance in page_obj.object_list %}
+        <tr id="instance_{{ instance.id }}" proj_id="instance_{{ instance.tenant_id }}">
+        <td align="center" width="50" upgrade="checkbox">
+            {% permission 'Delete Instance' %}
+                <input type="checkbox" name="delete_instance" value="{{ instance.id }}"/>
+            {% endpermission %}
+        </td>
+        <td align="center">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+        <td>
+            <a target="dialog" href="{% url "get_instance_detail" instance.id instance.tenant_id %}"
+                tmask="true" width="550" height="580">
+                {{ instance.name }}
+            </a>
+        </td>
+        <td>{{ instance.tenant_name }}</td>
+        <td id="host_{{ instance.id }}">{{ instance.host }}</td>
+        <td align="center">
+            {% for key,value in get_instance_classify.items %}
+                {% ifequal key instance.id %}
+                    {% if value == None %}
+                        {% trans "None" %}
+                    {% else %}
+                        {{ value }}
+                    {% endif %}
+                    {% endifequal %}
+            {% endfor %}
+        </td>
+
+        <td id="ip_{{ instance.id }}">
+            {% for network, ip_list in instance.addresses.items %}
+                {% for ip in ip_list %}
+                    {% if not forloop.last %}{{ ip.addr }},&nbsp;{% else %}
+                        {{ ip.addr }}{% endif %}
+                {% endfor %}
+
+            {% endfor %}
+        </td>
+
+        <td id="console_{{ instance.id }}" re_status="{{ instance.console }}">
+            {% if instance.console_status == 'in-use' %}
+                <img style="margin-top: 3px;" src="{{ STATIC_URL }}ui/images/remote.png" title="{% trans 'Desktop is in_use' %}"/>{{ instance.console }}
+            {% else %}
+                <img style="margin-top: 3px;" src="{{ STATIC_URL }}ui/images/remote_af.png" title="{% trans 'Desktop is available' %}"/>
+            {% endif %}
+        </td>
+
+        <td upgrade='status'>
+            {% if instance.status != 'ACTIVE' %}
+                <div class='status_loading'></div>
+                {% trans instance.status %}
+            {% else %}
+                {% trans 'ACTIVE' %}
+            {% endif %}
+        </td>
+
+        <td upgrade='task'>
+            {% if instance.task %}
+                <div class='task_loading'></div>
+                {% trans instance.task %}
+            {% else %}
+                {% trans 'None' %}
+            {% endif %}
+        </td>
+
+        <td upgrade='power'>
+            {% if instance.power_state != 'Running' %}
+                <div class='power_loading'></div>
+                {% trans instance.power_state %}
+            {% else %}
+                {% trans 'Running' %}
+            {% endif %}
+        </td>
+
+        <td id="user_{{ instance.id }}">{{ instance.user_name }}</td>
+
+        <td resize="resize" id="resize_action_{{ instance.id }}">
+            {% if instance.status != 'VERIFY_RESIZE' and instance.status != "RESIZE" %}
+                {% if instance.status != 'RESOURCE_IS_NOT_ENOUGH' or instance.status != 'ERROR' %}
+                    {% permission 'Reboot Instance' %}
+                        <a target="dialog" title="{% trans 'Reboot Instance' %}"
+                            href="{% url "instance_reboot_form" instance_id=instance.id %}"
+                            tmask="true" width="250" height="150">
+                            <img src="{{ STATIC_URL }}ui/images/reboot.png" title="{% trans "Reboot Instance" %}"/>
+                        </a>
+                    {% endpermission %}
+                {% else %}
+                    {% permission 'Reboot Instance' %}
+                        <a href="#" tmask="true">
+                            <img src="{{ STATIC_URL }}ui/images/reboot_af.png" title="{% trans "Reboot Instance" %}"/>
+                        </a>
+                    {% endpermission %}
+                {% endif %}
+
+                {% permission 'Delete Instance' %}
+                    <a target="dialog" title="{% trans 'Delete Instance' %}"
+                        href="{% url "instance_delete_form" instance_id=instance.id %}"
+                        tmask="true" width="250" height="150">
+                        <img src="{{ STATIC_URL }}ui/images/delete.png" title="{% trans "Delete Instance" %}"/>
+                    </a>
+                {% endpermission %}
+
+                {% if instance.task != 'deleting' %}
+                    {% if not instance.user_name %}
+                        {% permission 'Distribution Instance' %}
+                            <a class="instance_distribution_{{ instance.id }}" target="dialog" title="{% trans 'Distribution' %}"
+                                href="{% url "distribution_instance_form" instance_id=instance.id %}" tmask="true">
+                                <img class="distribution_image_{{ instance.id }}" src="{{ STATIC_URL }}ui/images/distribute.png"
+                                     title="{% trans 'Distribution' %}"/>
+                            </a>
+                        {% endpermission %}
+                    {% else %}
+                        {% permission 'Undistribution Instance' %}
+                            <a class="instance_distribution_{{ instance.id }}" target="dialog" title="{% trans 'Undistribution' %}"
+                                href="{% url "delete_distribution_form" instance_id=instance.id %}"
+                                tmask="true" width="250" height="150">
+                                <img class="distribution_image_{{ instance.id }}" src="{{ STATIC_URL }}ui/images/udistribute.png"
+                                     title="{% trans 'Undistribution' %}">
+                            </a>
+                        {% endpermission %}
+                    {% endif %}
+                    {% permission 'Remote Desktop' %}
+                        <a target="navTab"  title="{% trans 'Remote Desktop' %}"
+                            href="{% url "get_instance_spice_console" instance_id=instance.id tenant_id=instance.tenant_id %}"
+                            rel="{% trans 'Remote Desktop' %}">
+                            <img src="{{ STATIC_URL }}ui/images/remote_af.png" title="{% trans 'Remote Desktop' %}"/>
+                        </a>
+                    {% endpermission %}
+
+                    {% permission 'Instance Classify' %}
+                    <a target="dialog" title="{% trans 'Instance Classify' %}"
+                        href="{% url "get_instance_classify" instance_id=instance.id %}" tmask="true">
+                        <img src="{{ STATIC_URL }}ui/images/classify_af.png" title="{% trans "Instance Classify" %}" />
+                    </a>
+                    {% endpermission %}
+                {% else %}
+                    {% permission 'Undistribution Instance' %}
+                        <a href="#" tmask="true">
+                            <img src="{{ STATIC_URL }}ui/images/udistribute.png" title="{% trans 'Undistribution' %}">
+                        </a>
+                    {% endpermission %}
+
+                    {% permission 'Remote Desktop' %}
+                        <a href="#" rel="{% trans 'Remote Desktop' %}">
+                            <img src="{{ STATIC_URL }}ui/images/remote.png" title="{% trans 'Remote Desktop' %}">
+                        </a>
+                    {% endpermission %}
+
+                    {% permission 'Instance Classify' %}
+                        <a href="#" tmask="true">
+                            <img src="{{ STATIC_URL }}ui/images/classify.png" title="{% trans "Instance Classify" %}" />
+                        </a>
+                    {% endpermission %}
+                {% endif %}
+
+                <a href="#" id="action_{{ instance.id }}" tmask="true" onmouseover="instance_list_new(this,'div_{{ instance.id }}', 'display_div');" onmouseout="instance_list_hide('display_div');"><img src="{{ STATIC_URL }}ui/images/more.png" title="{% trans "More" %}" /></a>
+                    <div id="div_{{ instance.id }}" style="display: none;">
+                        {% if instance.task != 'deleting' %}
+                            {% permission 'Live Migrate' %}
+                                <a target="dialog" title="{% trans 'Live Migrate' %}" width="629" height="379"
+                                    href="{% url "instance_live_migrate" instance_id=instance.id %}" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/migration.png" title="{% trans 'Live Migrate' %}"/>
+                                </a>
+                            {% endpermission %}
+
+                            {% permission 'Instance Flavor Resize' %}
+                                <a target="dialog" title="{% trans 'Instance Flavor Resize' %}"
+                                    href="{% url "instance_flavor_list" instance_id=instance.id %}" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/resize.png" title="{% trans "Instance Flavor Resize" %}"/>
+                                </a>
+                            {% endpermission %}
+                        {% endif %}
+
+                        {% if instance.status == 'ACTIVE' or instance.status == 'SUSPENDED' or instance.status == 'PAUSED'%}
+                            {% permission 'Update Instance Info' %}
+                                <a target="dialog" title="{% trans 'Update Instance Info' %}"
+                                    href="{% url "update_instance_form" instance_id=instance.id %}" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/edit.png" title="{% trans "Update Instance Info" %}"/>
+                                </a>
+                            {% endpermission %}
+                        {% else %}
+                            {% permission 'Update Instance Info' %}
+                                <a href="#" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/edit_af.png" title="{% trans "Update Instance Info" %}"/>
+                                </a>
+                            {% endpermission %}
+                        {% endif %}
+
+                        {% if instance.status == 'SUSPENDED'%}
+                            {% permission 'Resume Instance' %}
+                                <a target="dialog" title="{% trans 'Resume Instance' %}"
+                                    href="{% url "instance_unstop_form" instance_id=instance.id %}"
+                                    tmask="true" width="250" height="150">
+                                    <img src="{{ STATIC_URL }}ui/images/resume.png" title="{% trans 'Resume Instance' %}"/>
+                                </a>
+                            {% endpermission %}
+                        {% endif %}
+                        {% if instance.status == 'PAUSED'%}
+                            {% permission 'Unpause Instance' %}
+                                <a target="dialog" title="{% trans 'Unpause Instance' %}"
+                                    href="{% url "instance_unpause_form" instance_id=instance.id %}"
+                                    tmask="true" width="250" height="150">
+                                    <img src="{{ STATIC_URL }}ui/images/unpause.png" title="{% trans 'Unpause Instance' %}" />
+                                </a>
+                            {% endpermission %}
+                        {% endif %}
+
+                        {% if instance.status == 'ACTIVE' %}
+                            {% permission 'Soft Reboot Instance' %}
+                                <a target="dialog" title="{% trans 'Soft Reboot Instance' %}"
+                                    href="{% url "instance_soft_reboot_form" instance_id=instance.id %}"
+                                    tmask="true" width="250" height="150">
+                                    <img src="{{ STATIC_URL }}ui/images/soft.png" title="{% trans "Soft Reboot Instance" %}"/>
+                                </a>
+                            {% endpermission %}
+
+                            {% permission 'Suspend Instance' %}
+                                <a target="dialog" title="{% trans 'Suspend Instance' %}"
+                                    href="{% url "instance_stop_form" instance_id=instance.id %}"
+                                    tmask="true" width="250" height="150">
+                                    <img src="{{ STATIC_URL }}ui/images/stop.png" title="{% trans "Suspend Instance" %}"/>
+                                </a>
+                            {% endpermission %}
+
+                            {% permission 'Pause Instance' %}
+                                <a target="dialog" title="{% trans 'Pause Instance' %}"
+                                    href="{% url "instance_pause_form" instance_id=instance.id %}"
+                                    tmask="true" width="250" height="150">
+                                    <img src="{{ STATIC_URL }}ui/images/pause.png" title="{% trans "Pause Instance" %}"/>
+                                </a>
+                            {% endpermission %}
+
+                            {% permission 'Backup Instance' %}
+                                <a target="dialog" title="{% trans 'Backup' %}"
+                                    href="{% url "create_snapshot_form" instance_id=instance.id %}" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/backup.png" title="{% trans "Backup" %}"/>
+                                </a>
+                            {% endpermission %}
+
+                            {% permission 'Restore Backups' %}
+                                <a target="dialog" title="{% trans 'Restore Backups' %}"
+                                    href="{% url "restore_instance" instance_id=instance.id %}" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/restore.png" title="{% trans "Restore Backups" %}"/>
+                                </a>
+                            {% endpermission %}
+
+                            {% permission 'Get Backup List' %}
+                            <a target="dialog" title="{% trans 'Get Backup List' %}"
+                                href="{% url "get_snapshots_list" instance_id=instance.id %}" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/back_list.png" title="{% trans "Get Backup List" %}"/>
+                            </a>
+                            {% endpermission %}
+
+                        {% else %}
+                            {% permission 'Soft Reboot Instance' %}
+                                <a href="#" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/soft_af.png" title="{% trans "Soft Reboot Instance" %}"/>
+                                </a>
+                            {% endpermission %}
+
+                            {% permission 'Pause Instance' %}
+                                <a href="#" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/pause_af.png" title="{% trans "Pause Instance" %}"/>
+                                </a>
+                            {% endpermission %}
+
+                            {% permission 'Backup Instance' %}
+                                <a href="#" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/backup_af.png" title="{% trans "Backup" %}"/>
+                                </a>
+                            {% endpermission %}
+
+                            {% if instance.status == 'SHUTOFF' %}
+                                {% permission 'Restore Backups' %}
+                                    <a target="dialog" title="{% trans 'Restore Backups' %}"
+                                        href="{% url "restore_instance" instance_id=instance.id %}" tmask="true">
+                                        <img src="{{ STATIC_URL }}ui/images/restore.png" title="{% trans "Restore Backups" %}"/>
+                                    </a>
+                                {% endpermission %}
+
+                            {% else %}
+                                {% permission 'Restore Backups' %}
+                                    <a href="#" tmask="true">
+                                        <img src="{{ STATIC_URL }}ui/images/restore_af.png" title="{% trans "Restore Backups" %}"/>
+                                    </a>
+                                {% endpermission %}
+                            {% endif %}
+                            {% permission 'Get Backup Lis' %}
+                                <a href="#" tmask="true">
+                                    <img src="{{ STATIC_URL }}ui/images/back_list_af.png" title="{% trans "Get Backup List" %}"/>
+                                </a>
+                            {% endpermission %}
+                        {% endif %}
+
+                        {% for key, value in instance.usbaudo.items %}
+                            {% if key == 'USB' %}
+                                {% if value %}
+                                    {% permission 'USB Stop' %}
+                                        <a id="usb_{{ instance.id }}" title="{% trans 'USB Status' %}" href="#"
+                                            onclick="usb_mask('{% url "update_instance_usb_umask" instance_id=instance.id umask=1 %}','usb')" tmask="true">
+                                            <img src="{{ STATIC_URL }}ui/images/instance/stop_usb.png" title="{% trans "USB Stop" %}"/>
+                                        </a>
+                                    {% endpermission %}
+                                {% else %}
+                                    {% permission 'USB Open' %}
+                                        <a id="usb_{{ instance.id }}" title="{% trans 'USB Status' %}"  href="#"
+                                            onclick="usb_mask('{% url "update_instance_usb_umask" instance_id=instance.id umask=1 %}','usb')" tmask="true">
+                                            <img src="{{ STATIC_URL }}ui/images/instance/open_usb.png" title="{% trans "USB Open" %}"/>
+                                        </a>
+                                    {% endpermission %}
+                                {% endif %}
+                            {% else %}
+                                {% if value %}
+                                    {% permission 'Audio Stop' %}
+                                        <a id="audio_{{ instance.id }}"  title="{% trans 'Audio Status' %}"  href="#"
+                                            onclick="usb_mask('{% url "update_instance_audio_umask" instance_id=instance.id umask=2 %}','audio')" tmask="true">
+                                            <img src="{{ STATIC_URL }}ui/images/instance/stop_audio.png" title="{% trans "Audio Stop" %}"/>
+                                        </a>
+                                    {% endpermission %}
+                                {% else %}
+                                    {% permission 'Audio Open' %}
+                                        <a id="audio_{{ instance.id }}"  title="{% trans 'Audio Status' %}" tmask="true"  href="#"
+                                            onclick="usb_mask('{% url "update_instance_audio_umask" instance_id=instance.id umask=2 %}','audio')" >
+                                            <img src="{{ STATIC_URL }}ui/images/instance/open_audio.png" title="{% trans "Audio Open" %}"/>
+                                        </a>
+                                    {% endpermission %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {% permission 'Reboot Instance' %}
+                        <a href="#" tmask="true">
+                            <img src="{{ STATIC_URL }}ui/images/reboot_af.png" title="{% trans "Reboot Instance" %}"/>
+                        </a>
+                    {% endpermission %}
+
+                    {% permission 'Suspend Instance' %}
+                        <a href="#" tmask="true">
+                            <img src="{{ STATIC_URL }}ui/images/stop_af.png" title="{% trans "Suspend Instance" %}"/>
+                        </a>
+                    {% endpermission %}
+
+                    {% permission 'Delete Instance' %}
+                        <a href="#" tmask="true" >
+                            <img src="{{ STATIC_URL }}ui/images/delete_af.png" title="{% trans "Delete Instance" %}"/>
+                        </a>
+                    {% endpermission %}
+
+                    {% if not instance.user_name %}
+                        {% permission 'Distribution Instance' %}
+                            <a href="#" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/distribute_af.png" title="{% trans 'Distribution' %}"/>
+                            </a>
+                        {% endpermission %}
+                    {% else %}
+                        {% permission 'Undistribution Instance' %}
+                            <a href="#" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/udistribute_af.png" title="{% trans 'Undistribution' %}">
+                            </a>
+                        {% endpermission %}
+                    {% endif %}
+
+                    {% permission 'Remote Desktop' %}
+                        <a href="#" rel="{% trans 'Remote Desktop' %}">
+                            <img src="{{ STATIC_URL }}ui/images/remote.png" title="{% trans 'Remote Desktop' %}">
+                        </a>
+                    {% endpermission %}
+
+                    {% permission 'Instance Classify' %}
+                        <a href="#" tmask="true">
+                            <img src="{{ STATIC_URL }}ui/images/classify.png" title="{% trans "Instance Classify" %}" />
+                        </a>
+                    {% endpermission %}
+
+                    <a href="#" id="dis_action_{{ instance.id }}" tmask="true" onmouseover="instance_list_new(this,'div_{{ instance.id }}', 'display_div');" onmouseout="instance_list_hide('display_div');"><img src="{{ STATIC_URL }}ui/images/more.png" title="{% trans "More" %}" /></a>
+
+                    <div id="div_{{ instance.id }}" style="display: none;">
+                        {% if instance.task != 'deleting' %}
+                            {% if instance.status == 'VERIFY_RESIZE' %}
+                                <a id="resize_verify" title="{% trans 'Instance Flavor Resize Confirm' %}" target="dialog"
+                                    href="{% url "instance_flavor_confirm" instance_id=instance.id %}"
+                                    tmask="true" width="250" height="150">
+                                    <img src="{{ STATIC_URL }}ui/images/confirm_re.png" title="{% trans "Instance Flavor Resize Confirm" %}"/>
+                                </a>
+                             {% else %}
+                                <a id="resize_verify" title="{% trans 'Instance Flavor Resize Confirm' %}" target="dialog"
+                                   href="#"
+                                   tmask="true" width="250" height="150">
+
+                                </a>
+                            {% endif %}
+
+                        {% else %}
+                            {% if instance.status == 'VERIFY_RESIZE' %}
+                                <a tmask="true" href="#">
+                                    <img src="{{ STATIC_URL }}ui/images/confirm_re_af.png" title="{% trans 'Confirm Resize Instance' %}">
+                                </a>
+                            {% endif %}
+
+                        {% endif %}
+                        {% permission 'Live Migrate' %}
+                            <a href="#" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/migration_af.png" title="{% trans 'Live Migrate' %}"/>
+                            </a>
+                        {% endpermission %}
+                        {% permission 'Update Instance Info' %}
+                            <a href="#" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/edit_af.png" title="{% trans "Update Instance Info" %}"/>
+                            </a>
+                        {% endpermission %}
+                        {% permission 'Soft Reboot Instance' %}
+                            <a href="#" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/soft_af.png" title="{% trans "Soft Reboot Instance" %}"/>
+                            </a>
+                        {% endpermission %}
+                        {% permission 'Pause Instance' %}
+                            <a href="#" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/pause_af.png" title="{% trans "Pause Instance" %}"/>
+                            </a>
+                        {% endpermission %}
+                        {% permission 'Backup Instance' %}
+                            <a href="#" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/backup_af.png" title="{% trans "Backup" %}"/>
+                            </a>
+                        {% endpermission %}
+                        {% permission 'Restore Backups' %}
+                            <a href="#" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/restore_af.png" title="{% trans "Restore Backups" %}"/>
+                            </a>
+                        {% endpermission %}
+                        {% permission 'Get Backup List' %}
+                            <a href="#" tmask="true">
+                                <img src="{{ STATIC_URL }}ui/images/back_list_af.png" title="{% trans "Get Backup List" %}"/>
+                            </a>
+                        {% endpermission %}
+                    </div>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+
+<div id="display_div" class="instance_list_action"></div>
+
+</table>
+</form>
+
+<div class="panelBar">
+    <div class="pages">
+        <span>{% trans 'Display' %}  </span>
+        <select class="combox" name="numPerPage"
+                onchange="navTabPageBreak({numPerPage:this.value})">
+            <option value="10"  {% if page_obj.paginator.per_page == 10 %}
+                    selected {% endif %} >10
+            </option>
+            <option value="20"  {% if page_obj.paginator.per_page == 20 %}
+                    selected {% endif %} >20
+            </option>
+            <option value="50"  {% if page_obj.paginator.per_page == 50 %}
+                    selected {% endif %} >50
+            </option>
+            <option value="100" {% if page_obj.paginator.per_page == 100 %}
+                    selected {% endif %} >100
+            </option>
+            <option value="200" {% if page_obj.paginator.per_page == 200 %}
+                    selected {% endif %} >200
+            </option>
+        </select>
+        <span> {% trans 'records' %}，{% trans 'total' %}  </span><span id="total_records" >{{ page_obj.paginator.count }}</span> <span>{% trans 'records' %}</span>
+    </div>
+    <div class="pagination" targetType="navTab"
+         totalCount="{{ page_obj.paginator.count }}"
+         numPerPage="  {{ page_obj.paginator.per_page }}"
+         pageNumShown="{{ page_obj.paginator.num_pages }}"
+         currentPage="{{ page_obj.number }}"></div>
+</div>
+</div>
+
+<form action="" id="umask_form" method="post" onsubmit="return iframeCallback(this,instance_dialogAjaxDone)">
+    {% add_in_method "post" %}
+    {% csrf_token %}
+    <input type="hidden" name="t" value="">
+</form>

@@ -1,0 +1,210 @@
+{% load i18n %}
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{% trans "VRV Cloud" %}</title>
+    <link href="{{ STATIC_URL }}ui/images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+    <style type="text/css">
+        *{
+            margin: 0 auto;
+        }
+        .contain{
+            width: 522px;
+            height: auto;
+            margin-top: 9%;
+            font-size: 14px;
+{#            border: 1px solid #003366;#}
+            color: #ffffff;
+            background:#076DBB ;
+        }
+        body{
+            text-align: center;
+        }
+        body div{text-align: left;}
+        .head{
+            width: 522px;
+            height: 60px;
+            background: #076DBB;
+            border: none;
+        }
+        .head .title{
+            line-height: 60px;
+            margin-left: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            font-family: '微软雅黑';
+        }
+        .main{
+            width:522px;
+            height: auto;
+            background-color: #0160A8;
+        }
+        .main .license_title{
+            line-height: 40px;
+            margin-left: 15px;
+        }
+        .license_title{
+            font-size: 14px;
+            font-family:'微软雅黑';
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .license_id{
+            margin: 0 15px 0 15px;
+            width: 480px;
+            padding: 5px;
+            line-height: 30px;
+            height: 70px;
+            word-wrap: break-word;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: arial;
+            border: 1px solid #333333;
+            background-color: #055A9B;
+        }
+        .line_middle{
+            width: 522px;
+            height: 1px;
+            border-bottom: 1px solid #333333;
+            margin: 20px 0 15px 0;
+        }
+        .license_txt{
+            width: 522px;
+            height: 172px;
+            font-size: 14px;
+            color: #ffffff;
+        }
+        .submit{
+            height:30px;
+            width: 100px;
+            line-height: 30px;
+            background: #076DBB;
+            border: 1px solid #333333;
+            float: right;
+            margin-right: 15px;
+            margin-top: 10px;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .footer{
+            height: 32px;
+            text-align: center;
+            line-height: 32px;
+            font-size: 12px;
+            word-spacing: 0.2em;
+            background:#0160A8;
+        }
+        .leb{
+            float: left;
+            margin-left: 15px;
+            font-weight: bold;
+            height: 90px;
+            width: auto;
+        }
+        .sub{
+            float: left;
+            width: 522px;
+            height: 50px;
+            line-height: 50px;
+            background: #076DBB;
+            color: #ffffff;
+        }
+        .font{
+            text-decoration: none;
+            font-family:arial, '微软雅黑';
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: bold;
+            border: 1px solid #a1a2a2;
+            padding: 3px 10px;
+        }
+        .old{
+            width: 522px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<script type="text/javascript">
+    function authorize_submit(){
+        var text_area = document.getElementById("license_textarea").value;
+        text_area = text_area.trim();
+        if(text_area.length > 0){
+            return true;
+        }else{
+            return false;
+        }
+    }
+</script>
+<body>
+<div class="contain">
+    <div class="head">
+        <div class="title">{% trans "VRV Cloud" %}</div>
+    </div>
+    <div class="main">
+        <div class="license_title">
+            {% trans 'Your ID is' %}
+        </div>
+        <div class="license_id">
+            {{ hardware_id }}
+        </div>
+
+        {% if expire_time %}
+            <div class="old">
+                <div style="float: left;">{% trans 'Origin License' %}</div>
+                {% if can_use %}
+                    <div style="margin-left: 410px"><a class="font" href="{% url 'get_login_view' %}">{% trans 'Continue' %}</a></div>
+                {% endif %}
+            </div>
+            <div class="license_id">
+                <div style="width: 522px; line-height: 30px">{% trans 'State' %}：
+                    {% if can_use %}
+                        {% trans 'Available' %}
+                    {% else %}
+                        {% trans 'Unavailable' %}
+                    {% endif %}
+                </div>
+                <div style="width: 522px; line-height: 30px">{% trans 'Period Of Validity' %}：{{ expire_time|date:'Y-m-d' }}</div>
+            </div>
+        {% endif %}
+
+
+
+
+        <div class="line_middle"></div>
+        <div class="license_txt">
+            <div style="font-size: 14px; color: #ff0000; margin-left: 15px;">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if forloop.last %}
+                        <p {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            </div>
+            <form action="{% url 'authorize_permit' %}" method="POST" onsubmit="return authorize_submit()">
+                {% csrf_token %}
+                <div class="leb"><label>{% trans 'License Text' %}：</label></div>
+                <div style="float: left; height: 100px; width: 350px;">
+                    <textarea style="width: 300px; height: 90px;" name="license" id="license_textarea"></textarea>
+                </div>
+                <div class="sub">
+                    <input width="522px" class="submit" type="submit" value="{% trans 'Submit' %}" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="footer">
+        Copyright © 2013 北京北信源软件股份有限公司 All Rights Reserved.
+    </div>
+</div>
+
+</body>
+</html>

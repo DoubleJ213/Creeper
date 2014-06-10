@@ -1,0 +1,117 @@
+{% load i18n %}
+{% load dashboard %}
+<div class="pageContent">
+<style>
+
+    .info{
+
+        position:relative;
+        float:left;
+        width:auto;
+        margin:10px 10px 0 10px;
+
+
+    }
+    .info .title{
+
+        font-size:14px;
+        font-weight: bold;
+        padding-bottom:10px;
+        border-bottom:solid 1px #f4f4f4;
+        margin-bottom:10px;
+
+    }
+
+    .info dl{
+        float: left;
+        position:relative;
+        width:100%;
+    }
+
+
+    .info dl dt{
+
+        color: #555;
+        float: left;
+        position:relative;
+        width: 100px;
+        margin-bottom:10px;
+    }
+
+    .info dl dd{
+
+        width: 300px;
+        float: left;
+        position:relative;
+        margin-bottom:10px;
+    }
+
+</style>
+    <div class="pageFormContent" layouth="58">
+    <div class="info">
+        <div class="title">{% trans "Info" %}</div>
+        <dl>
+            <dt>{% trans "Name" %}</dt>
+            <dd>{{ volume.display_name }}</dd>
+        </dl>
+        <dl>
+            <dt>{% trans "Pertain Tenant" %}</dt>
+            <dd>{{ volume.tenant_name }}</dd>
+        </dl>
+        <dl>
+            <dt>{% trans "Description" %}</dt>
+            <dd>
+                <div>
+                    {% if volume.display_description == 'None' %}
+                        {% trans 'None' %}
+                    {% else %}
+                        {{ volume.display_description|truncatechars:30 }}
+                    {% endif %}
+                </div>
+            </dd>
+        </dl>
+        <dl>
+            <dt>{% trans "Status" %}</dt>
+            <dd>{% trans volume.status|capfirst %}</dd>
+        </dl>
+{#        <dl>#}
+{#            <dt>{% trans "Volume Type" %}</dt>#}
+{#            <dd>{{ volume.volume_type }}</dd>#}
+{#        </dl>#}
+
+    </div>
+    <div class="info">
+        <div class="title">{% trans "Specs" %}</div>
+        <dl>
+            <dt>{% trans "Size" %}</dt>
+            <dd>{{ volume.size }}G</dd>
+        </dl>
+        <dl>
+            <dt>{% trans "Created" %}</dt>
+            <dd>{{ volume.created_at | datetime_from_utctime }}</dd>
+        </dl>
+    </div>
+    <div class="info">
+        <div class="title">{% trans "Attachments" %}</div>
+        <dl>
+{#                <dd>#}
+{#                {{ volume.instance_name }}#}
+{#                    {% url dashboard:volume_manage:detail attachment.server_id as instance_url%}#}
+{#                    <a href="{{ instance_url }}">{% trans "Instance" %} {{ attachment.instance.name }} ({{ attachment.instance.id }})</a>#}
+{#                    <span> {% trans "on" %} {{ attachment.device }}</span>#}
+{#                </dd>#}
+            {% for attachment in volume.attachments %}
+                <dt>{% trans "Attached To" %}</dt>
+                <dd>
+                    {% url "get_instance_detail" attachment.server_id volume.tenant_id as instance_url%}
+                    <a href="{% if volume.tenant_id %}{{ instance_url }}{% else %}javascript:void(0);{% endif %}" target="dialog">{{ attachment.instance_name }}</a>
+                    <span> {% trans "on" %} {{ attachment.device }}</span>
+                </dd>
+            {% empty %}
+                <dt>{% trans "Attached To" %}</dt>
+                <dd><em>{% trans "Not attached" %}</em></dd>
+            {% endfor %}
+        </dl>
+    </div>
+    </div>
+</div>

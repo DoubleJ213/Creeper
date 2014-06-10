@@ -1,0 +1,65 @@
+{% load i18n %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "edit_network_action" tenant_id network_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDone);">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{tenant_id}}">
+        <input type="hidden" name="network_id" id="network_id" value="{{network_id}}">
+        <input type="hidden" name="external" id="id_external">
+        <div class="pageFormContent" layouth="58">
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "NetWork Info" %}</li>
+                </ul>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+                <input type="text" id="name" name="name" value="{{ network.name }}" size="30" minlength="2" maxlength="10" class="required" />
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Admin State' %}：</label>
+                {% if network.admin_state_up %}
+                    <input  checked="checked" type="checkbox" name="admin_state" id="id_admin_state">
+                {% else %}
+                    <input  type="checkbox" name="admin_state" id="id_admin_state">
+                {% endif %}
+            </div>
+
+            <div class="unit">
+                <label>
+                        {% trans 'Shared' %}：</label>
+
+                {% if network.shared %}
+                    <input  checked="checked" type="checkbox" name="shared" id="id_shared">
+                {% else %}
+                    <input  type="checkbox" name="shared" id="id_shared">
+                {% endif %}
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close" onclick="gotonwUrl('/virtual_network_manage/network/tenants/{{tenant_id}}/networks/','')">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

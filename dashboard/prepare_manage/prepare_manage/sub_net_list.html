@@ -1,0 +1,100 @@
+{% load i18n %}
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+        .btn_background_img{
+            width:80px;
+            height: 28px;
+            background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+            text-align: center;
+            line-height: 28px;
+            font-size: 15px;
+            margin-left: 5px;
+        }
+        .act_info{
+            margin: 30px auto 0;
+            width: 400px;
+            height: 30px;
+            text-align: center;
+        }
+        .act_info span {
+            float: left;
+        }
+        .act_info .infon {
+            font-size: 19px;
+            line-height: 30px;
+        }
+        #btnActCancel{
+            margin-left: 5px;
+        }
+
+        .ins_header1 {
+            width: 215px;
+            float: left;
+            line-height: 24px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .header_pic3 {
+            clear:both;
+            width: 100%;
+            height:70px;
+            background:#d7dcde url('{{ STATIC_URL }}ui/images/instance/3_3.png') no-repeat ;
+            background-position: left center;
+            margin-bottom: 15px;
+
+        }
+    </style>
+    <div class="pageFormContent" layouth="58" style="height: 90%;" >
+        <div class="header_pic3" >
+            <div class="ins_header1" >{% trans 'Create Network' %}</div>
+            <div class="ins_header1" >{% trans 'Create Subnet' %}</div>
+            <div class="ins_header1" >{% trans 'Finish' %}</div>
+        </div>
+        <table class="table" width="100%">
+            <thead>
+            <tr>
+                <th>{% trans 'Name' %}</th>
+                <th>{% trans 'Network Address' %}</th>
+                <th>{% trans 'IP Version' %}</th>
+                <th>{% trans 'Gateway IP' %}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for subnet in subnets %}
+
+                <tr>
+                    <td>{{ subnet.name }}</td>
+                    <td>{{ subnet.cidr }}</td>
+                    <td>IPv{{ subnet.ip_version }}</td>
+                    <td>{{ subnet.gateway_ip|default:"-" }}</td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>
+        <div class="act_info" style="margin-top: 60px;">
+            <span style="margin-left: 50px; margin-right: 5px;"><img src="{{ STATIC_URL }}ui/images/icon_2.png" style="margin-left: 5px;" width="26" height="26" /></span>
+            <div class="infon" style="text-align: left; ">{% trans "Create subnet successfully!" %}</div>
+
+        </div>
+        <div class="act_info">
+            <div class="infon" style="text-align: right; float:left; margin-left: 100px;">{% trans "Click" %}</div>
+            <div class="button" id="btnActCancel">
+                <div class="buttonContent">
+                    <button type="button" onclick="$.pdialog.closeCurrent();" class="close">
+                        {% trans "Finish" %}
+                    </button>
+                </div>
+            </div>
+{#                            <a href="#"  style="background-image: url('{{ STATIC_URL }}/ui/images/btn_down.png'); width:127px;height: 38px;border: solid 1px #b8d0d6;">{% trans "Add" %}</a>#}
+        </div>
+        <div class="act_info">
+            <div class="infon" style="float: left;">{% trans "or continue to add your first router" %}</div>
+            <span>
+                <a target="dialog" href="{% url "create_router_detail_index" None %}"  title="{% trans 'Add Router' %}" tmask="true" style="text-decoration: none;" id="prepare_network_a_id"  width="700" height="500" >
+                    <div class="btn_background_img">GO</div>
+                </a>
+            </span>
+        </div>
+    </div>

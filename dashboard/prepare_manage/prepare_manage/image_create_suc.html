@@ -1,0 +1,64 @@
+{% load i18n %}
+{% load dashboard %}
+<style>
+
+    .pg_div{
+        background-color: #ffffff;
+        width:auto;
+        height: 60%;
+        margin-left: 10%;
+        margin-top: 5px;
+    }
+    .btn_background_img{
+        width:80px;
+        height: 28px;
+        background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+        text-align: center;
+        line-height: 28px;
+        font-size: 15px;
+
+        left:10px;
+
+    }
+    .pg_div_ul_li{
+        width: 80%;
+        float: left;
+        height: 35px;
+        margin-top: 5px;
+        text-align: center;
+        font-size: 15px;
+    }
+    .prepare_ul_li{
+        float: left;
+        width: auto;
+        height: 30px;
+        font-size: 16px;}
+    .prepare_ul{
+        width: auto;height: 30px;margin-left: 20px;
+    }
+</style>
+<div class="pageContent" layouth="65">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="pageFormContent" layouth="58" >
+
+        <div class="pg_div" style="margin-top: 60px;">
+            <ul>
+                <li style="clear: both;" class="pg_div_ul_li"><img src="{{ STATIC_URL }}ui/images/icon_2.png" width="26" height="26" />{% trans "Image Create Success" %}</li>
+                <li  class="pg_div_ul_li">
+                    <ul class="prepare_ul" style="margin-left:30%;">
+                        <li class="prepare_ul_li" style="padding-top: 5px;">{% trans "And Launch Instance" %}&nbsp;</li>
+                        <li class="prepare_ul_li"><a target="dialog" title="{% trans 'Add Instance' %}" href="{% url "launch_form_image_index" image_id img_obj_id 'image' %}" width="700" height="500" tmask="true" style="text-decoration: none" >
+                            <div class="btn_background_img">
+                                GO</div></a>
+
+                        </li>
+                    </ul>
+
+                </li>
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>

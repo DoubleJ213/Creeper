@@ -1,0 +1,118 @@
+{% load i18n %}
+
+<div class="pageContent">
+<script type="text/javascript">
+    function onfocusViewHelp(a,divid)
+    {
+{#        document.getElementById(divid).style.display="block"#}
+        $("#"+divid).show();
+        $("#"+divid).css({left:a.offsetLeft+ a.offsetWidth+'px',top:a.offsetTop+'px'});
+{#        document.getElementById(divid).style.left = #}
+{#        document.getElementById(divid).style.top = a.offsetTop+'px'#}
+    }
+
+    function onblurViewHelp(divid)
+    {
+{#        document.getElementById(divid).style.display="none"#}
+        $("#"+divid).hide();
+    }
+
+{#    var form = $("#create_flavor_id");#}
+{#    form.attr("action","{% url "create_flavor" %}");#}
+{#    form.unbind("submit");#}
+{#    form.bind("submit", function(){#}
+{#        var memory = $("#mem").val();#}
+{#        var eph_gb = $("#eph").val();#}
+{#        if(memory > 2147483647 && eph_gb < 2147483647){#}
+{#            alertMsg.error("{% trans 'ram should be less than or equal to 2147483647.' %}");#}
+{#            $("#mem").attr("value","2147483647");#}
+{#            return false;#}
+{#        }#}
+{#        else if(memory < 2147483647 && eph_gb > 2147483647){#}
+{#            alertMsg.error("{% trans 'eph_gb should be less than or equal to 2147483647.' %}");#}
+{#            $("#eph").attr("value","2147483647");#}
+{#            return false;#}
+{#        }#}
+{#        else if(memory > 2147483647 && eph_gb > 2147483647){#}
+{#            alertMsg.error("{% trans 'ram and eph_gb should be less than or equal 2147483647.' %}");#}
+{#            $("#mem").attr("value","2147483647");#}
+{#            $("#eph").attr("value","2147483647");#}
+{#            return false;#}
+{#        }#}
+{#        else{#}
+{#            return validateCallback(this,dialogAjaxDone);#}
+{#        }#}
+{#    });#}
+</script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form id="create_flavor_id" method="post" action="{% url "create_flavor" %}" class="pageForm required-validate"
+            onsubmit="return iframeCallback(this,dialogAjaxDone);">
+        <div class="pageFormContent" layouth="58">
+
+            <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+                <input type="text" name="name" size="30" minlength="2" maxlength="10" class="required"  />
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'VCPUs' %}：</label>
+                <input type="text" id="cpu_num" name="vcpus" onfocus="onfocusViewHelp(this, 'cpunumhelp');" onblur="onblurViewHelp('cpunumhelp');" size="30" minlength="1" maxlength="2" class="required number"  />
+
+                <div id="cpunumhelp" style="color:#FFFFFF;overflow-y:auto;height:25px;width:auto;display:none;position: absolute;background: red" >{{ form.fields.vcpus.help_text }}</div>
+
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Memory MB' %}：</label>
+                <input type="text" id="mem" name="memory_mb" onfocus="onfocusViewHelp(this, 'memhelp');" onblur="onblurViewHelp('memhelp')" size="30" minlength="1" maxlength="10" class="required number"  />
+                <div id="memhelp" style="color:#FFFFFF;overflow-y:auto;height:25px;width:auto;display:none;position: absolute;background: red" >{{ form.fields.memory_mb.help_text }}</div>
+
+
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Root Disk GB' %}：</label>
+                <input type="text" name="disk_gb" onfocus="onfocusViewHelp(this, 'diskhelp');" onblur="onblurViewHelp('diskhelp');" size="30" minlength="1" maxlength="4" class="required number" />
+                <div id="diskhelp" style="color:#FFFFFF;overflow-y:auto;height:25px;width:auto;display:none;position: absolute;background: red" >{{ form.fields.disk_gb.help_text }}</div>
+
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Ephemeral Disk GB' %}：</label>
+                <input type="text" id="eph" name="eph_gb" onfocus="onfocusViewHelp(this, 'ephhelp');" onblur="onblurViewHelp('ephhelp');" size="30" minlength="1" maxlength="10" class="required number"  />
+                <div id="ephhelp" style="color:#FFFFFF;overflow-y:auto;height:25px;width:auto;display:none;position: absolute;background: red" >{{ form.fields.eph_gb.help_text }}</div>
+
+            </div>
+{#            <div class="unit">#}
+{#                <label>#}
+{#                    {% trans 'Swap Disk MB' %}：</label>#}
+{#                <input type="text" name="swap_mb" onfocus="onfocusViewHelp(this, 'swaphelp');" onblur="onblurViewHelp('swaphelp');" size="30" minlength="1" maxlength="10" class="required number"  />#}
+{#                <div id="swaphelp" style="color:#FFFFFF;overflow-y:auto;height:25px;width:auto;display:none;position: absolute;background: red" >{{ form.fields.swap_mb.help_text }}</div>#}
+{##}
+{#            </div>#}
+
+
+
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

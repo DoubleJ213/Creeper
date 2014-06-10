@@ -1,0 +1,112 @@
+{% load i18n %}
+{% load dashboard %}
+
+<script type="text/javascript">
+    function checkFileExists(url) {
+         $("#download_frame").attr("src", url);
+    }
+</script>
+<style type="text/css">
+    .header_sty{
+        font-size:11px; height: 15%;
+        line-height: 38px;
+        padding-left:20px;
+        float: left;
+        width: 100%;
+        background: url('{{ STATIC_URL }}ui/images/instance/3_3.png') no-repeat;
+
+    }
+    .ins_header1{
+        float: left;
+        line-height: 10px;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left:32px;
+        width:136px;
+        text-align:center;
+    }
+    .ins_header2{
+        float: left;
+        line-height: 10px;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left:30px;
+        width:200px;
+        text-align:center;
+    }
+    .ins_header3{
+        float: left;
+        line-height: 10px;
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left:32px;
+        width:160px;
+        text-align:center;
+    }
+    .td_tr{
+        font-size: 16px;
+        font-family: '宋体';
+    }
+    .btn_background_img{
+        width:80px;
+        height: 28px;
+        background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+        text-align: center;
+        line-height: 28px;
+        font-size: 15px;
+
+
+    }
+    .btn_background_div{
+        text-align: center;
+        line-height: 27px;
+        height: 27px;
+    }
+</style>
+<div class="pageContent">
+    <iframe style="display: none" id="download_frame" name="download_frame" ></iframe>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <div class="pageFormContent" layouth="58">
+        <div class="header_sty" style="clear:both;width: 95%;background-color: #d7dcde;background-position: left center;">
+            <div class="ins_header1" >{% trans 'Live Migrate' %}</div>
+            <div class="ins_header2" >{% trans 'Add Servers' %}</div>
+            <div class="ins_header3" >{% trans 'Finish' %}</div>
+        </div>
+        <table style="background-color: #ffffff; width:auto;height: 60%;margin-left: 10%;">
+            <tr>
+                <td class="td_tr"><img src="{{ STATIC_URL }}ui/images/icon_2.png" width="26" height="26" />&nbsp;{% trans "Live Migrate Success" %}</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="td_tr" colspan="2">
+                    <ul style="width: 260px;height: 30px;">
+                        <li style="float: left;width: 100px;height: 30px;font-size: 16px;">{% trans "Click" %} {% trans "Finish" %}&nbsp;</li>
+                        <li style="float: left;width: 100px;height: 30px;font-size: 16px;"><div class="btn_background_img">
+                            <a title=" " onclick="$.pdialog.closeCurrent()"  style="text-decoration: none">
+                                <div  class="btn_background_div">{% trans "Finish" %}</div>
+                            </a>
+                        </div></li>
+                    </ul>
+                    </td>
+{#                <td>#}
+{##}
+{#                </td>#}
+            </tr>
+            <tr>
+                <td class="td_tr">{% trans "or continue to add node" %} {% trans "environment set up document for details" %}&nbsp;</td>
+                <td>
+                    <div class="btn_background_img">
+                        <a  target="download_frame"  onclick="checkFileExists('{% url "software_download_in_prepare" %}')" title=" " href="#"
+                           tmask="true"
+                           style="text-decoration: none">
+                            <div class="btn_background_div">GO</div>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+</div>
+

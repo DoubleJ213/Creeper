@@ -1,0 +1,110 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script lang="text/javascript">
+        var _distribution_url = '{% url "get_distribution_detail" instance_id %}';
+        var _distribution_del_url = '{% url "delete_distribution" instance_id %}';
+        $(document).ready(function () {
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                url: _distribution_url,
+                success: function (_dist_data) {
+                    console.log(_dist_data);
+{#                    var _dist_data = eval("(" + response + ")");#}
+                    if (_dist_data.statusCode == 500) {
+                        alertMsg.error(_dist_data.message);
+                    }
+                    else {
+                        if (_dist_data.statusCode == 409) {
+                            alertMsg.error(_dist_data.message);
+                            $("#submit_li").hide();
+                            return;
+                        }
+                    }
+
+                    var _select_element = $("#user_name");
+                    var _user = _dist_data.users;
+
+                    for (var key in _user) {
+                        _select_element.append("<option value='" + key + "'>" + _user[key] + "</option>");
+                    }
+
+                    if (_select_element.find("> option").size() == 0) {
+                        alertMsg.info("{% trans 'No users can be distributed.' %}");
+                        $("#submit_li").hide();
+                    }
+                },
+                error:function(){
+                    alert('abc');
+                }
+
+            });
+        });
+    </script>
+    <form method="post" action="{% url "distribution_instance_to_user" instance_id %}" enctype="multipart/form-data"
+          class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);" id="distribute_form_action">
+        {% csrf_token %}
+
+        <!-- error message begin -->
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if form.errors %}
+            <p style="color: red;">
+                Please correct the error{{ form.errors|pluralize }} below.
+            </p>
+        {% endif %}
+        <!-- error message end -->
+
+        <div class="pageFormContent" layouth="58">
+
+
+            <div class="unit">
+                <label>
+                    {% trans "User Name" %}：</label>
+                <select name="user_name" id="user_name" class="required">
+                </select>
+            </div>
+
+
+        </div>
+        <div class="formBar">
+            <ul>
+                <li style="display: none" id="delete_li">
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit" id="delete_button">
+                                {% trans "Del" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="buttonActive" id="submit_li">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit" id="submit_button">
+                                {% trans "Submit" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+                <li id="cancel_li">
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

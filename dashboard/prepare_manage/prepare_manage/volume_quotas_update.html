@@ -1,0 +1,278 @@
+{% load i18n %}
+{% load dashboard %}
+
+<style type="text/css">
+    .searchLeft {
+        width: auto;
+        line-height: 24px;
+        float: left;
+        text-align: left;
+        margin-left: 20px;
+        margin-top: 10px;
+    }
+
+    .searchRight {
+        width: auto;
+        height: 23px;
+        float: left;
+        margin: 10px 0 0 20px;
+    }
+    .searchRight input{
+        width:140px;
+    }
+    .quota-dynamic {
+        position: absolute;
+        top: 20px;
+        right: 10px;
+    }
+
+    .right {
+        float: left;
+        width: 200px;
+    }
+
+    .quota_title {
+        color: rgb(153, 153, 153);
+        padding-bottom: 0px;
+        margin-bottom: 8px;
+    }
+
+    .clearfix {
+    }
+
+    .quota_bar {
+        height: 15px;
+        margin: -8px 0 8px;
+    }
+
+    .progress_bar {
+        height: 100%;
+        width: 100%;
+        border: 1px solid #CCC;
+        background-color: #CCC;
+    }
+
+    .progress {
+        overflow: hidden;
+        height: 18px;
+        margin-bottom: 18px;
+        background-color: rgb(247, 247, 247);
+        background-image: -moz-linear-gradient(center top, rgb(245, 245, 245), rgb(249, 249, 249));
+        background-repeat: repeat-x;
+        box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1) inset;
+        border-radius: 4px 4px 4px 4px;
+    }
+
+    .progress-success.bar {
+        background-color: rgb(94, 185, 94);
+        background-image: -moz-linear-gradient(center top, rgb(98, 196, 98), rgb(87, 169, 87));
+        background-repeat: repeat-x;
+    }
+
+    .progress .bar {
+        width: 0%;
+        height: 18px;
+        color: rgb(255, 255, 255);
+        font-size: 12px;
+        text-align: center;
+        text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+        background-color: rgb(14, 144, 210);
+        background-image: -moz-linear-gradient(center top, rgb(20, 155, 223), rgb(4, 128, 190));
+        background-repeat: repeat-x;
+        box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+        -moz-box-sizing: border-box;
+        transition: width 0.6s ease 0s;
+    }
+
+    .progress_bar_selected {
+        background-color: rgb(71, 144, 174);
+        width: 0px;
+    }
+
+    .progress_bar_fill, .progress_bar_selected {
+        height: 100%;
+        float: left;
+    }
+
+    .progress_bar_fill.progress-warning.bar {
+        background-color: rgb(137, 137, 137);
+        background-image: -moz-linear-gradient(center top, rgb(153, 153, 153), rgb(51, 51, 51));
+        background-repeat: repeat-x;
+    }
+
+    .progress .bar {
+        width: 0%;
+        height: 18px;
+        color: rgb(255, 255, 255);
+        font-size: 12px;
+        text-align: center;
+        text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+        background-color: rgb(14, 144, 210);
+        background-image: -moz-linear-gradient(center top, rgb(20, 155, 223), rgb(4, 128, 190));
+        background-repeat: repeat-x;
+        box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.15) inset;
+        -moz-box-sizing: border-box;
+        transition: width 0.6s ease 0s;
+    }
+
+    .progress_bar_fill {
+        background-color: rgb(102, 102, 102);
+    }
+
+    .progress_bar_fill, .progress_bar_selected {
+        height: 100%;
+        float: left;
+    }
+
+    .cp {
+        width: auto;
+        float: right;
+        position: relative;
+        margin: 0px;
+    }
+    .pageFormContent div .unit{
+        margin-top: 5px;margin-left: 10px;
+    }
+
+
+
+    #gigabytes {
+        background: url("{{ STATIC_URL }}/ui/images/input_bg.png") no-repeat ;
+        border:0;
+        width: 240px;
+        height: 35px;
+        top: 0px;
+    }
+</style>
+
+<script lang="text/javascript">
+
+    function dialogAjaxDone_quotas_update(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                $.pdialog.closeCurrent();
+            }
+        }
+    }
+function vol_quotas_update(){
+    var gigabytes = $("#gigabytes").val();
+    if(isNaN($("#gigabytes").val())){
+        alertMsg.error('{% trans 'Gigabytes format wrong!' %}');
+        return false;
+    }
+    $.ajax({
+               url:'{% url "volume_quotas_update_action" tenant_id prepare_volume_id %}',
+               type:'GET',
+               data:$("#volume_quotas_from").serializeArray(),
+               global:false,
+               success:function (response) {
+                   var _data = eval("(" + response + ")");
+                   var prepare_volume_id = $("#prepare_volume_id").val();
+                   var tenant_id = $("#tenant_id").val();
+
+                   if (_data["statusCode"] == 200){
+                       alertMsg.correct(_data['message']);
+                       $.pdialog.closeCurrent();
+{#                       $.get("{% url "volume_quotas_init_page" prepare_volume_id 'success' %}",function(data){#}
+{#                           $("#quotas_pageContent_id").css("height","90%");#}
+{#                           $("#quotas_pageContent_id").html(data).initUI();#}
+{#                           $("#quotas_pageContent_id > div ").height($("#quotas_pageContent_id").height());#}
+{#                       });#}
+
+                   }else{
+                       alertMsg.error(_data['message']);
+                   }
+               }
+           });
+}
+
+</script>
+<input type="hidden" name="prepare_volume_id" id="prepare_volume_id" value="{{ prepare_volume_id }}"/>
+
+
+<div class="pageContent" id="quotas_pageContent_id">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "volume_quotas_update_action" tenant_id prepare_volume_id %}" class="pageForm required-validate"
+          id="volume_quotas_from" onsubmit="return validateCallback(this,dialogAjaxDone_quotas_update)">
+        {% include 'prepare_manage/_prepare_base.html' %}
+        <div class="pageFormContent" layouth="60" >
+                <div class="unit">
+                    <label>{% trans "Disk Volume" %}(GB):</label>
+                        <input type="text" name="gigabytes" size="30" minlength="1" id="gigabytes"
+                               maxlength="10" class="required digits"
+                               value="{{ form.fields.gigabytes.initial }}"/>&nbsp&nbsp&nbsp
+
+                </div>
+                <input type="hidden" name="tenant_id" id="tenant_id" value="{{ tenant_id }}"/>
+                <input type="hidden" readonly="readonly" name="tenant_name" value ="{{ form.fields.tenant_name.initial}}" />
+                <input type="hidden" name="metadata_items"  value ="{{ form.fields.metadata_items.initial}}" />
+                <input type="hidden" name="injected_files"  value ="{{ form.fields.injected_files.initial}}" />
+                <input type="hidden" name="injected_file_content_bytes"  value ="{{ form.fields.injected_file_content_bytes.initial}}" />
+                <input type="hidden" name="cores"  value ="{{ form.fields.cores.initial}}" />
+                <input type="hidden" name="instances"  value ="{{ form.fields.instances.initial}}" />
+                <input type="hidden" name="volumes"  value ="{{ form.fields.volumes.initial}}" />
+                <input type="hidden" name="ram"  value ="{{ form.fields.ram.initial}}" />
+                <input type="hidden" name="floating_ips"  value ="{{ form.fields.floating_ips.initial}}" />
+                <input type="hidden" name="fixed_ips"  value ="{{ form.fields.fixed_ips.initial}}" />
+                <input type="hidden" name="security_groups"  value ="{{ form.fields.security_groups.initial}}" />
+                <input type="hidden" name="security_group_rules"  value ="{{ form.fields.security_group_rules.initial}}" />
+
+                <div class="unit">
+
+                </div>
+
+                {% if usages != None %}
+                    <div class="" id="progress_bar_refresh">
+                    <div class="quota_title clearfix">
+                        <strong>{% trans "Total Gigabytes" %}
+                            <span>({{ usages.gigabytes.used }}GB)</span></strong>
+
+                        <p style="width:auto;float:none;position: relative;margin: 0px;height: auto;padding: 0">
+                            {% trans "Available Gigabytes" %}:{{ usages.gigabytes.quota }}GB</p>
+                    </div>
+
+                    <div id="quota_size" data-progress-indicator-for="volume_size"
+                         data-quota-limit="{{ usages.gigabytes.quota }}"
+                         data-quota-used="{{ usages.gigabytes.used }}"
+                         class="quota_bar" style="width:80%">
+                        {% creeper_progress_bar usages.gigabytes.used usages.gigabytes.quota %}
+                    </div>
+                    </div>
+                    <script type="text/javascript" charset="utf-8">
+                        if (typeof horizon.Quota !== 'undefined') {
+                            horizon.Quota.init();
+                        } else {
+                            addHorizonLoadEvent(function () {
+                                horizon.Quota.init();
+                            });
+                        }
+                    </script>
+                {% else %}
+                    {% trans 'Failed to get agency quotas!' %}
+                {% endif %}
+
+
+        </div>
+
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                            <div class="buttonContent">
+                                <button type="submit">{% trans "Submit" %}</button>
+                            </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

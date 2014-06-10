@@ -1,0 +1,35 @@
+<html>
+<head>
+    <title>login</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+
+<h1>test success! <a href="{% url "authorize_logout" %}">登出</a> | <a href="/">UI_Work</a></h1>
+<a href="{% url "get_controller_menu" %}">获得管控列表</a><br/>
+<a href="{% url "create_controller" %}">创建管控</a><br/>
+
+<a href="{% url "get_instance_list" %}">获取虚拟机列表</a><br/>
+<a href="{% url "image_list" %}">创建虚拟机</a><br/>
+<br/>
+
+<a href="{% url "get_image_list" %}">母盘模板管理</a><br/><br/>
+<a href="{% url "get_flavor_list" %}">虚拟硬件模板管理</a><br/>
+
+<a href="{% url "get_user_list" %}">获得用户列表</a><br/>
+<a href="{% url "create_user_form" %}">创建用户</a><br/>
+<a href="{% url "get_project_list" %}">查看机构列表</a><br/>
+<a href="{% url "create_project_form" %}">创建机构</a><br/>
+<a href="{% url "get_log_list" %}">虚拟机日志列表</a><br/>
+<a href="{% url "tenant_log" %}">虚拟机项目日志</a><br/>
+<a href="{% url "get_node_index" %}">获得节点列表</a><br/>
+<a href="{% url "create_node" %}">创建节点</a><br/>
+
+<a href="{% url "get_software_list" %}">获得软件包列表</a><br/>
+<a href="{% url "create_software_form" %}">创建软件包</a><br/><br/>
+
+<a href="{% url "get_volume_list" %}">虚拟磁盘管理</a><br/>
+
+</body>
+
+</html>

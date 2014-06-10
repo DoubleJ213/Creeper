@@ -1,0 +1,368 @@
+/*Index Style*/
+.index_cover
+{
+    background:url(../../images/index_cover.jpg) no-repeat;
+    height:340px;
+    width:460px;
+    margin:0 auto;
+}
+
+.index_logo
+{
+    float:left;
+    position:relative;
+    height:340px;
+    width:100%;
+    margin-top:30px;
+
+}
+
+.index_content{
+    min-width: 1153px;
+    _width:1153px;
+    width: 100%;
+    height: auto;
+}
+
+.index_content .left{
+    min-width: 825px;
+    height: auto;
+    width: auto;
+    float: left;
+}
+.left_left{
+    /*min-width: 820px;*/
+    /*_width:820px;*/
+    width: 71.5%;
+    height: auto;
+    float: left;
+}
+.index_content .right{
+    /*_width: 316px;*/
+    width: 27.5%;
+    height: auto;
+    float: left;
+    margin-left: 5px;
+}
+
+.index_content .border{
+    border: 1px solid #b8d0d6;
+}
+
+.index_content .title{
+    width: 100%;
+    height: 28px;
+    background: #eff4f5;
+    border-bottom: 1px solid #b8d0d6;
+}
+
+.index_content .title .titleImg{
+    width: auto;
+    height: auto;
+    margin-left: 10px;
+    float: left;
+}
+
+.index_content .title .font{
+    width: auto;
+    line-height: 28px;
+    font-family: "宋体";
+    font-weight: bold;
+    font-size: 15px;
+    color: #183863;
+    float: left;
+    margin-left: 5px;
+}
+
+.index_content .title .font2{
+    font-weight: inherit;
+    color: #000000;
+    margin-left: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+.index_content .title .more{
+    width: auto;
+    line-height: 28px;
+    font-family: "宋体";
+    font-weight: bold;
+    font-size: 15px;
+    color: #2B7DD1;
+    float: right;
+    margin-right: 10px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.more_1{
+    width: auto;
+    line-height: 28px;
+    font-family: "宋体";
+    font-weight: bold;
+    font-size: 15px;
+    color: #2B7DD1;
+    float: right;
+    margin-right: 10px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.index_content .list{
+    width: 100%;
+    height: 168px;
+}
+
+.index_content .table{
+    width: 100%;
+    height: 100%;
+}
+
+.index_content .table .tr{
+    width: auto;
+    height: 24px;
+    clear: both;
+}
+
+.index_content .table .tr .td{
+    width: auto;
+    line-height: 24px;
+    font-family: "宋体";
+    font-size: 14px;
+    color: #000000;
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.index_content .table .tr .td a{
+    line-height: 24px;
+    font-size: 14px;
+}
+
+.index_content .table .log_tr{
+    width: 312px;
+    height: 28px;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.index_content .table .log_tr .log_td{
+    width: 304px;
+    line-height: 28px;
+    padding-left: 8px;
+    font-size: 14px;
+}
+
+.index_content .box_line{
+    width: 85px;
+    height: 10px;
+    background: #b8d0d6;
+    margin-top: 10px;
+    float: left;
+}
+.index_content .box_line .inner_line{
+    width: 100%;
+    height: 10px;
+    background: #11a8a8;
+}
+
+.index_content .partDiv{
+    width: 99.7%;
+    height: 176px;
+}
+
+.index_content .partDiv .event{
+    width: 49.5%;
+    height: 174px;
+    border: 1px solid #b8d0d6;
+    float: left;
+}
+
+.index_content .hardware{
+    width: 99.7%;
+    height: 196px;
+    border: 1px solid #b8d0d6;
+    margin-top: 5px;
+}
+
+.index_content .hardware .ringContent{
+    width: 100%;
+    height: 100%;
+}
+
+.index_content .hardware .ringContent .ring{
+    width: 130px;
+    height: 150px;
+    margin-top: 10px;
+    float: left;
+    margin-left: 7%;
+}
+.index_content .hardware .ringContent .ring span{
+    font-size: 20px;
+    font-weight: bold;
+    color: #909987;
+}
+.index_content .hardware .ringContent .ring .info{
+    width: 100%;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    color: #909987;
+    padding-top: 5px;
+}
+
+.index_content .facility{
+    width: 99.7%;
+    height: 251px;
+    border: 1px solid #b8d0d6;
+    margin-top: 5px;
+}
+
+.index_content .facility .part{
+    width: 176px;
+    height: 210px;
+    border: 1px solid #b8d0d6;
+    margin-top: 5px;
+    float: left;
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+
+.index_content .facility .part .attr{
+    clear: both;
+    width: auto;
+    height: 29px;
+    line-height: 29px;
+    margin-left: 8px;
+    margin-right: 3px;
+    font-size: 12px;
+}
+
+.index_content .facility .part .attr .attrLeft{
+    width: 38px;
+    line-height: 29px;
+    float: left;
+}
+.index_content .facility .part .attr .attrRight{
+    width: 120px;
+    line-height: 29px;
+    float: left;
+}
+.index_content .facility .part .attr .attrRight .per{
+    width: 30px;
+    line-height: 29px;
+    float: left;
+    font-size: 12px;
+    margin-left:3px;
+}
+
+.index_content .facility .part .instance{
+    width: 86px;
+    height: 48px;
+    line-height: 48px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #FFFFFF;
+    background: #5a9aa8;
+    float: left;
+    text-align: center;
+}
+
+.index_content .facility .part .controll_node{
+    clear: both;
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    background: #7da2aa;
+    font-size: 15px;
+    color: #ffffff;
+    font-family: "宋体";
+    text-align: center;
+    margin-top: 2px;
+}
+
+
+.index_content .index_button{
+    float: left;
+    width: 71px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    display: block;
+    background: url(../../images/count-bg.jpg) no-repeat;
+}
+.index_content .line{
+    width: 99.7%;
+    height: 1px;
+    margin-top: 5px;
+    border-top: 1px solid #b8d0d6;
+}
+
+.index_content #scrollDiv
+{
+    width: 47%;
+    height: 30px;
+    overflow: hidden;
+    float: left;
+}
+.index_content #scrollDiv li
+{
+    line-height: 30px;
+    padding-left: 10px;
+    color: #666666;
+}
+
+.index_content .fastlink
+{
+    width: 75%;
+    height: 30px;
+    overflow: hidden;
+    float: left;
+}
+.index_content .fastlink li
+{
+    width:auto;
+    line-height: 30px;
+    padding-left: 10px;
+    float:left;
+}
+
+.index_content .date{
+    width: 100%;
+    height: 215px;
+    margin-top: 5px;
+    /*border: 1px solid #b8d0d6;*/
+}
+
+.index_content .log{
+    width: 99.7%;
+    height: 334px;
+    margin-top: 5px;
+    border: 1px solid #b8d0d6;
+}
+.state{
+    background: url("../../images/index/sy_22.png");
+}
+.unstate{
+    background: url("../../images/index/sy_35.png");
+}
+/*瀑布流*/
+#waterfall_box{
+    position: relative;
+}
+#waterfall_box .waterfall{
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.waterfall{
+    -webkit-transition: all .7s ease-out .1s;
+    -moz-transition: all .7s ease-out;
+    -o-transition: all .7s ease-out .1s;
+    transition: all .7s ease-out .1s
+}

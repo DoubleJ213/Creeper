@@ -1,0 +1,290 @@
+{% load i18n %}
+{% load dashboard %}
+{% load permission %}
+
+<script src="{{ STATIC_URL }}ui/js/datepicker.min.js" type="text/javascript"></script>
+<style type="text/css">
+    .searchLeft{
+        width: 70px;
+        line-height: 25px;
+        float: left;
+        text-align: left;
+        margin-left: 20px;;
+    }
+    .searchRight{
+        width: 210px;
+        height: 23px;
+        padding-top: 2px;
+        float: left;
+    }
+    .searchRight select, .searchRight input{
+        width: 210px;
+        height: 23px;
+    }
+    #log_query_div_height{
+        height: auto;
+    }
+    .parent_log_div{
+        height: 100%;
+    }
+</style>
+
+<script lang="text/javascript">
+    $(document).ready(function(){
+        $("#log_query_div_height").parent().addClass("parent_log_div");
+        $("#log_query_div_height").addClass("parent_log_div");
+    });
+
+    function navTabQuery(form){
+        navTabSearch(form,"{% trans 'log_query' %}");
+    }
+    function exportlog()
+    {
+        $("#emodule").val($("#module").val());
+        $("#eevent").val($("#event").val());
+        $("#etenant").val($("#tenant").val());
+        $("#eusername").val($("#username").val());
+        $("#ebegintime").val($("#begintime").val());
+        $("#eendtime").val($("#endtime").val());
+        var emodule = $("#emodule").val();
+        var eevent  = $("#eevent").val();
+        var etenant = $("#etenant").val();
+        var eusername = $("#eusername").val();
+        var ebegintime = $("#ebegintime").val();
+        var eendtime = $("#eendtime").val();
+
+        $.ajax({
+                   url:'{% url "export_logs_count" %}',
+                   type:'GET',
+                   data:$("#exportLog").serializeArray(),
+                   global:false,
+                   success:function (response) {
+                       var _data = eval("(" + response + ")")
+                       if (_data["statusCode"] == 200){
+{#                           var queryLog = $("#queryLog");#}
+{#                           queryLog.attr("action","{% url "export_logs_list" %}");#}
+{#                           queryLog.attr('onsubmit','true');#}
+{#                           queryLog.submit();#}
+                           $("#exportLog").submit();
+                       }else{
+
+                           alertMsg.error(_data['message']);
+                       }
+                   }
+               });
+    }
+    function submitForm() {
+        alertMsg.confirm("{% trans "Are you sure for deleting these logs?" %}" , {
+            okCall:function () {
+                $("#dmodule").val($("#module").val());
+                $("#devent").val($("#event").val());
+                $("#dtenant").val($("#tenant").val());
+                $("#dusername").val($("#username").val());
+                $("#dbegintime").val($("#begintime").val());
+                $("#dendtime").val($("#endtime").val());
+                $("#cleanLogs").submit();
+            }
+        });
+    }
+
+    function change_module(obj){
+        var objvalue = $("#"+obj).val();
+        $("#e"+obj).val(objvalue);
+        $("#d"+obj).val(objvalue);
+    }
+
+    function log_form_check(form) {
+        var begintime = form.begintime.value;
+        var endtime = form.endtime.value;
+        if (begintime.length > 0 && endtime.length > 0) {
+            if (begintime > endtime) {
+                alertMsg.warn("{% trans 'Begintime should be less than Endtime.' %}");
+                return false;
+            }
+        }
+        return navTabSearch(form);
+    }
+</script>
+<form id="pagerForm" action="{% url "log_query_index" %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{page_obj.paginator.per_page}}" />
+    <input type="hidden" name="module" value="{{module}}" />
+    <input type="hidden" name="event" value="{{event}}" />
+    <input type="hidden" name="tenant" value="{{tenant}}" />
+    <input type="hidden" name="username" value="{{username}}" />
+    <input type="hidden" name="begintime" value="{{begintime}}" />
+    <input type="hidden" name="endtime" value="{{endtime}}" />
+</form>
+<form id="exportLog" name="exportLog" action="{% url "export_logs_list" %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" id="emodule" name="module" value="{{module}}" />
+    <input type="hidden" id="eevent" name="event" value="{{event}}" />
+    <input type="hidden" id="etenant" name="tenant" value="{{tenant}}" />
+    <input type="hidden" id="eusername" name="username" value="{{username}}" />
+    <input type="hidden" id="ebegintime" name="begintime" value="{{begintime}}" />
+    <input type="hidden" id="eendtime" name="endtime" value="{{endtime}}" />
+</form>
+
+<form id="cleanLogs" action="{% url "delete_logs_query" %}" method="post" onsubmit="return iframeCallback(this,dialogAjaxDone)">
+    {% add_in_method 'delete'%}{% csrf_token %}
+    <input type="hidden" id="dmodule" name="module" value="{{module}}" />
+    <input type="hidden" id="devent" name="event" value="{{event}}" />
+    <input type="hidden" id="dtenant" name="tenant" value="{{tenant}}" />
+    <input type="hidden" id="dusername" name="username" value="{{username}}" />
+    <input type="hidden" id="dbegintime" name="begintime" value="{{begintime}}" />
+    <input type="hidden" id="dendtime" name="endtime" value="{{endtime}}" />
+</form>
+
+
+<div class="pageHeader">
+
+    <form id="queryLog" name="queryLog" action="{% url "log_query_index" %}" onsubmit="return log_form_check(this)">
+        {% add_in_method 'get'%}{% csrf_token %}
+        <div class="searchBar">
+            <div class="searchContent">
+                <ul>
+                <li style="width: auto;float: left;">
+                    <div class="searchLeft">{% trans "Log Module" %}:</div>
+                    <div class="searchRight">
+                        <select id = "module" name="module" onchange="change_module('module');">
+                            <option value="">{% trans "---select---" %}</option>
+                            {% for key,value in module_choices %}
+                                <option value="{{ key }}" {% if key == module %}selected{% endif %}>{{ value }}</option>
+                            {% endfor %}`
+                        </select>
+                    </div>
+                </li><li style="width: auto;float: left;">
+                    <div class="searchLeft">{% trans "Event" %}:</div>
+                    <div class="searchRight">
+                        <select id="event" name="event"  onchange="change_module('event');">
+                            <option value="">{% trans "---select---" %}</option>
+                            {% for key,value in event_choices %}
+                                <option value="{{ key }}" {% if key == event %}selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                {% permission 'View All Logs' %}
+                </li><li style="width: auto;float: left;">
+                    <div class="searchLeft">{% trans "Tenant" %}:</div>
+                    <div class="searchRight">
+                        <input type="text" name="tenant" id="tenant" value="{{ tenant }}" class="textInput" onchange="change_module('tenant');" />
+                    </div>
+                </li>
+                {% endpermission %}
+                <li style="width: auto;clear: both;">
+                    <div class="searchLeft">{% trans "User Name" %}:</div>
+                    <div class="searchRight">
+                        <input type="text" name="username" id="username" value="{{ username }}" class="textInput"  onchange="change_module('username');" />
+                    </div>
+                </li><li style="width: auto;float: left;">
+                    <div class="searchLeft">{% trans "Begin Time" %}:</div>
+                    <div class="searchRight">
+                        <input id="begintime" type="text" name="begintime" class="date" value="{{ begintime }}" readonly=""  onchange="change_module('begintime');"/>
+                    </div>
+                </li><li style="width: auto;float: left;">
+                    <div class="searchLeft">{% trans "End Time" %}:</div>
+                    <div class="searchRight">
+                        <input id="endtime"  type="text" name="endtime" class="date"  value="{{ endtime }}"  readonly=""  onchange="change_module('endtime');"/>
+                    </div>
+                </li><li style="width: auto;float: right;">
+                    <div class="subBar">
+                        <ul>
+
+                            <li>
+                                <div class="buttonActive">
+                                    <div class="buttonContent">
+                                        <button type="submit">{% trans "Query" %}</button>
+                                    </div>
+                                </div>
+                            </li>
+                            {% permission 'Export Log List' %}
+                                <li>
+                                    <div class="buttonActive">
+                                        <div class="buttonContent">
+                                            <button type="button" onclick="exportlog();" >{% trans "Export" %}</button>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endpermission %}
+                            {% permission 'Delete Log' %}
+                                <li>
+                                    <div class="buttonActive">
+                                        <a  width="650" height="330" onclick="submitForm()" id="delete_a" tmask="true">
+                                            <span>{% trans "Clean All Logs" %}</span>
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endpermission %}
+                        </ul>
+                    </div>
+                </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="log_query_div_height" class="pageContent listContent">
+    <form id="log_query_form"
+          method="post" class="pageForm required-validate" >
+        {% csrf_token %}
+    <table class="table" width="100%" layoutH="130">
+        <thead>
+        <tr>
+            <th>{% trans "Sequence Number" %}</th>
+            <th>{% trans 'Log Module' %}</th>
+            <th>{% trans 'Event' %}</th>
+            <th>{% trans 'User Name' %}</th>
+            <th>{% trans "Tenant" %}</th>
+            <th>{% trans 'Created' %}</th>
+            <th>{% trans 'Status' %}</th>
+{#            <th>{% trans 'Content' %}</th>#}
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for log in page_obj.object_list %}
+            <tr {% if 'true' == log.is_primary %}style="background: #BFB8B8;"{% endif %}>
+                <td align="center">{{ forloop.counter | add:page_obj.sequence_number }}</td>
+                <td>{% if log.module == '' %}{{ log.module }}{% else %}{% trans log.module %}{% endif %}</td>
+                <td>{% if log.module == '' %}{{ log.event }}{% else %}{% trans log.event %}{% endif %}</td>
+                <td>{{ log.username }}</td>
+                <td>{{ log.tenant }}</td>
+                <td>{{ log.create_at | datetime_from_utctime }}</td>
+                <td {% if log.status != '200' and log.status != '302' %}style="color: #ff0000"{% endif %}>{% if log.status == '200' or log.status == '302' %}{% trans 'Success' %}{% else %}{% trans 'Fail' %}{% endif %}</td>
+                <td>
+                    {% if log.uuid %}
+                        {% permission 'Delete Log' %}
+                            <a target="dialog" title="{% trans 'Delete' %}" href="{% url "delete_log_form" log.uuid %}" tmask="true" width="250" height="150">
+                                <img src="{{ STATIC_URL }}ui/images/delete.png" title="{% trans 'Delete' %}"/>
+                            </a>
+                        {% endpermission %}
+                    <a target="dialog" title="{% trans 'Detail' %}" href="{% url "get_log_detail" log.uuid %}" tmask="true">
+                        <img src="{{ STATIC_URL }}ui/images/detail.png" title="{% trans 'Detail' %}"/>
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</form>
+    <div class="panelBar" style="margin-top: 20px;">
+        <div class="pages">
+            <span>{% trans 'Display' %}  </span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+            </select>
+            <span> {% trans 'Records' %}，{% trans 'Total' %}  {{ page_obj.paginator.count }}  {% trans 'Records' %}</span>
+        </div>
+        <div class="pagination" targetType="navTab" totalCount="{{ page_obj.paginator.count }}"
+             numPerPage="  {{ page_obj.paginator.per_page }}" pageNumShown="{{ page_obj.paginator.num_pages }}"
+             currentPage="{{ page_obj.number }}"></div>
+    </div>
+</div>

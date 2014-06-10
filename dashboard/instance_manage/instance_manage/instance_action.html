@@ -1,0 +1,136 @@
+{% load i18n %}
+{% load dashboard %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+    .info{
+
+        position:relative;
+        float:left;
+        width:auto;
+        margin:5px 10px 0 10px;
+
+
+    }
+
+    .info dl{
+        float: left;
+        position:relative;
+        width:100%;
+        height:13px;
+        border-bottom:solid 1px #f4f4f4;
+    }
+     .info dl dt{
+
+        color: black;
+        float: left;
+        position:relative;
+        width: 100px;
+        margin-bottom: 2px;
+    }
+     .info dl dd{
+
+        font-weight: bold;
+        width: auto;
+        float: left;
+        position:relative;
+        margin-bottom: 2px;
+    }
+</style>
+<input id="ins_action" type="hidden" value="{{ msg }}" />
+<div class="pageFormContent" layouth="58">
+ <table width=100% height=90%>
+     <div class="info">
+         <dl>
+             <dt>{% trans "Action Instance" %}</dt>
+             <dd>{{ instance_name }}</dd>
+         </dl>
+     </div>
+ {% if instance_status == 'ACTIVE'%}
+ <tr><td valign="middle">
+ <div class="unit">
+    <ul class="instance_action_button">
+         <li> <a target="dialog"   href="{% url "instance_reboot_form" instance_id %}" tmask="true">{% trans "Reboot Instance" %}</a></li>
+         <li> <a target="dialog"   href="{% url "instance_pause_form" instance_id %}" tmask="true">{% trans "Pause Instance" %}</a></li>
+        {# <li><a target="dialog"   href="{% url instance_unpause_form instance_id %}" tmask="true">取消暂停</a></li>#}
+         <li><a target="dialog"   href="{% url "instance_stop_form" instance_id %}" tmask="true">{% trans "Suspend Instance" %}</a></li>
+
+    </ul>
+</div>
+<div class="unit">
+<ul class="instance_action_button">
+{#<li><a target="dialog"   href="{% url instance_unstop_form instance_id %}" tmask="true">恢复虚拟机</a></li>#}
+{#<li><a target="dialog"   href="{% url "change_pwd_forms" instance_id %}" tmask="true">{% trans "Change Instance Password" %}</a></li>#}
+    <li> <a target="dialog"   href="{% url "instance_soft_reboot_form" instance_id %}" tmask="true">{% trans "Soft Reboot Instance" %}</a></li>
+    <li><a target="dialog"   href="{% url "instance_delete_form" instance_id %}" tmask="true" >{% trans "Delete Instance" %}</a></li>
+<li><a target="dialog"   href="{% url "update_instance_form" instance_id %}" tmask="true">{% trans "Update Instance Info" %}</a></li>
+</ul>
+</div>
+<div class="unit">
+<ul class="instance_action_button">
+<li>
+<a target="dialog"   href="{% url "create_snapshot_form" instance_id %}" tmask="true">{% trans "Backup" %}</a></li>
+<li> <a target="dialog"   href="{% url "restore_instance" instance_id %}" tmask="true">{% trans "Restore Backups" %}</a></li>
+{#    <li> <a target="dialog"   href="{% url "html_forward" instance_id=instance_id tmp_name='restore' %}" tmask="true">{% trans "Restore Backups" %}</a></li>#}
+    <li> <a target="dialog"   href="{% url "get_snapshots_list" instance_id %}" tmask="true">{% trans "Get Backup List" %}</a></li>
+{#    <li> <a target="dialog"   href="{% url "html_forward" instance_id=instance_id tmp_name='snapshots_list'%}" tmask="true">{% trans "Get Backup List" %}</a></li>#}
+</ul>
+</div>
+</td>
+</tr>
+{% elif instance_status == 'SUSPENDED' %}
+     <tr><td valign="middle">
+     <div class="unit">
+         <ul class="instance_action_button">
+             <li><a target="dialog"   href="{% url "instance_unstop_form" instance_id %}" tmask="true">{% trans "Resume Instance" %}</a></li>
+             <li><a target="dialog"   href="{% url "update_instance_form" instance_id %}" tmask="true">{% trans "Update Instance Info" %}</a></li>
+             <li><a target="dialog"   href="{% url "instance_delete_form" instance_id %}" tmask="true" >{% trans "delete instance" %}</a></li>
+         </ul>
+     </div>
+     </td></tr>
+{% elif instance_status == 'PAUSED' %}
+     <tr><td valign="middle">
+         <div class="unit">
+             <ul class="instance_action_button">
+                 <li><a target="dialog"   href="{% url "instance_unpause_form" instance_id %}" tmask="true">{% trans "Unpause Instance" %}</a></li>
+                 <li><a target="dialog"   href="{% url "update_instance_form" instance_id %}" tmask="true">{% trans "Update Instance Info" %}</a></li>
+                 <li><a target="dialog"   href="{% url "instance_delete_form" instance_id %}" tmask="true" >{% trans "delete instance" %}</a></li>
+
+             </ul>
+         </div>
+     </td></tr>
+{% elif instance_status == 'RESOURCE_IS_NOT_ENOUGH' or instance_status == 'ERROR' %}
+     <tr>
+     <td valign="middle">
+         <div class="unit">
+             <ul class="instance_action_button">
+                 <li><a target="dialog"   href="{% url "instance_delete_form" instance_id %}" tmask="true" >{% trans "delete instance" %}</a></li>
+             </ul>
+         </div>
+     </td>
+     </tr>
+ {% elif instance_status == 'SHUTOFF' %}
+     <tr><td valign="middle">
+         <div class="unit">
+             <ul class="instance_action_button">
+                 <li> <a target="dialog"   href="{% url "instance_reboot_form" instance_id %}" tmask="true">{% trans "Reboot Instance" %}</a></li>
+                 <li><a target="dialog"   href="{% url "instance_delete_form" instance_id %}" tmask="true" >{% trans "Delete Instance" %}</a></li>
+                 <li> <a target="dialog"   href="{% url "restore_instance" instance_id %}" tmask="true">{% trans "Restore Backups" %}</a></li>
+
+             </ul>
+         </div>
+     </td>
+     </tr>
+{% else %}
+     <tr><td valign="middle">
+         <div class="unit">
+             <ul class="instance_action_button">
+                 <li> <a target="dialog"   href="{% url "instance_reboot_form" instance_id %}" tmask="true">{% trans "Reboot Instance" %}</a></li>
+                 <li><a target="dialog"   href="{% url "instance_delete_form" instance_id %}" tmask="true" >{% trans "Delete Instance" %}</a></li>
+             </ul>
+         </div>
+     </td></tr>
+{% endif %}
+ </table>
+</div>
+</div>

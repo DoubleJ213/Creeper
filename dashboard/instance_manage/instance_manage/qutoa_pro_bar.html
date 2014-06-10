@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load dashboard %}
+{% if usages != None %}
+    <span class="right_word">{% trans "Project Quotas" %}</span>
+    <div class="quota_title clearfix">
+        <span>{% trans "Instances Number" %}&nbsp;({{ usages.instances.used }}/{{ usages.instances.available }})</span>
+    </div>
+    <div id="quota_number" data-quota-limit="{{  usages.instances.quota }}"
+         data-quota-used="{{  usages.instances.used }}" class="quota_bar">
+        {% creeper_progress_bar usages.instances.used usages.instances.quota %}
+    </div>
+
+    <div class="quota_title clearfix">
+        <span>{% trans "Vcpus Number" %}&nbsp;({{ usages.cores.used }}/{{ usages.cores.available }})</span>
+    </div>
+    <div id="quota_vcpu"  data-quota-limit="{{  usages.cores.quota }}"
+         data-quota-used="{{  usages.cores.used }}" class="quota_bar">
+        {% creeper_progress_bar usages.cores.used usages.cores.quota %}
+    </div>
+
+    <div class="quota_title clearfix">
+        <span>{% trans "RAM Number" %}&nbsp;({{ usages.ram.quota }}/{{ usages.ram.available }}){% trans "MB" %}</span>
+    </div>
+    <div id="quota_ram" data-quota-limit="{{  usages.ram.quota }}"
+         data-quota-used="{{  usages.ram.used }}" class="quota_bar">
+        {% creeper_progress_bar usages.ram.used usages.ram.quota %}
+    </div>
+{% else %}
+    {% trans "Fail to get project quotas!" %}
+
+{% endif %}
+
+<script type="text/javascript" charset="utf-8">
+    if(typeof horizon.Quota !== 'undefined') {
+        horizon.Quota.init();
+    } else {
+        addHorizonLoadEvent(function() {
+            horizon.Quota.init();
+        });
+    }
+</script>

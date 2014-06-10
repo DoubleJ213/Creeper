@@ -1,0 +1,60 @@
+{% load i18n %}
+{% load dashboard %}
+<div class="pageContent">
+    <style>
+
+        .info .title{
+
+            font-size:14px;
+            font-weight: bold;
+            padding-bottom:10px;
+            border-bottom:solid 1px #f4f4f4;
+            margin-bottom:10px;
+
+        }
+
+
+
+    </style>
+
+
+<div class="pageFormContent" layouth="58">
+        <div class="info">
+            <div class="title">{% trans "UserInfo" %}</div>
+            <dl>
+                <dt>{% trans "Name" %}</dt>
+                <dd>{{ user.name }}</dd>
+            </dl>
+            <dl>
+                <dt>{% trans "Email" %}</dt>
+                <dd>{{ user.email }}</dd>
+
+            </dl>
+
+            <dl>
+                <dt>{% trans "Project Name" %}</dt>
+                <dd>{{ project_name }}</dd>
+
+            </dl>
+
+            <dl>
+                <dt>{% trans "Role" %}</dt>
+                <dd>{{ role_name }}</dd>
+
+            </dl>
+
+            <dl>  <dt>{% trans "Active" %}</dt>
+                <dd>
+                 {% if user.enabled %}{% trans 'True' %}
+                 {% else %}{% trans 'False' %}
+                 {% endif %}
+                </dd>
+
+            </dl>
+
+
+        </div>
+
+
+    </div>
+</div>

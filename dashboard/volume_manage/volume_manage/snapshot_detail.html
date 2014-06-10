@@ -1,0 +1,92 @@
+{% load i18n %}
+{% load dashboard %}
+<div class="pageContent">
+<style>
+
+    .info{
+
+        position:relative;
+        float:left;
+        width:auto;
+        margin:10px 10px 0 10px;
+
+
+    }
+    .info .title{
+
+        font-size:14px;
+        font-weight: bold;
+        padding-bottom:10px;
+        border-bottom:solid 1px #f4f4f4;
+        margin-bottom:10px;
+
+    }
+
+    .info dl{
+        float: left;
+        position:relative;
+        width:100%;
+    }
+
+
+    .info dl dt{
+
+        color: #555;
+        float: left;
+        position:relative;
+        width: 100px;
+        margin-bottom:10px;
+    }
+
+    .info dl dd{
+
+        width: 300px;
+        float: left;
+        position:relative;
+        margin-bottom:10px;
+    }
+
+</style>
+    <div class="pageFormContent" layouth="58">
+    <div class="info">
+        <div class="title">{% trans "Info" %}</div>
+        <dl>
+            <dt>{% trans "Snapshot Name" %}</dt>
+            <dd>{{ snapshot.display_name }}</dd>
+        </dl>
+{#        <dl>#}
+{#            <dt>{% trans "Pertain Tenant" %}</dt>#}
+{#            <dd>{{ volume.tenant }}</dd>#}
+{#        </dl>#}
+        <dl>
+            {% if snapshot.display_description %}
+                <dt>{% trans "Snapshot Description" %}</dt>
+                <dd><div>{{ snapshot.display_description|truncatechars:30 }}</div></dd>
+            {% else %}
+                <dt>{% trans "Snapshot Description" %}</dt>
+                <dd><div>None</div></dd>
+            {% endif %}
+        </dl>
+        <dl>
+            <dt>{% trans "Snapshot Status" %}</dt>
+            <dd>{% trans snapshot.status|capfirst %}</dd>
+        </dl>
+        <dl>
+            <dt>{% trans "Volume Name" %}</dt>
+            <dd>{{ snapshot.volume_name }}</dd>
+        </dl>
+
+    </div>
+    <div class="info">
+        <div class="title">{% trans "Specs" %}</div>
+        <dl>
+            <dt>{% trans "Snapshot Size" %}</dt>
+            <dd>{{ snapshot.size }}G</dd>
+        </dl>
+        <dl>
+            <dt>{% trans "Created" %}</dt>
+            <dd>{{ snapshot.created_at | datetime_from_utctime }}</dd>
+        </dl>
+    </div>
+    </div>
+</div>

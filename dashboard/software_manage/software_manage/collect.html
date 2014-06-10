@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load dashboard %}
+
+<Table align="center" width="100%" height="100%" valign="middle">
+    <tr><td align="center">
+        {% trans "Are you sure for collecting this software ?" %}</td></tr>
+    <tr><td align="center">
+<form action="{% url "collect_software_action" software_uuid %}" method="post" onsubmit="return validateCallback(this,dialogAjaxDone);">
+    {% add_in_method 'post' %}
+    {% csrf_token %}
+    <input type="submit" value={% trans "Submit" %} />
+    <input type="button" onclick="$.pdialog.closeCurrent()" value={% trans "Cancel" %} />
+</form>
+    </tr>
+</Table>

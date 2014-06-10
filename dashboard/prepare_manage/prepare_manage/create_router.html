@@ -1,0 +1,121 @@
+{% load i18n %}
+
+<style type="text/css">
+    #name  {
+        background: url("{{ STATIC_URL }}/ui/images/input_bg.png") no-repeat ;
+        border:0;
+        width: 240px;
+        height: 25px;
+    }
+
+    .ins_header1{
+        width: 141px;
+        float: left;
+        line-height: 24px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .header_pic1 {
+        clear:both;
+        width: 100%;
+        height:70px;
+        background:#d7dcde url('{{ STATIC_URL }}ui/images/instance/4_1.png') no-repeat ;
+        background-position: left center;
+        margin-bottom: 10px;
+    }
+</style>
+
+<script type="text/javascript">
+
+    function dialogAjaxDone_router(json) {
+        DWZ.ajaxDone(json);
+        var virtual_router_obj_id = $("#virtual_router_obj_id").val();
+        var tenant_id = $("#tenant_id").val();
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            $("#create_router_btn_id").attr("disabled",'true');
+            if ("closeCurrent" == json.callbackType) {
+                var router_id = json.router_id;
+                var virtual_router_obj_id = json.virtual_router_obj_id;
+                $.get("prepare_manage/prepare/"+tenant_id+"/projects/"+router_id+"/"+virtual_router_obj_id+"/",function(data){
+                    $("#project_router_from").hide();
+                    $("#create_router_from_id").html(data).initUI();
+                    $("#create_router_from_id > div ").height($("#create_router_from_id").height());
+                });
+{#                $.pdialog.closeCurrent();#}
+            }
+        }
+    }
+    function prepare_create_router1(){
+        var name = $("#name").val();
+
+        if(name.indexOf(' ') > 0){
+            alertMsg.error("{% trans "no blank space allowed during router name" %}");
+            return false;
+        }else if (name == ''){
+            alertMsg.error("{% trans "Router name is null" %}");
+            return false;
+        }else if(name.length < 2 || name.length > 10){
+            alertMsg.error("{% trans "Router name format wrong" %}");
+            return false;
+        }
+    }
+
+</script>
+
+<div class="pageContent"  id="create_router_from_id">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <input type="hidden" name="router_id" id="router_id"/>
+    <input type="hidden" name="virtual_router_obj_id" id="virtual_router_obj_id" value="{{ virtual_router_obj_id }}" />
+    <input type="hidden" name="tenant_id" id="tenant_id" value="{{ tenant_id }}"/>
+    <form method="post" action="{% url "create_router_action_ajax" tenant_id virtual_router_obj_id %}
+    " class="pageForm required-validate" id="project_router_from" onsubmit="return validateCallback(this,dialogAjaxDone_router)">
+        <div class="pageFormContent" layouth="58">
+            <div class="header_pic1" >
+                <div class="ins_header1" style="margin-left: 40px;" >{% trans 'Create router' %}</div>
+                <div class="ins_header1" >{% trans 'Create Interface' %}</div>
+                <div class="ins_header1" >{% trans 'Set Gateway' %}</div>
+                <div class="ins_header1" >{% trans 'Finish' %}</div>
+            </div>
+
+{#            <div class="panelBar">#}
+{#                <ul>#}
+{#                    <li style="line-height: 23px;">{% trans "Create router" %}</li>#}
+{#                </ul>#}
+{#            </div>#}
+            <div class="unit">
+                <label>
+                    {% trans 'Create router' %}：</label>
+                <input type="text" id="name" name="name"  size="30" minlength="2" maxlength="10" class="required" /><span style="color: red; margin-left: -10px;">*</span>
+            </div>
+
+        </div>
+        <span class="error" id="create_project_span" style="display: none"></span>
+        {% csrf_token %}
+        <div class="formBar" id="create_router_button">
+            <ul>
+                <li>
+                    <div class="buttonActive" id="create_router_btn_id">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close" onclick="">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

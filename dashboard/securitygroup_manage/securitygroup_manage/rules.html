@@ -1,0 +1,63 @@
+{% load i18n %}
+{% load dashboard %}
+
+<form id="pagerForm" action="{% url "edit_securitygrouprules" security_group_id %}">
+    {% add_in_method 'get'%}{% csrf_token %}
+    <input type="hidden" name="status" value="${param.status}">
+    <input type="hidden" name="pageNum" value="{{ page_obj.number }}" />
+    <input type="hidden" name="numPerPage" value="{{page_obj.paginator.per_page}}" />
+</form>
+
+<div class="pageContent listContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+
+
+            <li><a class="add" target="dialog"  href="{% url "create_securitygrouprules_index" security_group_id %}" tmask="true"><span>{% trans "add" %}</span></a></li>
+
+            <li></li>	</ul>
+    </div>
+
+    <table class="table" width="100%" layoutH="75">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Ip Protocol</th>
+            <th>From Port</th>
+            <th>To Port</th>
+            <th>Ip Range</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for rule in  page_obj.object_list  %}
+            <tr>
+                <td>{{ rule.id }}</td>
+                <td>{{ rule.ip_protocol }}</td>
+                <td>{{ rule.from_port }}</td>
+                <td>{{ rule.to_port }}</td>
+                <td>{{ rule.ip_range }}</td>
+                <td>
+                    <a  target="dialog"  href="{% url "delete_securitygrouprules_index" security_group_id rule.id %}" tmask="true" width="250" height="150">{% trans 'delete rule' %}</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <div class="panelBar">
+        <div class="pages">
+            <span>{% trans 'Display' %}  </span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+                <option value="10"  {% if page_obj.paginator.per_page == 10 %} selected {% endif %} >10</option>
+                <option value="20"  {% if page_obj.paginator.per_page == 20 %} selected {% endif %} >20</option>
+                <option value="50"  {% if page_obj.paginator.per_page == 50 %} selected {% endif %} >50</option>
+                <option value="100" {% if page_obj.paginator.per_page == 100 %} selected {% endif %} >100</option>
+                <option value="200" {% if page_obj.paginator.per_page == 200 %} selected {% endif %} >200</option>
+            </select>
+            <span> {% trans 'records' %}，{% trans 'total' %}  {{page_obj.paginator.count}}  {% trans 'records' %}</span>
+        </div>
+        <div class="pagination" targetType="navTab" totalCount="{{page_obj.paginator.count}}" numPerPage="  {{page_obj.paginator.per_page}}" pageNumShown="{{ page_obj.paginator.num_pages }}" currentPage="{{ page_obj.number }}"></div>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+{% load i18n %}
+{% load dashboard %}
+
+<div class="pageContent listContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+
+            {% if page_obj.paginator.count == ip_num %}
+                <li><span>{% trans 'the most floating Ips number is ' %}{{ ip_num }}</span></li>
+            {% else %}
+                <li><a class="add" target="dialog"  href="{% url "allocate_ip_index" tenant_id %}" onclick="sec_nextUrl('/securitygroup_manage/securitygroup/{{  tenant_id  }}/floatingips/')" tmask="true"><span>{% trans 'Allocate IP To Project' %}</span></a></li>
+            {% endif %}
+            <li></li>	</ul>
+    </div>
+    <table class="table" width="100%" layoutH="75">
+        <thead>
+        <tr>
+            <th>{% trans 'IP' %}</th>
+            <th>{% trans 'Instances' %}</th>
+            <th>{% trans 'Pool' %}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for floatingIp in page_obj.object_list %}
+            <tr>
+                <td>{{ floatingIp.ip }}</td>
+                <td>
+                    {% for id,name in instances %}
+                        {% if floatingIp.instance_id == id  %}
+                            {{ name }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ floatingIp.pool }}</td>
+
+            <td>
+
+                    <a  target="dialog"  href="{% url "release_ip_index" floatingIp.id %}"  onclick="sec_nextUrl('/securitygroup_manage/securitygroup/{{  tenant_id  }}/floatingips/')" tmask="true"  width="250" height="150">{% trans 'Release Floating IP' %}</a>
+                {% if None != floatingIp.instance_id  %}
+                       <a  target="dialog"  href="{% url "disassociate_ip_index" floatingIp.id floatingIp.instance_id %}" onclick="sec_nextUrl('/securitygroup_manage/securitygroup/{{  tenant_id  }}/floatingips/')" tmask="true" width="250" height="150">{% trans 'Disassociate IP' %}</a>
+                {% else %}
+                        <a  target="dialog"  href="{% url "associate_ip_index" floatingIp.id %}" onclick="sec_nextUrl('/securitygroup_manage/securitygroup/{{  tenant_id  }}/floatingips/')" tmask="true" >{% trans 'Associate IP' %}</a>
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

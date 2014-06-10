@@ -1,0 +1,83 @@
+{% load i18n %}
+{% load dashboard %}
+<style type="text/css">
+{#    #host_ip  {#}
+{#        background: url("{{ STATIC_URL }}/ui/images/input_bg.png") no-repeat ;#}
+{#        border:0;#}
+{#        width: 240px;#}
+{#        height: 25px;#}
+{#    }#}
+
+</style>
+<script type="text/javascript">
+    function dialogAjaxDone_create_node(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                $.pdialog.closeCurrent();
+            }
+        }
+    }
+
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_node_form_action" prepare_volume_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone_create_node);">
+
+        <div class="pageFormContent" layouth="58">
+
+
+            <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+                <select name = 'host_name' class="required select">
+                    {% for key,value in form.fields.host_name.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'IP' %}：</label>
+                <input type="text" name="host_ip" id="host_ip" size="30" minlength="6" maxlength="20" class="required ip" />
+            </div>
+            <div class="unit">
+                <label>
+                    {% trans 'Type' %}：</label>
+                <select name = 'type'>
+                    {% for key,value in form.fields.type.choices %}
+                        <option value= {{ key }} >{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>
+

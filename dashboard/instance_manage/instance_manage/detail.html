@@ -1,0 +1,185 @@
+{% load i18n %}
+{% load dashboard %}
+<script>
+    $(document).ready(function(){
+        var msg_val = $("#ins").val();
+{#        alert(msg_val);#}
+        if(msg_val != ''){
+            alertMsg.error("{% trans 'Can not find instance!' %}")
+            return false
+        }
+    });
+</script>
+<div class="pageContent">
+        <style>
+
+            .info{
+
+                position:relative;
+                float:left;
+                width:auto;
+                margin:10px 10px 0 10px;
+
+
+            }
+            .info .title{
+
+                font-size:14px;
+                font-weight: bold;
+                padding-bottom:10px;
+                border-bottom:solid 1px #f4f4f4;
+                margin-bottom:10px;
+
+            }
+
+            .info dl{
+                float: left;
+                position:relative;
+                width:100%;
+                height:auto;
+            }
+
+
+            .info dl dt{
+
+                color: #555;
+                float: left;
+                position:relative;
+                width: 100px;
+                margin-bottom:10px;
+            }
+
+            .info dl dd{
+
+                width: 300px;
+                float: left;
+                position:relative;
+                margin-bottom:10px;
+            }
+
+        </style>
+
+<div class="pageFormContent" layouth="58">
+    <input id="ins" type="hidden" value="{{ msg }}" />
+            <div class="info">
+                <div class="title">{% trans "Info" %}</div>
+                <dl>
+                    <dt>{% trans "Name" %}</dt>
+                    <dd>{{ instance.name }}</dd>
+                </dl>
+                <dl>
+                    <dt>{% trans "ID" %}</dt>
+                    <dd>{{ instance.id }}</dd>
+
+                </dl>
+
+                <dl>  <dt>{% trans "Status" %}</dt>
+                    <dd>{% if instance.status == 'ACTIVE' %}{% trans "ACTIVE" %}{%endif%}
+                        {% if instance.status == 'SUSPENDED' %}{% trans "SUSPENDED" %}{%endif%}
+                        {% if instance.status == 'ERROR' %}{% trans "ERROR" %}{%endif%}
+                        {% if instance.status == 'PAUSED' %}{% trans "PAUSED" %}{%endif%}
+                    </dd>
+
+                </dl>
+            </div>
+
+            <div class="info">
+                <div class="title">{% trans "Specs" %}</div>
+
+                <dl>
+                    <dt>{% trans "Flavor" %}</dt>
+                    <dd>{{ instance.full_flavor.name }}</dd></dl>
+                <dl> <dt>{% trans "RAM" %}</dt>
+                    <dd>{{ instance.full_flavor.ram }} {% trans "MB" %}</dd></dl>
+                <dl> <dt>{% trans "VCPUs" %}</dt>
+                    <dd>{{ instance.full_flavor.vcpus }} {% trans "VCPU" %}</dd></dl>
+                <dl> <dt>{% trans "Disk" %}</dt>
+                    <dd>{{ instance.full_flavor.disk }}{% trans "GB" %}</dd>
+                </dl>
+            </div>
+
+            <div class="info">
+                <div class="title">{% trans "IP Addresses" %}</div>
+                {% if instance.addresses|length == 0 %}
+                    <dl>  <dt></dt>
+                    <dd>
+                    </dd> </dl>
+                {% endif%}
+                {% for network, ip_list in instance.addresses.items %}
+                    <dl>  <dt>{{ network|title }}</dt>
+                        <dd>
+                            {% for ip in ip_list %}
+                                {% if not forloop.last %}{{ ip.addr}},&nbsp;{% else %}{{ip.addr}}{% endif %}
+                            {% endfor %}
+                        </dd> </dl>
+                {% endfor %}
+
+            </div>
+
+
+            <!--</div>-->
+
+            <div class="info">
+
+                <div class="title">{% trans "Meta" %}</div>
+
+                <dl>
+                    <dt>{% trans "Key Name" %}</dt>
+                    <dd>{{ instance.key_name|default:"<em>None</em>" }}</dd>
+                </dl>
+
+{#                {% url "horizon:nova:images_and_snapshots:images:detail" instance.image.id as image_url %}#}
+                <dl> <dt>{% trans "Image Name" %}</dt>
+                    <dd>{{ instance.image_name }}</dd>
+                    {% for key, value in instance.metadata.items %}
+                        <dt>{{ key|force_escape }}</dt>
+                        <dd>{{ value|force_escape|default:"<em>N/A</em>" }}</dd></dl>
+                    {% endfor%}
+
+            </div>
+
+
+            <div class="info">
+                <div class="title">{% trans "Volumes Attached" %}</div>
+
+
+                {% for volume in instance.volumes %}
+                    <dl> <dt>{% trans "Attached To" %}</dt>
+                        <dd>
+                            {{ volume.name }}<span> {% trans "on" %} {{ volume.device }}</span>
+                        </dd> </dl>
+                {% empty %}
+                    <dl>  <dt>{% trans "Volume" %}</dt>
+                        <dd><em>{% trans "No volumes attached." %}</em></dd></dl>
+                {% endfor %}
+
+            </div>
+            <div class="info">
+
+                <div class="title">{% trans "Security Groups" %}</div>
+
+                {% for group in instance.security_groups %}
+                    <dl>  <dt>{{ group.name }}</dt>
+                        <dd>
+                            <ul>
+                                {% for rule in group.rules %}
+                                    <li>{{ rule|lower }}</li>
+                                {% empty %}
+                                    <li><em>{% trans "No rules defined." %}</em></li>
+                                {% endfor %}
+                            </ul>
+                        </dd> </dl>
+                {% endfor %}
+
+            </div>
+
+        </div>
+{#{% endif %}#}
+</div>
+
+
+
+
+
+
+

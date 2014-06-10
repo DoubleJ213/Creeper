@@ -1,0 +1,49 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript">
+    var image = setTimeout("image_ajax_value()", 5000);
+
+    function image_ajax_value() {
+        $.ajax({
+            url:'{% url "detecting_image_status" uuid  %}',
+            type:'GET',
+            data:'json',
+            global:false,
+            success:function (response) {
+                var _data = eval("(" + response + ")")
+                var status = _data["status"];
+                var image_checkSum = _data["image_checkSum"];
+                var html_refresh = "<div class='status_loading'></div>";
+                var html_1 = "<label  title='"+image_checkSum+"' style='width: 500px'>"+image_checkSum+"</label>";
+                $("#image_status_id").html(html_1);
+                if (status == '2') {
+                    clearTimeout(image);
+{#                    var tabID = "{% trans "CreateImages" %}";#}
+{#                    navTab.closeTab(tabID);#}
+                }
+                else {
+                    if(status == '1'){
+                        $("#image_status_id").html(html_refresh+html_1);
+                        image = setTimeout("image_ajax_value()", 5000);
+                    }
+
+                    if(status == '11' || status == '15' ){
+                        clearTimeout(image);
+                    }
+                }
+            }
+        });
+
+    }
+</script>
+<div class="pageContent" id="launch_image_remote">
+    <div class="pageFormContent" id="launch_image_remote_id" layouth="0">
+        <div style="padding-left: 30px; height: 100%; width: 100%">
+            <div class="unit" id="image_status_id">
+                <div class='status_loading'></div>
+                <label style="width: 400px"></label>
+            </div>
+        </div>
+
+    </div>
+</div>

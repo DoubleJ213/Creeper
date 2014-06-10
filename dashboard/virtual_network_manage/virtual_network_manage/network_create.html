@@ -1,0 +1,67 @@
+{% load i18n %}
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!-- gotoflag:
+    1:return to network
+    2: return to topology-->
+    <form method="post" action="
+
+    {% if gotoflag == "1" %}
+        {% url "create_network_action" tenant_id %}
+    {% else %}
+        {% url "create_network_action_topology" tenant_id %}
+    {% endif %}
+
+    " class="pageForm required-validate"
+          onsubmit="return validateCallback2(this,dialogAjaxDone);">
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{tenant_id}}">
+        <input type="hidden" name="external" id="id_external">
+        <div class="pageFormContent" layouth="58">
+            <div class="panelBar">
+                <ul>
+                    <li style="line-height: 23px;">{% trans "Add NetWork" %}</li>
+                </ul>
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Name' %}：</label>
+                <input type="text" id="name" name="name" size="30" minlength="2" maxlength="10" class="required" />
+            </div>
+
+            <div class="unit">
+                <label>
+                    {% trans 'Admin State' %}：</label>
+                <input  checked="checked" type="checkbox" name="admin_state" id="id_admin_state">
+            </div>
+
+            <div class="unit">
+                <label>
+                        {% trans 'Shared' %}：</label>
+                <input  type="checkbox" name="shared" id="id_shared">
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close"
+                                    onclick="gotonwUrl('/virtual_network_manage/network/tenants/{{tenant_id}}/networks/','')">
+                                {% trans "Cancel" %}
+                            </button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

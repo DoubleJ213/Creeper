@@ -1,0 +1,125 @@
+{% load i18n %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=7"/>
+{#        <script type="text/javascript" src="{{ STATIC_URL }}ui/chart/highcharts.src.js"></script>#}
+{#        <script type="text/javascript" src="{{ STATIC_URL }}ui/chart/exporting.src.js"></script>#}
+<script type="text/javascript">
+        $(document).ready(function () {
+            //ajax
+            var item_name = ['disk_gb_hours', 'vcpu_hours', 'memory_mb', 'instances'];
+            var div_name = ['usage_disk_gb_hours', 'usage_vcpu_hours', 'usage_memory_mb', 'usage_instances'];
+            var unit_name = ['H*GB', 'H*Number', 'MB', '{% trans "Number" %}']
+            var item_data = [
+                [],
+                [],
+                [],
+                []
+            ];
+            var project_name = [
+                [],
+                [],
+                [],
+                []
+            ];
+            var title_name = ['{% trans "disk_gb_hours" %}', '{% trans "vcpu_hours" %}', '{% trans "memory_mb" %}', '{% trans "instances" %}'];
+
+            var list = [];
+
+            function sort_project_name(cnt, attr) {
+                list.sort(function (v1, v2) {
+                    return v2[attr] - v1[attr];
+                });
+                for (j = 0; j < list.length; j++) {
+                    project_name[cnt].push(list[j]['tenant_name']);
+                }
+            }
+
+            $.ajax({
+                type:"GET",
+                url:"{% url "get_system_usage" %}",
+                dataType:"json",
+                global:false,
+                async:false,
+                success:function (data) {
+                    $.each(data, function (i, item) {
+                        list.push(item);
+
+                        for (var j = 0, len = item_name.length; j < len; j++) {
+                            item_data[j].push(item[item_name[j]]);
+                        }
+
+                        for (j = 0; j < item_data.length; j++) {
+                            item_data[j].sort(function (v1, v2) {
+                                return v2 - v1;
+                            });
+                        }
+                    });
+
+                    for (var k = 0; k < project_name.length; k++) {
+                        sort_project_name(k, item_name[k])
+                    }
+                },
+                error:DWZ.ajaxError
+            });
+
+            function set_chart(project_name, div_name, unit_name, title, item_data) {
+                var chart;
+                chart = new Highcharts.Chart({
+                    chart:{
+                        renderTo:div_name,
+                        defaultSeriesType:'column',
+                        margin:[ 50, 50, 100, 80]
+                    },
+
+                    title:{
+                        text:title
+                    },
+                    xAxis:{
+                        categories:project_name,
+                        labels:{
+                            rotation:-45,
+                            align:'right',
+                            style:{
+                                font:'normal 13px Verdana, sans-serif'
+                            }
+                        }
+                    },
+                    yAxis:{
+                        min:0,
+                        title:{
+                            text:unit_name
+                        }
+                    },
+                    legend:{
+                        enabled:false
+                    },
+                    tooltip:{
+                        formatter:function () {
+                            return '<b>' + this.x + '</b><br/>' +
+                                    '{% trans "Data" %}: ' + Highcharts.numberFormat(this.y, 1);
+                        }
+                    },
+                    series:[
+                        {
+                            name:'Population',
+                            data:item_data
+                        }
+                    ]
+                });
+            }
+
+            for (var j = 0, len = item_data.length; j < len; j++) {
+                set_chart(project_name[j], div_name[j], unit_name[j], title_name[j], item_data[j]);
+            }
+        });
+</script>
+
+<div class="pageContent" layoutH="10">
+    <div style="text-align: center; font-size: 20px; color:#274b6d;">
+        {% trans 'This Month Usage Ranking' %}
+    </div>
+    <div id="usage_disk_gb_hours" class="chart_view"></div>
+    <div id="usage_vcpu_hours" class="chart_view"></div>
+    <div id="usage_memory_mb"  class="chart_view"></div>
+    <div id="usage_instances" class="chart_view"></div>
+</div>

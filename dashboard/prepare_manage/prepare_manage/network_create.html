@@ -1,0 +1,181 @@
+{% load i18n %}
+
+<style type="text/css">
+    #name  {
+        background: url("{{ STATIC_URL }}/ui/images/input_bg.png") no-repeat ;
+        border:0;
+        width: 240px;
+        height: 25px;
+    }
+    .ins_header1{
+        width: 215px;
+        float: left;
+        line-height: 24px;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .header_pic1 {
+        clear:both;
+        width: 100%;
+        height:70px;
+        background:#d7dcde url('{{ STATIC_URL }}ui/images/instance/3_1.png') no-repeat ;
+        background-position: left center;
+        margin-bottom: 10px;
+    }
+
+    .btn_background_img{
+        width:80px;
+        height: 28px;
+        background-image: url("{{ STATIC_URL }}/ui/images/instance/btn_3.png");
+        text-align: center;
+        line-height: 28px;
+        font-size: 15px;
+        margin-left: 10px;
+    }
+
+    .infoarea {
+        margin-top: 80px;
+    }
+    .succ_message {
+        height: 50px;
+        margin: 10px auto 0;
+        width: 400px;
+    }
+
+    .succ_message span{
+        float: left;
+    }
+    .succ_message label{
+        font-size: 19px;
+        line-height: 30px;
+    }
+    .succ_message .desc{
+        font-size: 16px;
+        line-height: 30px;
+        float: left;
+        text-align: right;
+        margin-left: 50px;
+    }
+
+
+</style>
+<script type="text/javascript">
+    function prepare_create_network1(){
+        var name = $("#name").val();
+
+        if(name == ''){
+            alertMsg.error('{% trans 'Network name is null!' %}');
+            return false;
+        }
+
+        if(name.length < 2 || name.length > 10){
+            alertMsg.error('{% trans 'Network name format wrong!' %}');
+            return false;
+        }
+
+        var tenant_id= $("#tenant_id").val();
+    }
+
+    function dialogAjaxDone_network(json) {
+        DWZ.ajaxDone(json);
+        if (json.statusCode == DWZ.statusCode.ok) {
+            if (json.navTabId) {
+                navTab.reload(json.forwardUrl, {navTabId:json.navTabId});
+            } else if (json.rel) {
+                var $pagerForm = $("#pagerForm", navTab.getCurrentPanel());
+                var args = $pagerForm.size() > 0 ? $pagerForm.serializeArray() : {}
+                navTabPageBreak(args, json.rel);
+            }
+            if ("closeCurrent" == json.callbackType) {
+                var network_id =  json.network_id;
+                var network_obj_id =  json.network_obj_id;
+                $("#project_network_from").css("display",'none');
+                $("#project_create_page_div").css("display","block");
+                $("#prepare_network_a_id").attr("href","prepare_manage/prepare/create_sub_net/"+network_id+"/"+network_obj_id+"/");
+            }
+        }
+    }
+
+</script>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post"
+    action="{% url "create_network_action_ajax" tenant_id network_obj_id %}"
+    class="pageForm required-validate" id="project_network_from" onsubmit="return validateCallback(this,dialogAjaxDone_network)">
+        <input type="hidden" name="network_obj_id" id="network_obj_id" value="{{ network_obj_id }}" />
+        <input type="hidden" name="tenant_id" id="tenant_id" value="{{tenant_id}}" />
+        <input type="hidden" name="external" id="id_external" />
+        <div class="pageFormContent" layouth="58" >
+            <div class="header_pic1" >
+                <div class="ins_header1" >{% trans 'Create Network' %}</div>
+                <div class="ins_header1" >{% trans 'Create Subnet' %}</div>
+                <div class="ins_header1" >{% trans 'Finish' %}</div>
+            </div>
+            <div style="float: left;width: 100%;">
+                <div class="unit">
+                    <label>
+                        {% trans 'Name' %}：</label>
+                    <input type="text" id="name" name="name" size="30" minlength="2" maxlength="10" class="required" /><span style="color: red; margin-left: -10px;">*</span>
+                </div>
+
+                <div class="unit">
+                    <label>
+                        {% trans 'Admin State' %}：</label>
+                    <input  checked="checked" type="checkbox" name="admin_state" id="id_admin_state">
+                </div>
+
+                <div class="unit">
+                    <label>
+                        {% trans 'Shared' %}：</label>
+                    <input  type="checkbox" name="shared" id="id_shared">
+                </div>
+            </div>
+            <span class="error" id="create_project_span" style="display: none"></span>
+        </div>
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close" onclick="">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+    <div id="project_create_page_div"  class="pageFormContent" layouth="58" style="display: none;">
+        <div class="header_pic1">
+            <div class="ins_header1" >{% trans 'Create Network' %}</div>
+            <div class="ins_header1" >{% trans 'Create Subnet' %}</div>
+            <div class="ins_header1" >{% trans 'Finish' %}</div>
+        </div>
+        <div class="infoarea">
+            <div class="succ_message">
+                <span style="margin-left: 60px;"><img src="{{ STATIC_URL }}ui/images/icon_2.png" width="26" height="26" /></span>
+                <label style="text-align: left; width: auto;">{% trans "Create network successfully!" %}</label>
+            </div>
+{#            <div class="succ_message" style="width: auto;">#}
+{#                <div class="desc" style="text-align: left;">{% trans "If you don't create subnet,you will be on the left side menu(Virtual NetWork Manage) to add a subnet" %}</div>#}
+{#            </div>#}
+            <div class="succ_message">
+                <div class="desc">{% trans "add your SubNet " %}</div>
+                <span>
+                    <a target="dialog" href="#" tmask="true" title="{% trans "Create Subnet" %}"
+                       style="text-decoration: none;" id="prepare_network_a_id" width="700" height="500" >
+                        <div class="btn_background_img">GO</div>
+                    </a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

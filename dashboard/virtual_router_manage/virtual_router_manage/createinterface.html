@@ -1,0 +1,73 @@
+{% load i18n %}
+<style type="text/css">
+    .unit .iteminfo{
+        line-height: 21px;
+    }
+
+</style>
+<div class="pageContent">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <form method="post" action="{% url "create_interface_action" router_id %}" class="pageForm required-validate"
+          onsubmit="return validateCallback(this,dialogAjaxDone);">
+{#        <input type="hidden" name="router_id" id="router_id" value="{{router_id}}">#}
+        <div class="pageFormContent" layouth="58">
+
+            <div class="unit">
+                <label>{% trans "Subnet" %}:</label>
+                    <select id="subnet_id" name="subnet_id" class="required select">
+                    {% for key,value in form.fields.subnet_id.choices %}
+                        <option value= {{ key }} >
+                            {% if value == 'Select Subnet' %}
+                                {% trans 'Select Subnet' %}
+                            {% elif value == 'No subnets available'%}
+                                {% trans 'No subnets available' %}
+                            {% else %}
+                               {{ value }}
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+                    </select>
+            </div>
+
+            <div id="routernameDiv" class="unit">
+                <label>{% trans 'Router Name' %}:</label>
+                <input type="text" id="router_name" name="router_name"
+                       value="{{ form.fields.router_name.initial }}" readonly size="40" minlength="2" maxlength="10"/>
+
+            </div>
+
+            <div id="routerIdDiv" class="unit">
+                <label>{% trans 'Router ID' %}:</label>
+                <input type="text" id="router_id" name="router_id"  value="{{router_id}}" readonly size="40" minlength="6" maxlength="255" />
+
+            </div>
+
+            <div id="routerDesDiv" class="unit">
+                <label>{% trans 'Description' %}:</label>
+                    <div class="iteminfo">{% trans 'You can connect a specified subnet to the router' %}</div>
+            </div>
+  </div>
+
+        {% csrf_token %}
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="buttonActive">
+                        <div class="buttonContent">
+                            <button type="submit" value="submit">
+                                {% trans "Submit" %}</button></div>
+                    </div>
+                </li>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+{#                            <button type="button" class="close" onclick="gotoRouterUrl('/virtual_router_manage/routers/{{tenant_id}}/{{router_id}}/getRouterProjectInfo/','')">#}
+{#                                {% trans "Cancel" %}</button></div>#}
+                            <button type="button" class="close">
+                                {% trans "Cancel" %}</button></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

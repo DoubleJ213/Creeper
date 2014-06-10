@@ -1,0 +1,454 @@
+﻿{% load i18n %}
+{% load permission %}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=7"/>
+<script language="javascript" type="text/javascript">
+var audio_url = "{{ STATIC_URL }}audio/ALARM.WAV";
+var subscribers = {};
+var status_cache = {};
+var host_cache = null;
+var global_monitor_ajax_tree_data = null;
+
+function get_display_name(name) {
+    MAX_LONG = 22;
+    if (name.length >= MAX_LONG) {
+        return name.substring(0, MAX_LONG) + "...";
+    }
+    return name;
+}
+
+function build_tree_data(index, item, flag, num_dict) {
+    subscribers[item.id] = item;
+    var content;
+    var host_id;
+    var link;
+    var rstrip = item.name.length > 20 ? item.name.substring(0, 20) + '...' : item.name;
+    if (item.type == "control_node") {
+        if (host_cache[item.ip]) {
+            host_id = host_cache[item.ip]['id'];
+            link = item.link.replace('#host_id#', host_id);
+            content = "<li iconCls='control_status_loading' id='" + item.id + "_icon' filter='filter'><a href='" + link
+                    + "'  target='ajax' rel='jbsxBox' tag='host_tree' title='" + item.name + "' id='" + item.id + "'>" + rstrip + "</a></li>";
+        } else {
+            content = "<li iconCls='control_status_loading' id='" + item.id + "_icon' filter='filter'><a href='javascript:void(0);' title='" + item.name + "' id='" + item.id + "'>" + rstrip + "</a></li>";
+        }
+        $("#ajax_tree").append(content);
+        num_dict[item.id] = 0;
+        controller_id = item.id;
+    }
+    else if (item.type == "compute_node") {
+        if (host_cache[item.ip]) {
+            host_id = host_cache[item.ip]['id'];
+            link = item.link.replace('#host_id#', host_id);
+            content = "<li iconCls='compute_status_loading' id='" + item.id + "_icon'><a href='" + link + "'  target='ajax' rel='jbsxBox' tag='host_tree' title='" + item.name + "' id='" + item.id + "'>" + rstrip + "</a></li>";
+        } else {
+            content = "<li iconCls='compute_status_loading' id='" + item.id + "_icon'><a href='javascript:void(0);' title='" + item.name + "' id='" + item.id + "'>" + rstrip + "</a></li>";
+        }
+        if ($("ul[name='control_node']").size() == 0) {
+            $("li[iconCls='control_status_loading']").append("<ul id='" + item.id + "' name='control_node'></ul>");
+        }
+        var origion_html = $("ul[name='control_node']").html();
+        $("ul[name='control_node']").html(origion_html + content);
+        num_dict[item.id] = 0;
+    }
+    else if (item.type == "storage_node") {
+        if (host_cache[item.ip]) {
+            host_id = host_cache[item.ip]['id'];
+            link = item.link.replace('#host_id#', host_id);
+            content = "<li iconCls='storage_status_loading' id='" + item.id + "_icon'><a href='" + link + "'  target='ajax' rel='jbsxBox' tag='host_tree' title='" + item.name + "' id='" + item.id + "'>" + rstrip + "</a></li>";
+        } else {
+            content = "<li iconCls='storage_status_loading' id='" + item.id + "_icon'><a href='javascript:void(0);' title='" + item.name + "' id='" + item.id + "'>" + rstrip + "</a></li>";
+        }
+        if ($("ul[name='control_node']").size() == 0) {
+            $("li[iconCls='control_status_loading']").append("<ul id='" + item.id + "' name='control_node'></ul>");
+        }
+        var origion_html = $("ul[name='control_node']").html();
+        $("ul[name='control_node']").html(origion_html + content);
+    }
+    else {
+        if (flag == 1 && (item.status == 'ACTIVE' || item.status == "VERIFY_RESIZE")) {
+            return true;
+        } else if (flag == 2 && (item.status != 'ACTIVE' && item.status != "VERIFY_RESIZE")) {
+            return true;
+        } else {
+            content = "<li iconCls='computer_status_loading' id='" + item.id + "_icon'>" + "<a href='" + item.link + "'  target='ajax' rel='jbsxBox' tag='host_tree' title='" + item.name + "'>" + rstrip + "</a></li>";
+            if ($("#" + item.pid + "_ul").size() == 0) {
+                var pli = $("#" + item.pid + "_icon");
+                pli.append("<ul id='" + item.pid + "_ul'></ul>");
+            }
+            var origion_html = $("#" + item.pid + "_ul").html();
+            $("#" + item.pid + "_ul").html(origion_html + content);
+            num_dict[item.pid] += 1;
+        }
+    }
+}
+
+function cache_tree(flag) {
+    $("#ajax_tree").empty();
+    var num_dict = {};
+    $.each(global_monitor_ajax_tree_data, function (i, item) {
+        build_tree_data(i, item, flag, num_dict);
+    });
+
+    init_AjaxTree();
+
+    for (var id in num_dict) {
+        var target = $("a[id='" + id + "']");
+        var old = target.html();
+        var index = old.indexOf("<label");
+        if (index == -1) {
+            target.html(old + " ( " + num_dict[id] + " )");
+        } else {
+            target.html(old.substring(0, index) + " ( " + num_dict[id] + " )" + old.substring(index))
+        }
+    }
+
+    refreshNodeStatusFromCache();
+
+    $("#filter_inactive").click(function () {
+        cache_tree(1);
+        return false;
+    });
+    $("#filter_active").click(function () {
+        cache_tree(2);
+        return false;
+    });
+}
+
+function init_host_tree() {
+    $("#ajax_tree").empty();
+    var num_dict = {};
+    $.each(global_monitor_ajax_tree_data, function (i, item) {
+        build_tree_data(i, item, 0, num_dict);
+    });
+
+    init_AjaxTree();
+
+    for (var id in num_dict) {
+        var target = $("a[id='" + id + "']");
+        var old = target.html();
+        var index = old.indexOf("<label");
+        if (index == -1) {
+            target.html(old + " ( " + num_dict[id] + " )");
+        } else {
+            target.html(old.substring(0, index) + " ( " + num_dict[id] + " )" + old.substring(index))
+        }
+    }
+
+    $("#filter_inactive").click(function () {
+        cache_tree(1);
+        return false;
+    });
+    $("#filter_active").click(function () {
+        cache_tree(2);
+        return false;
+    });
+
+    refreshNodeStatus();
+}
+
+$(function () {
+    $.ajax({
+        type:"GET",
+        url:"{% url "get_host_tree" %}",
+        dataType:"json",
+        success:function (data) {
+            host_cache = data['host_cache'];
+            global_monitor_ajax_tree_data = data['host_tree'];
+            init_host_tree();
+            Timer.submit("{% trans 'Global Monitor'  %}", refreshNodeStatus);
+            setTimeout(function () {
+                $("#" + controller_id).trigger("click");
+            }, 10);
+        },
+        error:DWZ.ajaxError
+    });
+});
+
+function request(url, callback) {
+    $.ajax({
+        url:url,
+        type:'GET',
+        dataType:'json',
+        global:false,
+        success:callback,
+        error:function (xhr, ajaxOptions, thrownError) {
+            if (xhr.status != 404) {
+                DWZ.ajaxError(xhr, ajaxOptions, thrownError)
+            } else {
+                var vm_id = xhr.responseText;
+                $("#" + vm_id + "_icon").remove();
+            }
+        }
+    });
+}
+
+function refreshNodeStatus() {
+    // node status request only once.
+    request('{% url "get_all_hosts_status" %}', respHandler);
+
+    // VM status request as VM's count.
+    for (var key in subscribers) {
+        var isVirt = (subscribers[key].type == 'compute');
+        if (isVirt) {
+            request(subscribers[key].status_link, respHandler);
+        }
+    }
+}
+
+function respHandler(obj) {
+    var li;
+    var status;
+    var type;
+    var item;
+    var k;
+    for (var key in obj) {
+        k = filter(key);
+        if (!k) {
+            continue;
+        }
+        item = subscribers[k];
+        li = $("#" + k + "_icon");
+        status = obj[key];
+        type = item.type;
+        if (!li || !type) {
+            if (window.console) {
+                console.log("Can not find tree node.");
+            }
+            return;
+        }
+        // locate the icon element
+        var target;
+        var index = 1;
+        while (true) {
+            target = li.find("div > div").eq(index);
+            if (target.hasClass('node') ||
+                    target.hasClass('line') ||
+                    target.hasClass('collapsable') ||
+                    target.hasClass('last_collapsable') ||
+                    target.hasClass('indent')) {
+                index++;
+            } else {
+                break;
+            }
+        }
+
+        if (!target) {
+            if (window.console) {
+                console.log("Can not find node status.");
+            }
+            return;
+        }
+        // switch status class
+        // for the fist time
+
+        if (!(item.id in status_cache)) {
+            item.status = status;
+            status_cache[item.id] = true;
+            if (type == "control_node") {
+                target.removeClass("control_status_loading");
+                target.addClass(status == "online" ? "control_status_online" : "control_status_offline");
+            } else if (type == "compute_node") {
+                target.removeClass("compute_status_loading");
+                target.addClass(status == "online" ? "compute_status_online" : "compute_status_offline");
+            } else if (type == "storage_node") {
+                target.removeClass("storage_status_loading");
+                target.addClass(status == "online" ? "storage_status_online" : "storage_status_offline");
+            } else {
+                target.removeClass("computer_status_loading");
+                target.addClass((status == "ACTIVE" || status == "VERIFY_RESIZE") ? "computer_status_online" : "computer_status_offline");
+            }
+        } else if (status != item.status) {
+            item.status = status;
+            if (type == "control_node") {
+                target.removeClass(status == "online" ? "control_status_offline" : "control_status_online");
+                target.addClass(status == "online" ? "control_status_online" : "control_status_offline");
+
+                if (status != 'online') {
+                    popUpDiv(item.name + " {% trans 'Control node is offline now.' %}")
+                }
+            } else if (type == "compute_node") {
+                target.removeClass(status == "online" ? "compute_status_offline" : "compute_status_online");
+                target.addClass(status == "online" ? "compute_status_online" : "compute_status_offline");
+
+                if (status != 'online') {
+                    popUpDiv(item.name + " {% trans 'Compute node is offline now.' %}")
+                }
+            } else if (type == "storage_node") {
+                target.removeClass(status == "online" ? "storage_status_offline" : "storage_status_online");
+                target.addClass(status == "online" ? "storage_status_online" : "storage_status_offline");
+
+                if (status != 'online') {
+                    popUpDiv(item.name + " {% trans 'Storage node is offline now.' %}")
+                }
+            } else {
+                target.removeClass((status == "ACTIVE" || status == "VERIFY_RESIZE") ? "computer_status_offline" : "computer_status_online");
+                target.addClass((status == "ACTIVE" || status == "VERIFY_RESIZE") ? "computer_status_online" : "computer_status_offline");
+
+                if (status != 'ACTIVE' && status != 'VERIFY_RESIZE') {
+                    popUpDiv(item.name + " {% trans 'VM instance node is offline now.' %}")
+                }
+            }
+        } else {
+            if (window.console) {
+                console.log("Nothing changed.");
+            }
+        }
+    }
+}
+
+function refreshNodeStatusFromCache() {
+    for (var id in subscribers) {
+        var item = subscribers[id];
+        var type = item.type;
+        var status = item.status;
+        var target;
+        var index = 1;
+        li = $("#" + id + "_icon");
+        while (true) {
+            target = li.find("div > div").eq(index);
+            if (target.hasClass('node') ||
+                    target.hasClass('line') ||
+                    target.hasClass('collapsable') ||
+                    target.hasClass('last_collapsable') ||
+                    target.hasClass('indent')) {
+                index++;
+            } else {
+                break;
+            }
+        }
+        if (type == "control_node") {
+            target.removeClass("control_status_loading");
+            target.addClass(status == "online" ? "control_status_online" : "control_status_offline");
+        } else if (type == "compute_node") {
+            target.removeClass("compute_status_loading");
+            target.addClass(status == "online" ? "compute_status_online" : "compute_status_offline");
+        } else if (type == "storage_node") {
+            target.removeClass("storage_status_loading");
+            target.addClass(status == "online" ? "storage_status_online" : "storage_status_offline");
+        } else {
+            target.removeClass("computer_status_loading");
+            target.addClass((status == "ACTIVE" || status == "VERIFY_RESIZE") ? "computer_status_online" : "computer_status_offline");
+        }
+    }
+}
+
+function filter(id) {
+    if (id in subscribers) {
+        return id;
+    } else {
+        for (var ip in host_cache) {
+            var host_id = host_cache[ip]['id'];
+            if (host_id == parseInt(id)) {
+                for (var index in subscribers) {
+                    if (subscribers[index]['ip'] == ip) {
+                        return index;
+                    }
+                }
+            }
+        }
+        return '';
+    }
+}
+
+function popUpDiv(title) {
+    $("#popup").jGrowl(title, {
+        theme:'flora',
+        header:"WARNING",
+        sticky:true,
+        closer:false,
+        beforeOpen:function (e, m, o) {
+            var bobbles = $(".jGrowl-notification.ui-state-highlight.ui-corner-all.flora", popup);
+            var length = bobbles.length;
+            var bobble = null;
+            for (var i = 0; i < length; i++) {
+                if ($(".jGrowl-message", bobbles[i]).html() == m) {
+                    bobble = bobbles[i];
+                    break;
+                }
+            }
+
+            return bobble == null;
+        }
+    });
+}
+
+{% permission 'Update Threshold Strategy' %}
+function update_threshold_strategy(element) {
+    var enable_string = '{% trans "Enable" %}';
+    $("#new_strategy").val(element.value);
+    var form = $("#update_threshold_strategy_form");
+    $.ajax({
+        url:"{% url "update_threshold_strategy" %}",
+        type:'POST',
+        dataType:'text',
+        global:true,
+        data:form.serializeArray(),
+        success:function (data) {
+            if (data) {
+                alertMsg.correct(data);
+            }
+            var selectIndex = element.selectedIndex;
+            var select = $(element.options[selectIndex]);
+            select.text(select.text() + " [" + enable_string + "]");
+            var option = $("option[flag=selected]", element);
+            var text = option.text();
+            option.text(text.substring(0, text.indexOf(' [')));
+            select.attr("flag", "selected");
+            option.attr("flag", "");
+        },
+        error:DWZ.ajaxError
+    });
+}
+{% endpermission %}
+
+</script>
+
+<div class="pageContent">
+    <div class="tabsContent">
+        <div style="float: left">
+            <form class="pageForm" method="POST"
+                  id="update_threshold_strategy_form">
+                {% csrf_token %}
+                <input type="hidden" name="new_strategy" id="new_strategy"
+                       value="0">
+            </form>
+            <fieldset id="threshold_div">
+                <legend style="border: 0px;">{% trans 'Thresholds Manage' %}</legend>
+                <select id="threshold_options"
+                        {% permission 'Update Threshold Strategy' %}
+                        onchange="update_threshold_strategy(this);"
+                        {% otherwise %}
+                        disabled="disabled"
+                        {% endpermission %}>
+                    {% for strategy_name, strategy_value in threshold_data.items %}
+                        {% if strategy_value.enable %}
+                            <option value="{{ strategy_value.id }}"
+                                    title="{{ strategy_value.title }}"
+                                    selected="selected"
+                                    flag="selected">
+                                {% trans strategy_name %} [{% trans "Enable" %}]
+                            </option>
+                        {% else %}
+                            <option value="{{ strategy_value.id }}"
+                                    title="{{ strategy_value.title }}">
+                                {% trans strategy_name %}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </fieldset>
+
+            <div id="monitor_tree" layoutH="72">
+                <ul id="ajax_tree" class="tree treeFolder">
+                </ul>
+            </div>
+        </div>
+        <div id="jbsxBox" class="unitBox" style="margin:5px 5px 5px 250px;" layoutH="12">
+        </div>
+    </div>
+</div>
+
+
+	
+
